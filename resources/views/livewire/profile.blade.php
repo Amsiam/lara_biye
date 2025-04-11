@@ -5,7 +5,12 @@ use function Livewire\Volt\{state, computed};
 state(['profileId']);
 
 $user = computed(function () {
-    return \App\Models\User::with('basicInfo', 'location')->findOrFail($this->profileId);
+    return \App\Models\User::with(
+        'basicInfo', 'location',
+        'partnerExpectation',
+        'family',
+        'parmanent'
+        )->findOrFail($this->profileId);
 });
 
 ?>
@@ -272,65 +277,19 @@ $user = computed(function () {
         </div>
 
         <!-- Permanent Address -->
-        <div class="mt-4 border border-gray-200 rounded-lg overflow-hidden">
-            <div class="flex justify-between items-center  bg-custom-red p-3 border-b">
-                <h3 class="font-semibold text-white">Permanent Address</h3>
-                <div>
-                    <button class="text-white bg-custom-pink px-2 rounded mr-2">
-                        Show
-                    </button>
-                    <button class="text-white bg-custom-pink px-2 rounded">✎</button>
-                </div>
-            </div>
-            <div class="p-4 grid grid-cols-2 gap-4">
-                <div>
-                    <p class="text-gray-600 text-sm">COUNTRY</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">STATE</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">CITY</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">POSTAL CODE</p>
-                    <p>-</p>
-                </div>
-            </div>
-        </div>
+        @if ($this->user->id == auth()->user()?->id || $this->user?->parmanent?->is_shown)
+
+        <livewire:profile.parmanent :user="$this->user" :parmanent="$this->user?->parmanent" />
+        @endif
 
         <!-- Family Information -->
-        <div class="mt-4 border border-gray-200 rounded-lg overflow-hidden">
-            <div class="flex justify-between items-center  bg-custom-red p-3 border-b">
-                <h3 class="font-semibold text-white">Family Information</h3>
-                <div>
-                    <button class="text-white bg-custom-pink px-2 rounded mr-2">
-                        Show
-                    </button>
-                    <button class="text-white bg-custom-pink px-2 rounded">✎</button>
-                </div>
-            </div>
-            <div class="p-4 grid grid-cols-2 gap-4">
-                <div>
-                    <p class="text-gray-600 text-sm">FATHER</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">MOTHER</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">BROTHER / SISTER</p>
-                    <p>-</p>
-                </div>
-            </div>
-        </div>
+        @if ($this->user->id == auth()->user()?->id || $this->user?->family?->is_shown)
+
+        <livewire:profile.family :user="$this->user" :family="$this->user?->family" />
+        @endif
 
         <!-- Additional Personal Details -->
-        <div class="mt-4 border border-gray-200 rounded-lg overflow-hidden">
+        {{-- <div class="mt-4 border border-gray-200 rounded-lg overflow-hidden">
             <div class="flex justify-between items-center  bg-custom-red p-3 border-b">
                 <h3 class="font-semibold text-white">Additional Personal Details</h3>
                 <div>
@@ -358,121 +317,9 @@ $user = computed(function () {
                     <p>-</p>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Partner Expectation -->
-        <div class="mt-4 border border-gray-200 rounded-lg overflow-hidden">
-            <div class="flex justify-between items-center  bg-custom-red p-3 border-b">
-                <h3 class="font-semibold text-white">Partner Expectation</h3>
-                <div>
-                    <button class="text-white bg-custom-pink px-2 rounded mr-2">
-                        Show
-                    </button>
-                    <button class="text-white bg-custom-pink px-2 rounded">✎</button>
-                </div>
-            </div>
-            <div class="p-4 grid grid-cols-2 gap-4">
-                <div>
-                    <p class="text-gray-600 text-sm">GENERAL REQUIREMENT</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">AGE</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">HEIGHT</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">WEIGHT</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">MARITAL STATUS</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">WITH CHILDREN ACCEPTABLES</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">COUNTRY OF RESIDENCE</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">RELIGION</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">CASTE / SECT</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">SUB CASTE</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">EDUCATION</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">PROFESSION</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">DRINKING HABITS</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">SMOKING HABITS</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">DIET</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">BODY TYPE</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">PERSONAL VALUE</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">MANGLIK</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">ANY DISABILITY</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">MOTHER TONGUE</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">FAMILY VALUE</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">PREFERED COUNTRY</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">PREFERED STATE</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">PREFERED STATUS</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">COMPLEXION</p>
-                    <p>-</p>
-                </div>
-            </div>
-        </div>
+        <livewire:profile.partner :user="$this->user" :partner="$this->user?->partnerExpectation" />
     </div>
 </div>

@@ -74,7 +74,7 @@ class User extends Authenticatable
         return $this->hasOne(Lifestyle::class);
     }
 
-    public function familyDetail()
+    public function family()
     {
         return $this->hasOne(FamilyInformation::class);
     }
@@ -92,5 +92,15 @@ class User extends Authenticatable
     public function hobbyAndInterest()
     {
         return $this->hasOne(HobbiesAndInterest::class);
+    }
+
+    public function partnerExpectation()
+    {
+        return $this->hasOne(PartnerExpectation::class);
+    }
+
+    public function parmanent()
+    {
+        return $this->hasOne(ResidencyInformation::class);
     }
 }
