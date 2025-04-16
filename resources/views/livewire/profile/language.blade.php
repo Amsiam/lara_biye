@@ -5,11 +5,10 @@ use function Livewire\Volt\{state, rules};
 state(['lang', 'user', 'isEditing' => false]);
 
 rules([
-    'address.country' => 'required|string|max:100',
-    'address.division' => 'nullable|string|max:100',
-    'address.district' => 'nullable|string|max:100',
-    'address.upazilla' => 'nullable|string|max:100',
-    'address.union' => 'nullable|string|max:100',
+    'lang.mother_tongue' => 'nullable|string|max:100',
+    'lang.language' => 'nullable|string|max:100',
+    'lang.speak' => 'nullable|string|max:100',
+    'lang.read' => 'nullable|string|max:100',
 ]);
 
 $enableEditing = fn() => ($this->isEditing = !$this->isEditing);
@@ -30,7 +29,7 @@ $toggle = function () {
 ?>
 
 <div class="mt-4 border border-gray-200 rounded-lg overflow-hidden">
-    <div class="flex justify-between items-center  bg-custom-red p-3 border-b">
+    <div class="flex justify-between items-center bg-custom-red p-3 border-b">
         <h3 class="font-semibold text-white">Language</h3>
         <div>
             @if (auth()->user()?->id == $lang?->user_id)
@@ -46,21 +45,24 @@ $toggle = function () {
         </div>
     </div>
     <div class="p-4 grid grid-cols-2 gap-4">
-        <div>
-            <p class="text-gray-600 text-sm">MOTHER TONGUE</p>
-            <p>-</p>
-        </div>
-        <div>
-            <p class="text-gray-600 text-sm">LANGUAGE</p>
-            <p>-</p>
-        </div>
-        <div>
-            <p class="text-gray-600 text-sm">SPEAK</p>
-            <p>-</p>
-        </div>
-        <div>
-            <p class="text-gray-600 text-sm">READ</p>
-            <p>-</p>
-        </div>
+        @foreach ([
+        'MOTHER TONGUE' => 'mother_tongue',
+        'LANGUAGE' => 'language',
+        'SPEAK' => 'speak',
+        'READ' => 'read',
+    ] as $label => $field)
+            <div>
+                <p class="text-gray-600 text-sm">{{ $label }}</p>
+                @if ($isEditing)
+                    <input type="text" wire:model="lang.{{ $field }}"
+                        class="w-full p-2 border border-gray-200 rounded-lg">
+                    @error('lang.' . $field)
+                        <p class="text-red-500 text-sm">{{ $message }}</p>
+                    @enderror
+                @else
+                    <p>{{ $lang->{$field} ?? '-' }}</p>
+                @endif
+            </div>
+        @endforeach
     </div>
 </div>

@@ -5,12 +5,7 @@ use function Livewire\Volt\{state, computed};
 state(['profileId']);
 
 $user = computed(function () {
-    return \App\Models\User::with(
-        'basicInfo', 'location',
-        'partnerExpectation',
-        'family',
-        'parmanent'
-        )->findOrFail($this->profileId);
+    return \App\Models\User::with('basicInfo', 'location', 'education', 'physical_attr', 'hobby', 'language', 'personal', 'spiritualSocial', 'lifestyle', 'partnerExpectation', 'family', 'parmanent')->findOrFail($this->profileId);
 });
 
 ?>
@@ -100,7 +95,7 @@ $user = computed(function () {
             <livewire:profile.present_address :user="$this->user" :address="$this->user?->location" />
         @endif
 
-        {{--
+
         <!-- Education And Career -->
         @if ($this->user->id == auth()->user()?->id || $this->user?->education?->is_shown)
             <livewire:profile.education :user="$this->user" :education="$this->user?->education" />
@@ -116,176 +111,47 @@ $user = computed(function () {
         <!-- Language -->
         @if ($this->user->id == auth()->user()?->id || $this->user?->language?->is_shown)
             <livewire:profile.language :user="$this->user" :lang="$this->user?->language" />
-        @endif --}}
+        @endif
 
         <!-- Hobbies And Interests -->
-        {{-- @if ($this->user->id == auth()->user()?->id || $this->user?->hobby?->is_shown)
+        @if ($this->user->id == auth()->user()?->id || $this->user?->hobby?->is_shown)
             <livewire:profile.hobby :user="$this->user" :hobby="$this->user?->hobby" />
-        @endif --}}
+        @endif
 
         <!-- Personal Attitude And Behavior -->
-        {{-- @if ($this->user->id == auth()->user()?->id || $this->user?->personal?->is_shown)
+        @if ($this->user->id == auth()->user()?->id || $this->user?->personal?->is_shown)
             <livewire:profile.personal_attitude :user="$this->user" :hobby="$this->user?->personal" />
+        @endif
+
+        {{-- <!-- Residency Information -->
+        @if ($this->user->id == auth()->user()?->id || $this->user?->residencyInfo?->is_shown)
+            <livewire:profile.residency :user="$this->user" :residencyInfo="$this->user?->residencyInfo" />
         @endif --}}
 
-        <!-- Residency Information -->
-        <div class="mt-4 border border-gray-200 rounded-lg overflow-hidden">
-            <div class="flex justify-between items-center  bg-custom-red p-3 border-b">
-                <h3 class="font-semibold text-white">Residency Information</h3>
-                <div>
-                    <button class="text-white bg-custom-pink px-2 rounded mr-2">
-                        Show
-                    </button>
-                    <button class="text-white bg-custom-pink px-2 rounded">✎</button>
-                </div>
-            </div>
-            <div class="p-4 grid grid-cols-2 gap-4">
-                <div>
-                    <p class="text-gray-600 text-sm">BIRTH COUNTRY</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">RESIDENCY COUNTRY</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">CITIZENSHIP COUNTRY</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">GROW UP COUNTRY</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">IMMIGRATION STATUS</p>
-                    <p>-</p>
-                </div>
-            </div>
-        </div>
-
         <!-- Spiritual And Social Background -->
-        <div class="mt-4 border border-gray-200 rounded-lg overflow-hidden">
-            <div class="flex justify-between items-center  bg-custom-red p-3 border-b">
-                <h3 class="font-semibold text-white">Spiritual And Social Background</h3>
-                <div>
-                    <button class="text-white bg-custom-pink px-2 rounded mr-2">
-                        Show
-                    </button>
-                    <button class="text-white bg-custom-pink px-2 rounded">✎</button>
-                </div>
-            </div>
-            <div class="p-4 grid grid-cols-2 gap-4">
-                <div>
-                    <p class="text-gray-600 text-sm">RELIGION</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">CASTE / SECT</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">SUB-CASTE</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">ETHNICITY</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">PERSONAL VALUE</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">FAMILY VALUE</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">COMMUNITY VALUE</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">FAMILY STATUS</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">MANGLIK</p>
-                    <p>-</p>
-                </div>
-            </div>
-        </div>
 
-        <!-- Life Style -->
-        <div class="mt-4 border border-gray-200 rounded-lg overflow-hidden">
-            <div class="flex justify-between items-center  bg-custom-red p-3 border-b">
-                <h3 class="font-semibold text-white">Life Style</h3>
-                <div>
-                    <button class="text-white bg-custom-pink px-2 rounded mr-2">
-                        Show
-                    </button>
-                    <button class="text-white bg-custom-pink px-2 rounded">✎</button>
-                </div>
-            </div>
-            <div class="p-4 grid grid-cols-2 gap-4">
-                <div>
-                    <p class="text-gray-600 text-sm">DIET</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">DRINK</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">SMOKE</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">LIVING WITH</p>
-                    <p>-</p>
-                </div>
-            </div>
-        </div>
+        @if ($this->user->id == auth()->user()?->id || $this->user?->spiritualSocial?->is_shown)
+            <livewire:profile.spiritual :user="$this->user" :spiritualSocial="$this->user?->spiritualSocial" />
+        @endif
 
         <!-- Astronomic Information -->
-        <div class="mt-4 border border-gray-200 rounded-lg overflow-hidden">
-            <div class="flex justify-between items-center  bg-custom-red p-3 border-b">
-                <h3 class="font-semibold text-white">Astronomic Information</h3>
-                <div>
-                    <button class="text-white bg-custom-pink px-2 rounded mr-2">
-                        Show
-                    </button>
-                    <button class="text-white bg-custom-pink px-2 rounded">✎</button>
-                </div>
-            </div>
-            <div class="p-4 grid grid-cols-2 gap-4">
-                <div>
-                    <p class="text-gray-600 text-sm">SUN SIGN</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">MOON SIGN</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">CITY OF BIRTH</p>
-                    <p>-</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm">TIME OF BIRTH</p>
-                    <p>-</p>
-                </div>
-            </div>
-        </div>
+        @if ($this->user->id == auth()->user()?->id || $this->user?->lifestyle?->is_shown)
+            <livewire:profile.lifestyle :user="$this->user" :lifestyle="$this->user?->lifestyle" />
+        @endif
+
+        <!-- Astronomic Information -->
+        {{-- @if ($this->user->id == auth()->user()?->id || $this->user?->astronomicInfo?->is_shown)
+            <livewire:profile.astronomic :user="$this->user" :astronomicInfo="$this->user?->astronomicInfo" />
+        @endif --}}
 
         <!-- Permanent Address -->
         @if ($this->user->id == auth()->user()?->id || $this->user?->parmanent?->is_shown)
-
-        <livewire:profile.parmanent :user="$this->user" :parmanent="$this->user?->parmanent" />
+            <livewire:profile.parmanent :user="$this->user" :parmanent="$this->user?->parmanent" />
         @endif
 
         <!-- Family Information -->
         @if ($this->user->id == auth()->user()?->id || $this->user?->family?->is_shown)
-
-        <livewire:profile.family :user="$this->user" :family="$this->user?->family" />
+            <livewire:profile.family :user="$this->user" :family="$this->user?->family" />
         @endif
 
         <!-- Additional Personal Details -->
