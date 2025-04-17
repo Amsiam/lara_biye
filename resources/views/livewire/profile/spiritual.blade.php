@@ -5,8 +5,7 @@ use function Livewire\Volt\{state, rules};
 state(['spiritualSocial', 'user', 'isEditing' => false]);
 
 rules([
-    'spiritualSocial.religion' => 'nullable|string|max:100',
-    'spiritualSocial.caste_sect' => 'nullable|string|max:100',
+    'spiritualSocial.caste' => 'nullable|string|max:100',
     'spiritualSocial.sub_caste' => 'nullable|string|max:100',
     'spiritualSocial.ethnicity' => 'nullable|string|max:100',
     'spiritualSocial.personal_value' => 'nullable|string|max:100',
@@ -51,8 +50,7 @@ $toggle = function () {
     </div>
     <div class="p-4 grid grid-cols-2 gap-4">
         @foreach ([
-        'RELIGION' => 'religion',
-        'CASTE / SECT' => 'caste_sect',
+        'CASTE / SECT' => 'caste',
         'SUB-CASTE' => 'sub_caste',
         'ETHNICITY' => 'ethnicity',
         'PERSONAL VALUE' => 'personal_value',
@@ -61,6 +59,9 @@ $toggle = function () {
         'FAMILY STATUS' => 'family_status',
         'MANGLIK' => 'manglik',
     ] as $label => $field)
+            @if ($field == 'manglik' && $user?->basicInfo?->religion != 'HINDU')
+                @continue
+            @endif
             <div>
                 <p class="text-gray-600 text-sm">{{ $label }}</p>
                 @if ($isEditing)

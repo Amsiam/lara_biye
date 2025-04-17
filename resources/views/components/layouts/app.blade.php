@@ -17,7 +17,7 @@
     <nav class="static top-0 w-full bg-white shadow-md z-50">
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-center h-16">
-                <a href="#" class="font-bold">
+                <a href="{{ route('home') }}" wire:navigate class="font-bold">
                     <img src="{{ asset('img/logo.png') }}" alt="Logo" class="h-10">
                 </a>
 

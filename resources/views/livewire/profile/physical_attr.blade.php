@@ -5,12 +5,9 @@ use function Livewire\Volt\{state, rules};
 state(['physical', 'user', 'isEditing' => false]);
 
 rules([
-    'physical.height' => 'nullable|numeric|min:50|max:250',
-    'physical.weight' => 'nullable|numeric|min:30|max:300',
     'physical.eye_color' => 'nullable|string|max:50',
     'physical.hair_color' => 'nullable|string|max:50',
     'physical.complexion' => 'nullable|string|max:50',
-    'physical.blood_group' => 'nullable|string|max:50',
     'physical.body_type' => 'nullable|string|max:50',
     'physical.body_art' => 'nullable|string|max:100',
     'physical.any_disability' => 'nullable|boolean',
@@ -51,12 +48,9 @@ $toggle = function () {
     </div>
     <div class="p-4 grid grid-cols-2 gap-4">
         @foreach ([
-        'HEIGHT' => 'height',
-        'WEIGHT' => 'weight',
         'EYE COLOR' => 'eye_color',
         'HAIR COLOR' => 'hair_color',
         'COMPLEXION' => 'complexion',
-        'BLOOD GROUP' => 'blood_group',
         'BODY TYPE' => 'body_type',
         'BODY ART' => 'body_art',
         'ANY DISABILITY' => 'any_disability',

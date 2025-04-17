@@ -74,14 +74,14 @@ class User extends Authenticatable
         return $this->hasOne(PersonalAttitude::class);
     }
 
-    public function physical()
+    public function language()
     {
         return $this->hasOne(Language::class);
     }
 
     public function lifestyle()
     {
-        return $this->hasOne(Lifestyle::class);
+        return $this->hasOne(LifeStyle::class);
     }
 
     public function family()

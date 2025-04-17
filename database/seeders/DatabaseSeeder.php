@@ -30,8 +30,8 @@ class DatabaseSeeder extends Seeder
         //     "bio" => "I am amsiam",
         // ]);
 
-        Location::create([
-            "user_id" => 1
-        ]);
+        // Location::create([
+        //     "user_id" => 1
+        // ]);
     }
 }

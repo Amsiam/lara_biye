@@ -6,8 +6,8 @@ state(['lifestyle', 'user', 'isEditing' => false]);
 
 rules([
     'lifestyle.diet' => 'nullable|string|max:50',
-    'lifestyle.drink' => 'nullable|string|max:50',
-    'lifestyle.smoke' => 'nullable|string|max:50',
+    'lifestyle.drinking' => 'nullable|string|max:50',
+    'lifestyle.smoking' => 'nullable|string|max:50',
     'lifestyle.living_with' => 'nullable|string|max:100',
 ]);
 
@@ -47,8 +47,8 @@ $toggle = function () {
     <div class="p-4 grid grid-cols-2 gap-4">
         @foreach ([
         'DIET' => 'diet',
-        'DRINK' => 'drink',
-        'SMOKE' => 'smoke',
+        'DRINK' => 'drinking',
+        'SMOKE' => 'smoking',
         'LIVING WITH' => 'living_with',
     ] as $label => $field)
             <div>
