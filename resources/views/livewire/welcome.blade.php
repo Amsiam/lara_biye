@@ -54,29 +54,32 @@ layout('components.layouts.app');
             <h3 class="text-2xl md:text-3xl font-bold leading-tight">
                 Find your <span class="text-custom-pink">Right Match</span> here
             </h3>
-            <div class="max-w-4xl mx-auto mt-8 p-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <select class="w-full p-3 border rounded-lg">
-                        <option>I'm looking for</option>
-                        <option>Male</option>
-                        <option>Female</option>
-                    </select>
-                    <select class="w-full p-3 border rounded-lg">
-                        <option>Marital Status</option>
-                        <option>Single</option>
-                        <option>Divorced</option>
-                    </select>
-                    <select class="w-full p-3 border rounded-lg">
-                        <option>Select Age</option>
-                        <option>18-25</option>
-                        <option>26-35</option>
-                        <option>36-45</option>
-                    </select>
-                    <button class="w-full bg-custom-pink text-white p-3 rounded-lg hover:bg-opacity-90">
-                        Search
-                    </button>
+            <form action="{{ route('search') }}">
+                <div class="max-w-4xl mx-auto mt-8 p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <select name="gender" class="w-full p-3 border rounded-lg">
+                            <option>I'm looking for</option>
+                            <option>Male</option>
+                            <option>Female</option>
+                        </select>
+                        <select name="marital_status" class="w-full p-3 border rounded-lg">
+                            <option>Marital Status</option>
+                            @foreach (['UNMARRIED', 'MARRIED', 'DIVORCED', 'WIDOWED'] as $maritalStatus)
+                                <option>{{ $maritalStatus }}</option>
+                            @endforeach
+                        </select>
+                        <select name="age" class="w-full p-3 border rounded-lg">
+                            <option>Select Age</option>
+                            <option>18-25</option>
+                            <option>26-35</option>
+                            <option>36-45</option>
+                        </select>
+                        <button class="w-full bg-custom-pink text-white p-3 rounded-lg hover:bg-opacity-90">
+                            Search
+                        </button>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
     </section>
 
