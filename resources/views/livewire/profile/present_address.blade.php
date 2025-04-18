@@ -44,7 +44,7 @@ $toggle = function () {
                     <button wire:click="save" class="text-white bg-custom-pink px-2 rounded">Save</button>
                 @endif
             @endif
-        </div>
+        </div> 
     </div>
     <div class="p-4 grid grid-cols-2 gap-4">
         <div>
