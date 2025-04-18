@@ -15,8 +15,8 @@ new #[Layout('components.layouts.auth')] class extends Component {
     public string $email = '';
     public string $password = '';
     public string $dob = '';
-    public string $gender = '';
-    public string $religion = '';
+    public string $gender = 'MALE';
+    public string $religion = 'ISLAM';
     public string $password_confirmation = '';
 
     /**
@@ -46,10 +46,11 @@ new #[Layout('components.layouts.auth')] class extends Component {
                     'bio' => '',
                     'gender' => $this->gender,
                     'religion' => $this->religion,
+                    'height' => 0,
+                    'weight' => 0,
                 ]);
                 $user->physical_attr()->create();
                 $user->personal()->create();
-                $user->physical()->create();
                 $user->lifestyle()->create();
                 $user->family()->create();
                 $user->education()->create();

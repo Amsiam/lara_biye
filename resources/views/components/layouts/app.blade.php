@@ -40,6 +40,7 @@
                     @if (auth()->check())
                         <a href="{{ route('profile', auth()->user()->id) }}"
                             class="bg-custom-pink text-white rounded-full px-6 py-2 hover:bg-opacity-90">My Profile</a>
+
                     @else
                         <a href="{{ route('register') }}"
                             class="bg-custom-pink text-white rounded-full px-6 py-2 hover:bg-opacity-90">Registration</a>

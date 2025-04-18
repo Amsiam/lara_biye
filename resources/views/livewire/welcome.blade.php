@@ -58,18 +58,18 @@ layout('components.layouts.app');
                 <div class="max-w-4xl mx-auto mt-8 p-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <select name="gender" class="w-full p-3 border rounded-lg">
-                            <option>I'm looking for</option>
+                            <option value="">I'm looking for</option>
                             <option>Male</option>
                             <option>Female</option>
                         </select>
                         <select name="marital_status" class="w-full p-3 border rounded-lg">
-                            <option>Marital Status</option>
+                            <option value="">Marital Status</option>
                             @foreach (['UNMARRIED', 'MARRIED', 'DIVORCED', 'WIDOWED'] as $maritalStatus)
                                 <option>{{ $maritalStatus }}</option>
                             @endforeach
                         </select>
                         <select name="age" class="w-full p-3 border rounded-lg">
-                            <option>Select Age</option>
+                            <option value="">Select Age</option>
                             <option>18-25</option>
                             <option>26-35</option>
                             <option>36-45</option>

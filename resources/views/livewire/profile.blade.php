@@ -15,35 +15,39 @@ $user = computed(function () {
     <div class="w-full md:w-1/4 bg-custom-red text-white p-6 rounded-lg shadow-lg">
         <div class="text-center">
             <!-- Profile Image -->
-            <div
+            {{-- <div
                 class="w-32 h-32 mx-auto border border-gray-300 rounded-full overflow-hidden flex items-center justify-center">
                 <img class="w-full h-full object-cover" src="./assets/UserProfile.png" alt="Profile Image">
-            </div>
+            </div> --}}
+
+            <livewire:profile.upload-profile :user="$this->user" :previewUrl="$this->user->basicInfo?->image" />
 
             <!-- User Name & Followers -->
-            <h2 class="mt-4 text-xl font-bold uppercase">Aslam Mahmud Siam</h2>
-            <p class="text-gray-100 text-sm mt-1">0 Followers</p>
+            <h2 class="mt-4 text-xl font-bold uppercase">{{$this->user->name}}</h2>
+            {{-- <p class="text-gray-100 text-sm mt-1">0 Followers</p> --}}
             <hr class="my-3 border-gray-300">
         </div>
 
         <!-- Package Information -->
-        <div class="mt-4 p-4 bg-white text-black rounded-lg shadow">
-            <h3 class="text-lg font-semibold text-custom-red">Package Information</h3>
-            <p class="mt-2 flex items-center"><span class="mr-2">🎁</span> Free Package</p>
-            <p class="text-sm text-gray-700">৳ 0.00</p>
+        @if(auth()->user()?->id == $this->user->id)
+            <div class="mt-4 p-4 bg-white text-black rounded-lg shadow">
+                <h3 class="text-lg font-semibold text-custom-red">Package Information</h3>
+                <p class="mt-2 flex items-center"><span class="mr-2">🎁</span> Free Package</p>
+                <p class="text-sm text-gray-700">৳ 0.00</p>
 
-            <h3 class="text-lg font-semibold text-custom-red mt-4">Premium Package</h3>
-            <p class="text-sm text-gray-700 mt-1">None</p>
+                <h3 class="text-lg font-semibold text-custom-red mt-4">Premium Package</h3>
+                <p class="text-sm text-gray-700 mt-1">None</p>
 
-            <h3 class="text-lg font-semibold text-custom-red mt-4">Package Available</h3>
-            <p class="text-sm text-gray-700 mt-1">2</p>
+                <h3 class="text-lg font-semibold text-custom-red mt-4">Package Available</h3>
+                <p class="text-sm text-gray-700 mt-1">2</p>
 
-            <h3 class="text-lg font-semibold text-custom-red mt-4">PACKAGE EXPIRES AT</h3>
-            <p class="text-sm font-medium mt-1">2025-03-19</p>
-        </div>
+                <h3 class="text-lg font-semibold text-custom-red mt-4">PACKAGE EXPIRES AT</h3>
+                <p class="text-sm font-medium mt-1">2025-03-19</p>
+            </div>
+        @endif
 
         <!-- Sidebar Buttons -->
-        <div class="mt-6 space-y-2">
+        {{-- <div class="mt-6 space-y-2">
             <button
                 class="w-full bg-white text-custom-pink py-2 rounded-md shadow hover:bg-custom-pink hover:text-white transition">
                 📷 Gallery
@@ -72,7 +76,7 @@ $user = computed(function () {
                 class="w-full bg-white text-custom-pink py-2 rounded-md shadow hover:bg-custom-pink hover:text-white transition">
                 ❌ Close Account
             </button>
-        </div>
+        </div> --}}
     </div>
 
 
@@ -120,7 +124,8 @@ $user = computed(function () {
 
         <!-- Personal Attitude And Behavior -->
         @if ($this->user->id == auth()->user()?->id || $this->user?->personal?->is_shown)
-            <livewire:profile.personal_attitude :user="$this->user" :hobby="$this->user?->personal" />
+
+            <livewire:profile.personal_attitude :user="$this->user" :personal="$this->user?->personal" />
         @endif
 
         {{-- <!-- Residency Information -->
