@@ -5,11 +5,9 @@ use function Livewire\Volt\{state, rules};
 state(['education', 'user', 'isEditing' => false]);
 
 rules([
-    'address.country' => 'required|string|max:100',
-    'address.division' => 'nullable|string|max:100',
-    'address.district' => 'nullable|string|max:100',
-    'address.upazilla' => 'nullable|string|max:100',
-    'address.union' => 'nullable|string|max:100',
+    'education.highest_education' => 'required|string|max:100',
+    'education.occupation' => 'nullable|string|max:100',
+    'education.annual_income' => 'nullable|numeric',
 ]);
 
 $enableEditing = fn() => ($this->isEditing = !$this->isEditing);
@@ -48,15 +46,42 @@ $toggle = function () {
     <div class="p-4 grid grid-cols-2 gap-4">
         <div>
             <p class="text-gray-600 text-sm">HIGHEST EDUCATION</p>
-            <p>-</p>
+            @if ($isEditing)
+                <input wire:model="education.highest_education" class="w-full p-2 border border-gray-200 rounded-lg" />
+                @error('education.highest_education')
+                    <p class="text-red-500 text-sm">{{ $message }}</p>
+                @enderror
+            @else
+                <p>
+                    {{ $education?->highest_education }}
+                </p>
+            @endif
         </div>
         <div>
             <p class="text-gray-600 text-sm">OCCUPATION</p>
-            <p>-</p>
+            @if ($isEditing)
+                <input wire:model="education.occupation" class="w-full p-2 border border-gray-200 rounded-lg" />
+                @error('education.occupation')
+                    <p class="text-red-500 text-sm">{{ $message }}</p>
+                @enderror
+            @else
+                <p>
+                    {{ $education?->occupation }}
+                </p>
+            @endif
         </div>
         <div>
             <p class="text-gray-600 text-sm">ANNUAL INCOME</p>
-            <p>-</p>
+            @if ($isEditing)
+                <input wire:model="education.annual_income" class="w-full p-2 border border-gray-200 rounded-lg" />
+                @error('education.annual_income')
+                    <p class="text-red-500 text-sm">{{ $message }}</p>
+                @enderror
+            @else
+                <p>
+                    {{ $education?->annual_income }}
+                </p>
+            @endif
         </div>
     </div>
 </div>

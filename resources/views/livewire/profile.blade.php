@@ -5,7 +5,7 @@ use function Livewire\Volt\{state, computed};
 state(['profileId']);
 
 $user = computed(function () {
-    return \App\Models\User::with('basicInfo', 'location')->findOrFail($this->profileId);
+    return \App\Models\User::with('basicInfo', 'location', 'education', 'physical_attr')->findOrFail($this->profileId);
 });
 
 ?>
@@ -95,19 +95,19 @@ $user = computed(function () {
             <livewire:profile.present_address :user="$this->user" :address="$this->user?->location" />
         @endif
 
-        {{--
+
         <!-- Education And Career -->
         @if ($this->user->id == auth()->user()?->id || $this->user?->education?->is_shown)
             <livewire:profile.education :user="$this->user" :education="$this->user?->education" />
         @endif
 
+
         <!-- Physical Attributes -->
-
-
-        @if ($this->user->id == auth()->user()?->id || $this->user?->physical_attr?->is_shown)
-            <livewire:profile.physical_attr :user="$this->user" :physical="$this->user?->physical_attr" />
+        @if ($this->user->id == auth()->user()?->id || $this->user?->physical_attr?->is_shown || $this->user?->basicInfo?->is_shown)
+            <livewire:profile.physical_attr :user="$this->user" :physical="$this->user?->physical_attr" :body="$this->user?->basicInfo"/>
         @endif
 
+{{--
         <!-- Language -->
         @if ($this->user->id == auth()->user()?->id || $this->user?->language?->is_shown)
             <livewire:profile.language :user="$this->user" :lang="$this->user?->language" />
@@ -301,6 +301,7 @@ $user = computed(function () {
                 </div>
             </div>
         </div>
+
 
         <!-- Family Information -->
         <div class="mt-4 border border-gray-200 rounded-lg overflow-hidden">

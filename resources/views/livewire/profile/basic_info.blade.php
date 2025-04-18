@@ -65,7 +65,7 @@ $save = function () {
                 @enderror
             @else
                 <p>
-                    {{ $bio->gender }}
+                    {{ $bio ? $bio->gender : '' }}
                 </p>
             @endif
         </div>
@@ -78,7 +78,7 @@ $save = function () {
         <div>
             <p class="text-gray-600 text-sm">AGE</p>
             <p>
-                {{ floor(-1 * now()->diffInYears($bio->dob)) }}
+                {{ floor(-1 * now()->diffInYears($bio?->dob)) }}
             </p>
         </div>
         <div>
@@ -94,7 +94,7 @@ $save = function () {
                 @enderror
             @else
                 <p>
-                    {{ $bio->marital_status }}
+                    {{ $bio ? $bio->marital_status : '' }}
                 </p>
             @endif
         </div>
@@ -108,7 +108,7 @@ $save = function () {
                 @enderror
             @else
                 <p>
-                    {{ $bio->noc }}
+                    {{ $bio ? $bio->noc : '' }}
                 </p>
             @endif
         </div>
@@ -121,7 +121,7 @@ $save = function () {
                 @enderror
             @else
                 <p>
-                    {{ $bio->area }}
+                    {{ $bio ? $bio->area : '' }}
                 </p>
             @endif
         </div>
@@ -138,7 +138,7 @@ $save = function () {
                 @enderror
             @else
                 <p>
-                    {{ $bio->on_behalf }}
+                    {{ $bio ? $bio->on_behalf : '' }}
                 </p>
             @endif
         </div>
@@ -148,7 +148,7 @@ $save = function () {
                 <input wire:model="user.mobile" class="w-full p-2 border border-gray-200 rounded-lg" />
             @else
                 <p>
-                    {{ $bio->mobile }}
+                    {{ $bio ? $bio->mobile : '' }}
                 </p>
             @endif
         </div>
@@ -161,7 +161,7 @@ $save = function () {
                 @enderror
             @else
                 <p>
-                    {{ $bio->dob }}
+                    {{ $bio ? $bio->dob : '' }}
                 </p>
             @endif
         </div>

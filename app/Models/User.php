@@ -64,7 +64,7 @@ class User extends Authenticatable
         return $this->hasOne(BasicInfo::class);
     }
 
-    public function physicalAttributes()
+    public function physical_attr()
     {
         return $this->hasOne(PhysicalAttribute::class);
     }
@@ -79,7 +79,7 @@ class User extends Authenticatable
         return $this->hasOne(FamilyInformation::class);
     }
 
-    public function educationCareer()
+    public function education()
     {
         return $this->hasOne(EducationCareer::class);
     }
