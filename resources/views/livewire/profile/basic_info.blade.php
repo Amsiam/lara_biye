@@ -118,7 +118,7 @@ $save = function () {
                 <input wire:model="bio.height" class="w-full p-2 border border-gray-200 rounded-lg" />
             @else
                 <p>
-                    {{ $bio->height }}
+                    {{ $bio->height }} CM
                 </p>
             @endif
         </div>
@@ -128,7 +128,7 @@ $save = function () {
                 <input wire:model="bio.weight" class="w-full p-2 border border-gray-200 rounded-lg" />
             @else
                 <p>
-                    {{ $bio->weight }}
+                    {{ $bio->weight }} KG
                 </p>
             @endif
         </div>

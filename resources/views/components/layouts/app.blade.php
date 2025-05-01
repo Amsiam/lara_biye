@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>OrhdekDeen Matrimony</title>
+    <title>Engineer's Matrimony</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Marko One' rel='stylesheet'>
 
@@ -18,7 +18,7 @@
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-center h-16">
                 <a href="{{ route('home') }}" wire:navigate class="font-bold">
-                    <img src="{{ asset('img/logo.png') }}" alt="Logo" class="h-10">
+                   Engineer's Matrimony
                 </a>
 
                 <!-- Mobile menu button -->

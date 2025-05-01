@@ -80,7 +80,7 @@ $profiles = computed(function () {
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <!-- Profile Card -->
 
-            @foreach ($this->profiles as $profile)
+            @forelse ($this->profiles as $profile)
                 <div
                     class="bg-white p-5 rounded-lg shadow-lg text-black hover:shadow-2xl  hover:bg-gray-100 transform transition-all duration-300 hover:scale-105 flex flex-col items-center text-center">
                     <img src="{{asset($profile->basicInfo?->image)}}" class="w-full h-60 object-contain rounded-lg" alt="Profile Picture" />
@@ -92,7 +92,11 @@ $profiles = computed(function () {
                         View Profile
                     </a>
                 </div>
-            @endforeach
+            @empty
+                <div class="col-span-3 text-center">
+                    <p class="text-gray-500">No profiles found.</p>
+                </div>
+            @endforelse
 
 
 
