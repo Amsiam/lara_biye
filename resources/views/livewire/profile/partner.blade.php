@@ -70,10 +70,10 @@ $toggle = function () {
         @foreach ([
         'GENERAL REQUIREMENT' => 'general_requirement',
         'AGE' => 'age',
-        'HEIGHT FROM' => 'height_from',
-        'HEIGHT TO' => 'height_to',
-        'WEIGHT FROM' => 'weight_from',
-        'WEIGHT TO' => 'weight_to',
+        'HEIGHT FROM(cm)' => 'height_from',
+        'HEIGHT TO(cm)' => 'height_to',
+        'WEIGHT FROM(kg)' => 'weight_from',
+        'WEIGHT TO(kg)' => 'weight_to',
         'MARITAL STATUS' => 'marital_status',
         'WITH CHILDREN ACCEPTABLES' => 'with_children_acceptables',
         'COUNTRY OF RESIDENCE' => 'country_of_residence',
@@ -112,7 +112,7 @@ $toggle = function () {
                             $field == 'height_to' ||
                             $field == 'weight_from' ||
                             $field == 'weight_to')
-                        <input type="number" wire:model="partner.{{ $field }}"
+                        <input type="number" step="0.01" wire:model="partner.{{ $field }}"
                             class="w-full p-2 border border-gray-200 rounded-lg">
                     @elseif ($field == 'general_requirement')
                         <textarea wire:model="partner.{{ $field }}" class="w-full p-2 border border-gray-200 rounded-lg"></textarea>

@@ -5,8 +5,18 @@ use function Livewire\Volt\{state, computed};
 state(['profileId']);
 
 $user = computed(function () {
-    return \App\Models\User::with('basicInfo', 'location', 'education', 'physical_attr', 'hobby', 'language', 'personal', 'spiritualSocial', 'lifestyle', 'partnerExpectation', 'family', 'parmanent')->findOrFail($this->profileId);
+    return \App\Models\User::with('basicInfo', 'location', 'education', 'physical_attr', 'hobby', 'language', 'personal', 'spiritualSocial', 'lifestyle', 'partnerExpectation', 'family', 'parmanent', 'siblingInfo')->findOrFail($this->profileId);
 });
+
+$deleteAccount = function () {
+    if ($this->user->id != auth()->user()?->id) {
+        session()->flash('error', 'You are not authorized to delete this account.');
+        return redirect()->route('profile', ['profileId' => $this->user->id]);
+    }
+    $this->user->delete();
+    session()->flash('message', 'Account deleted successfully.');
+    return redirect()->route('home');
+};
 
 ?>
 
@@ -23,39 +33,24 @@ $user = computed(function () {
             <livewire:profile.upload-profile :user="$this->user" :previewUrl="$this->user->basicInfo?->image" />
 
             <!-- User Name & Followers -->
-            <h2 class="mt-4 text-xl font-bold uppercase">{{$this->user->name}}</h2>
+            <h2 class="mt-4 text-xl font-bold uppercase">{{ $this->user->name }}</h2>
             {{-- <p class="text-gray-100 text-sm mt-1">0 Followers</p> --}}
             <hr class="my-3 border-gray-300">
         </div>
 
         <!-- Package Information -->
-        @if(auth()->user()?->id == $this->user->id)
+        @if (auth()->user()?->id == $this->user->id)
             <div class="mt-4 p-4 bg-white text-black rounded-lg shadow">
-                <h3 class="text-lg font-semibold text-custom-red">Package Information</h3>
-                <p class="mt-2 flex items-center"><span class="mr-2">🎁</span> Free Package</p>
-                <p class="text-sm text-gray-700">৳ 0.00</p>
-
-                <h3 class="text-lg font-semibold text-custom-red mt-4">Premium Package</h3>
-                <p class="text-sm text-gray-700 mt-1">None</p>
-
-                <h3 class="text-lg font-semibold text-custom-red mt-4">Package Available</h3>
-                <p class="text-sm text-gray-700 mt-1">2</p>
-
-                <h3 class="text-lg font-semibold text-custom-red mt-4">PACKAGE EXPIRES AT</h3>
-                <p class="text-sm font-medium mt-1">2025-03-19</p>
+                <button wire:click="deleteAccount" wire:confirm="Are you sure you want to delete your account?"
+                    class="w-full bg-custom-pink text-white py-2 rounded-md shadow hover:bg-custom-red hover:text-white transition">
+                    Close Account
+                </button>
             </div>
         @endif
 
         <!-- Sidebar Buttons -->
         {{-- <div class="mt-6 space-y-2">
-            <button
-                class="w-full bg-white text-custom-pink py-2 rounded-md shadow hover:bg-custom-pink hover:text-white transition">
-                📷 Gallery
-            </button>
-            <button
-                class="w-full bg-white text-custom-pink py-2 rounded-md shadow hover:bg-custom-pink hover:text-white transition">
-                ❤️ Happy Story
-            </button>
+
             <button
                 class="w-full bg-white text-custom-pink py-2 rounded-md shadow hover:bg-custom-pink hover:text-white transition">
                 🎟️ My Package
@@ -124,7 +119,6 @@ $user = computed(function () {
 
         <!-- Personal Attitude And Behavior -->
         @if ($this->user->id == auth()->user()?->id || $this->user?->personal?->is_shown)
-
             <livewire:profile.personal_attitude :user="$this->user" :personal="$this->user?->personal" />
         @endif
 

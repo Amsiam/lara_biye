@@ -120,6 +120,11 @@ class User extends Authenticatable
         return $this->hasOne(SpiritualAndSocialBackground::class);
     }
 
+    public function siblingInfo()
+    {
+        return $this->hasMany(SiblingsInfo::class);
+    }
+
     // public function astronomicInfo()
     // {
     //     return $this->hasOne(Astr::class);

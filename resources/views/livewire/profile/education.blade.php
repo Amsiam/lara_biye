@@ -8,6 +8,7 @@ rules([
     'education.highest_education' => 'nullable|string|max:150',
     'education.occupation' => 'nullable|string|max:150',
     'education.annual_income' => 'nullable|numeric|min:0',
+    'education.last_academic_background' => 'nullable|string',
 ]);
 
 $enableEditing = fn() => ($this->isEditing = !$this->isEditing);
@@ -48,13 +49,16 @@ $toggle = function () {
         'HIGHEST EDUCATION' => 'highest_education',
         'OCCUPATION' => 'occupation',
         'ANNUAL INCOME' => 'annual_income',
+        'Last Academic Background' => 'last_academic_background',
     ] as $label => $field)
             <div>
                 <p class="text-gray-600 text-sm">{{ $label }}</p>
                 @if ($isEditing)
                     @if ($field == 'annual_income')
-                        <input type="number" wire:model="education.{{ $field }}"
+                        <input type="number" step="0.01" wire:model="education.{{ $field }}"
                             class="w-full p-2 border border-gray-200 rounded-lg">
+                    @elseif ($field == 'last_academic_background')
+                        <textarea wire:model="education.{{ $field }}" class="w-full p-2 border border-gray-200 rounded-lg"></textarea>
                     @else
                         <input type="text" wire:model="education.{{ $field }}"
                             class="w-full p-2 border border-gray-200 rounded-lg">

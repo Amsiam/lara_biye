@@ -113,7 +113,7 @@ $save = function () {
             @endif
         </div>
         <div>
-            <p class="text-gray-600 text-sm">Height</p>
+            <p class="text-gray-600 text-sm">Height(cm)</p>
             @if ($isEditing)
                 <input wire:model="bio.height" class="w-full p-2 border border-gray-200 rounded-lg" />
             @else
@@ -123,7 +123,7 @@ $save = function () {
             @endif
         </div>
         <div>
-            <p class="text-gray-600 text-sm">Weight</p>
+            <p class="text-gray-600 text-sm">Weight(kg)</p>
             @if ($isEditing)
                 <input wire:model="bio.weight" class="w-full p-2 border border-gray-200 rounded-lg" />
             @else
