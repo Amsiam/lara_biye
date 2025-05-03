@@ -7,14 +7,14 @@ Volt::route('/', 'welcome')->name('home');
 
 Volt::route('search', 'search')->name('search');
 
-Route::view('dashboard', 'dashboard')
+Route::get('dashboard', function () {
+    return redirect()->route('profile', ['profileId' => auth()->user()->id]);
+})
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::redirect('settings', 'settings/profile');
-
-
     Volt::route('profile/{profileId}', 'profile')->name('profile');
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
     Volt::route('settings/password', 'settings.password')->name('settings.password');

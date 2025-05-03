@@ -75,7 +75,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
 <div
     class="w-full max-w-4xl p-8 bg-white rounded-2xl shadow-xl flex flex-col lg:flex-row overflow-hidden border-4 border-white">
     <!-- Left Section with Image -->
-    <div class="w-full lg:w-1/3 relative mb-6 lg:mb-0">
+    <div class="w-full lg:w-1/3 relative mb-6 lg:mb-0 sm:hidden">
         <img src="{{ asset('img/image 70.png') }}" alt="Login Image" class="w-full h-full object-cover rounded-lg">
     </div>
 
