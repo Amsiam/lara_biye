@@ -1,3 +1,4 @@
+
 <?php
 use function Livewire\Volt\{state, rules, uses};
 use Livewire\WithFileUploads;
@@ -20,7 +21,6 @@ $uploadPhoto = function () {
     if ($this->photo) {
         $this->uploading = true;
         $this->validate();
-
         // Store the file in storage/app/public/photos
         $path = $this->photo->store('photos', 'public');
         $this->previewUrl = asset('/storage//' . $path);
@@ -72,6 +72,9 @@ $updatePreview = function () {
                 <span wire:loading wire:target="uploadPhoto">Uploading...</span>
                 <span wire:loading.remove wire:target="uploadPhoto">Save Photo</span>
             </button>
+            <div>
+            **Image should be less than 2MB and 400*400.
+            </div>
         @endif
     @endauth
 </div>

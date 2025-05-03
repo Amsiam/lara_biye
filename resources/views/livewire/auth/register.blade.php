@@ -52,6 +52,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
                 $user->physical_attr()->create();
                 $user->personal()->create();
                 $user->lifestyle()->create();
+                $user->language()->create();
                 $user->family()->create();
                 $user->education()->create();
                 $user->location()->create();
