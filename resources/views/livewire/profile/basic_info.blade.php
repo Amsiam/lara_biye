@@ -11,6 +11,10 @@ rules([
     'bio.marital_status' => 'required|string',
     'bio.noc' => 'required|integer',
     'bio.on_behalf' => 'required|string',
+    'bio.blood_group' => 'required|string',
+    'bio.height' => 'required|numeric',
+    'bio.weight' => 'required|numeric',
+    'bio.religion' => 'required|string',
 ]);
 
 $enableEditing = fn() => ($this->isEditing = !$this->isEditing);
@@ -76,6 +80,16 @@ $save = function () {
             </p>
         </div>
         <div>
+            <p class="text-gray-600 text-sm">MOBILE</p>
+            @if ($isEditing)
+                <input wire:model="user.mobile" class="w-full p-2 border border-gray-200 rounded-lg" />
+            @else
+                <p>
+                    {{ $bio->mobile }}
+                </p>
+            @endif
+        </div>
+        <div>
             <p class="text-gray-600 text-sm">AGE</p>
             <p>
                 {{ floor(-1 * now()->diffInYears($bio->dob)) }}
@@ -95,6 +109,60 @@ $save = function () {
             @else
                 <p>
                     {{ $bio->marital_status }}
+                </p>
+            @endif
+        </div>
+        <div>
+            <p class="text-gray-600 text-sm">Height(cm)</p>
+            @if ($isEditing)
+                <input wire:model="bio.height" class="w-full p-2 border border-gray-200 rounded-lg" />
+            @else
+                <p>
+                    {{ $bio->height }} CM
+                </p>
+            @endif
+        </div>
+        <div>
+            <p class="text-gray-600 text-sm">Weight(kg)</p>
+            @if ($isEditing)
+                <input wire:model="bio.weight" class="w-full p-2 border border-gray-200 rounded-lg" />
+            @else
+                <p>
+                    {{ $bio->weight }} KG
+                </p>
+            @endif
+        </div>
+        <div>
+            <p class="text-gray-600 text-sm">Blood Group</p>
+            @if ($isEditing)
+                <select wire:model="bio.blood_group" class="w-full p-2 border border-gray-200 rounded-lg">
+                    @foreach (['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'] as $blood)
+                        <option>{{ $blood }}</option>
+                    @endforeach
+                </select>
+                @error('bio.blood_group')
+                    <p class="text-red-500 text-sm">{{ $message }}</p>
+                @enderror
+            @else
+                <p>
+                    {{ $bio->blood_group }}
+                </p>
+            @endif
+        </div>
+        <div>
+            <p class="text-gray-600 text-sm">Religion</p>
+            @if ($isEditing)
+                <select wire:model="bio.religion" class="w-full p-2 border border-gray-200 rounded-lg">
+                    @foreach (['ISLAM', 'HINDU', 'CHRISTIAN', 'BUDDHIST', 'OTHER'] as $religion)
+                        <option>{{ $religion }}</option>
+                    @endforeach
+                </select>
+                @error('bio.religion')
+                    <p class="text-red-500 text-sm">{{ $message }}</p>
+                @enderror
+            @else
+                <p>
+                    {{ $bio->religion }}
                 </p>
             @endif
         </div>
@@ -142,16 +210,7 @@ $save = function () {
                 </p>
             @endif
         </div>
-        <div>
-            <p class="text-gray-600 text-sm">MOBILE</p>
-            @if ($isEditing)
-                <input wire:model="user.mobile" class="w-full p-2 border border-gray-200 rounded-lg" />
-            @else
-                <p>
-                    {{ $bio->mobile }}
-                </p>
-            @endif
-        </div>
+
         <div>
             <p class="text-gray-600 text-sm">DATE OF BIRTH</p>
             @if ($isEditing)

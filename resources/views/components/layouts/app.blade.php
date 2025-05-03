@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>OrhdekDeen Matrimony</title>
+    <title>Engineer's Matrimony</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Marko One' rel='stylesheet'>
 
@@ -17,8 +17,8 @@
     <nav class="static top-0 w-full bg-white shadow-md z-50">
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-center h-16">
-                <a href="#" class="font-bold">
-                    <img src="{{ asset('img/logo.png') }}" alt="Logo" class="h-10">
+                <a href="{{ route('home') }}" wire:navigate class="font-bold">
+                   Engineer's Matrimony
                 </a>
 
                 <!-- Mobile menu button -->
@@ -40,6 +40,7 @@
                     @if (auth()->check())
                         <a href="{{ route('profile', auth()->user()->id) }}"
                             class="bg-custom-pink text-white rounded-full px-6 py-2 hover:bg-opacity-90">My Profile</a>
+                        @livewire('logout')
                     @else
                         <a href="{{ route('register') }}"
                             class="bg-custom-pink text-white rounded-full px-6 py-2 hover:bg-opacity-90">Registration</a>
@@ -63,6 +64,9 @@
             <a href="#" class="text-gray-600 hover:text-custom-pink text-center">Contact</a>
 
             @if (auth()->check())
+            <a href="{{ route('profile', auth()->user()->id) }}"
+                class="bg-custom-pink text-white rounded-full px-6 py-2 hover:bg-opacity-90">My Profile</a>
+            @livewire('logout')
             @else
                 <a href="{{ route('register') }}"
                     class="bg-custom-pink text-white rounded-full px-6 py-2 hover:bg-opacity-90 text-center">Registration</a>

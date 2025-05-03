@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
 
         // User::factory()->create([
         //     'name' => 'Amsiam',
-        //     'email' => 'amsiam990@gmail.com',
+        //     'email' => 'test@gmail.com',
         // ]);
 
         // BasicInfo::create([
@@ -30,8 +30,8 @@ class DatabaseSeeder extends Seeder
         //     "bio" => "I am amsiam",
         // ]);
 
-        Location::create([
-            "user_id" => 1
-        ]);
+        // Location::create([
+        //     "user_id" => 1
+        // ]);
     }
 }

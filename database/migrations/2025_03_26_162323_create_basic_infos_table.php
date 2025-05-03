@@ -12,7 +12,7 @@ class CreateBasicInfosTable extends Migration
             $table->id();
             $table->date('dob');
             $table->enum('gender', ['MALE', 'FEMALE', 'UNSPECIFIED'])->default('UNSPECIFIED');
-            $table->enum('marital_status', ['UNMARRIED', 'MARRIED', 'DIVORCED', 'WIDOWED'])->default('UNMARRIED');
+            $table->enum('marital_status', allowed: ['UNMARRIED', 'MARRIED', 'DIVORCED', 'WIDOWED'])->default('UNMARRIED');
             $table->integer('noc')->default(0);
             $table->float('height')->default(0);
             $table->float('weight')->default(0);

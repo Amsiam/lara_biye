@@ -64,22 +64,32 @@ class User extends Authenticatable
         return $this->hasOne(BasicInfo::class);
     }
 
-    public function physicalAttributes()
+    public function physical_attr()
     {
         return $this->hasOne(PhysicalAttribute::class);
     }
 
-    public function lifestyle()
+    public function personal()
     {
-        return $this->hasOne(Lifestyle::class);
+        return $this->hasOne(PersonalAttitude::class);
     }
 
-    public function familyDetail()
+    public function language()
+    {
+        return $this->hasOne(Language::class);
+    }
+
+    public function lifestyle()
+    {
+        return $this->hasOne(LifeStyle::class);
+    }
+
+    public function family()
     {
         return $this->hasOne(FamilyInformation::class);
     }
 
-    public function educationCareer()
+    public function education()
     {
         return $this->hasOne(EducationCareer::class);
     }
@@ -89,8 +99,34 @@ class User extends Authenticatable
         return $this->hasOne(Location::class);
     }
 
-    public function hobbyAndInterest()
+    public function hobby()
     {
         return $this->hasOne(HobbiesAndInterest::class);
     }
+
+
+    public function partnerExpectation()
+    {
+        return $this->hasOne(PartnerExpectation::class);
+    }
+
+    public function parmanent()
+    {
+        return $this->hasOne(ResidencyInformation::class);
+    }
+
+    public function spiritualSocial()
+    {
+        return $this->hasOne(SpiritualAndSocialBackground::class);
+    }
+
+    public function siblingInfo()
+    {
+        return $this->hasMany(SiblingsInfo::class);
+    }
+
+    // public function astronomicInfo()
+    // {
+    //     return $this->hasOne(Astr::class);
+    // }
 }

@@ -89,27 +89,27 @@ new #[Layout('components.layouts.auth')] class extends Component {
                 <input wire:model="email" type="email" placeholder="Enter email"
                     class="w-full p-3 border border-custom-pink rounded focus:outline-none focus:ring-2 focus:ring-custom-pink transition-all duration-300 ease-in-out" />
                 @error('email')
-                    <div class="text-sm text-red-500">{{ $message }}</span>
-                    @enderror
+                    <span class="text-sm text-red-500">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="mb-5 relative">
+                <input wire:model="password" type="password" id="password" placeholder="Enter password"
+                    class="w-full p-3 border border-custom-pink rounded focus:outline-none focus:ring-2 focus:ring-custom-pink transition-all duration-300 ease-in-out" />
+                @error('password')
+                    <span class="text-sm text-red-500">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="mb-4 flex items-center justify-between">
+                <div class="flex items-center ml-1">
+                    <input wire:model="remember" type="checkbox" id="checkbox1" class="custom-checkbox mr-3">
+                    <label for="checkbox1" class="text-gray-700 cursor-pointer">Remember me</label>
                 </div>
-                <div class="mb-5 relative">
-                    <input wire:model="password" type="password" id="password" placeholder="Enter password"
-                        class="w-full p-3 border border-custom-pink rounded focus:outline-none focus:ring-2 focus:ring-custom-pink transition-all duration-300 ease-in-out" />
-                    @error('password')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
-                    @enderror
-                </div>
-                <div class="mb-4 flex items-center justify-between">
-                    <div class="flex items-center ml-1">
-                        <input wire:model="remember" type="checkbox" id="checkbox1" class="custom-checkbox mr-3">
-                        <label for="checkbox1" class="text-gray-700 cursor-pointer">Remember me</label>
-                    </div>
-                    <a href="{{ route('password.request') }}"
-                        class="text-sm text-custom-pink font-medium hover:text-pink-700 transition-colors duration-200">Forgot
-                        password?</a>
-                </div>
-                <button
-                    class="w-full bg-custom-pink text-white py-3 rounded hover:bg-pink-700 transition-colors duration-300 ease-in-out">Login</button>
+                <a href="{{ route('password.request') }}"
+                    class="text-sm text-custom-pink font-medium hover:text-pink-700 transition-colors duration-200">Forgot
+                    password?</a>
+            </div>
+            <button
+                class="w-full bg-custom-pink text-white py-3 rounded hover:bg-pink-700 transition-colors duration-300 ease-in-out">Login</button>
         </form>
 
         {{-- <!-- Google Sign-In Button -->

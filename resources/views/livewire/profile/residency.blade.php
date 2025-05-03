@@ -2,19 +2,14 @@
 
 use function Livewire\Volt\{state, rules};
 
-state(['hobby', 'user', 'isEditing' => false]);
+state(['residencyInfo', 'user', 'isEditing' => false]);
 
 rules([
-    'hobby.hobby' => 'nullable|string|max:100',
-    'hobby.interest' => 'nullable|string|max:100',
-    'hobby.music' => 'nullable|string|max:100',
-    'hobby.books' => 'nullable|string|max:100',
-    'hobby.movie' => 'nullable|string|max:100',
-    'hobby.tv_show' => 'nullable|string|max:100',
-    'hobby.sports_show' => 'nullable|string|max:100',
-    'hobby.fitness_activity' => 'nullable|string|max:100',
-    'hobby.cuisine' => 'nullable|string|max:100',
-    'hobby.dress_style' => 'nullable|string|max:100',
+    'residencyInfo.birth_country' => 'nullable|string|max:100',
+    'residencyInfo.residency_country' => 'nullable|string|max:100',
+    'residencyInfo.citizenship_country' => 'nullable|string|max:100',
+    'residencyInfo.grow_up_country' => 'nullable|string|max:100',
+    'residencyInfo.immigration_status' => 'nullable|string|max:100',
 ]);
 
 $enableEditing = fn() => ($this->isEditing = !$this->isEditing);
@@ -22,25 +17,25 @@ $enableEditing = fn() => ($this->isEditing = !$this->isEditing);
 $save = function () {
     $this->validate();
 
-    $this->hobby->save();
+    $this->residencyInfo->save();
 
     $this->isEditing = false;
 };
 
 $toggle = function () {
-    $this->hobby->is_shown = !$this->hobby->is_shown;
-    $this->hobby->save();
+    $this->residencyInfo->is_shown = !$this->residencyInfo->is_shown;
+    $this->residencyInfo->save();
 };
 
 ?>
 
 <div class="mt-4 border border-gray-200 rounded-lg overflow-hidden">
     <div class="flex justify-between items-center bg-custom-red p-3 border-b">
-        <h3 class="font-semibold text-white">Hobbies And Interests</h3>
+        <h3 class="font-semibold text-white">Residency Information</h3>
         <div>
-            @if (auth()->user()?->id == $hobby?->user_id)
+            @if (auth()->user()?->id == $residencyInfo?->user_id)
                 <button wire:click="toggle" class="text-white bg-custom-pink px-2 rounded mr-2">
-                    {{ $hobby->is_shown ? 'Hide' : 'Show' }}
+                    {{ $residencyInfo->is_shown ? 'Hide' : 'Show' }}
                 </button>
                 @if (!$isEditing)
                     <button wire:click="enableEditing" class="text-white bg-custom-pink px-2 rounded">✎</button>
@@ -52,27 +47,22 @@ $toggle = function () {
     </div>
     <div class="p-4 grid grid-cols-2 gap-4">
         @foreach ([
-        'HOBBY' => 'hobby',
-        'INTEREST' => 'interest',
-        'MUSIC' => 'music',
-        'BOOKS' => 'books',
-        'MOVIE' => 'movie',
-        'TV SHOW' => 'tv_show',
-        'SPORTS SHOW' => 'sports_show',
-        'FITNESS ACTIVITY' => 'fitness_activity',
-        'CUISINE' => 'cuisine',
-        'DRESS STYLE' => 'dress_style',
+        'BIRTH COUNTRY' => 'birth_country',
+        'RESIDENCY COUNTRY' => 'residency_country',
+        'CITIZENSHIP COUNTRY' => 'citizenship_country',
+        'GROW UP COUNTRY' => 'grow_up_country',
+        'IMMIGRATION STATUS' => 'immigration_status',
     ] as $label => $field)
             <div>
                 <p class="text-gray-600 text-sm">{{ $label }}</p>
                 @if ($isEditing)
-                    <input type="text" wire:model="hobby.{{ $field }}"
+                    <input type="text" wire:model="residencyInfo.{{ $field }}"
                         class="w-full p-2 border border-gray-200 rounded-lg">
-                    @error('hobby.' . $field)
+                    @error('residencyInfo.' . $field)
                         <p class="text-red-500 text-sm">{{ $message }}</p>
                     @enderror
                 @else
-                    <p>{{ $hobby->{$field} ?? '-' }}</p>
+                    <p>{{ $residencyInfo->{$field} ?? '-' }}</p>
                 @endif
             </div>
         @endforeach
