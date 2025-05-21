@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CheckConnection;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -10,7 +11,7 @@ Volt::route('search', 'search')->name('search');
 Route::get('dashboard', function () {
     return redirect()->route('profile', ['profileId' => auth()->user()->id]);
 })
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', CheckConnection::class])
     ->name('dashboard');
 
 Route::middleware(['auth', 'verified'])->group(function () {
