@@ -18,6 +18,10 @@ $deleteAccount = function () {
     return redirect()->route('home');
 };
 
+$buyConnection = function () {
+    return redirect(route('payment', ['provider' => 'bkash']));
+};
+
 ?>
 
 <div class="max-w-6xl mx-auto flex flex-col md:flex-row mt-20">
@@ -41,7 +45,7 @@ $deleteAccount = function () {
         <!-- Package Information -->
         @if (auth()->user()?->id == $this->user->id)
             <div class="mt-4 p-4 bg-white text-black rounded-lg shadow flex flex-col space-y-2">
-                <button
+                <button wire:click="buyConnection" wire:confirm="Are you sure you want to buy a connection?"
                     class="w-full bg-white text-custom-pink py-2 rounded-md shadow hover:bg-custom-pink hover:text-white transition">
                     🎟️ Buy Connection ({{ auth()->user()?->connection()?->first()?->connection ?? 0 }})
                 </button>
