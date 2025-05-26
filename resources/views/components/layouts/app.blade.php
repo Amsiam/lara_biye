@@ -18,7 +18,7 @@
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-center h-16">
                 <a href="{{ route('home') }}" wire:navigate class="font-bold">
-                   Engineer's Matrimony
+                    Engineer's Matrimony
                 </a>
 
                 <!-- Mobile menu button -->
@@ -64,9 +64,9 @@
             <a href="#" class="text-gray-600 hover:text-custom-pink text-center">Contact</a>
 
             @if (auth()->check())
-            <a href="{{ route('profile', auth()->user()->id) }}"
-                class="bg-custom-pink text-white rounded-full px-6 py-2 hover:bg-opacity-90">My Profile</a>
-            @livewire('logout')
+                <a href="{{ route('profile', auth()->user()->id) }}"
+                    class="bg-custom-pink text-white rounded-full px-6 py-2 hover:bg-opacity-90">My Profile</a>
+                @livewire('logout')
             @else
                 <a href="{{ route('register') }}"
                     class="bg-custom-pink text-white rounded-full px-6 py-2 hover:bg-opacity-90 text-center">Registration</a>
@@ -94,7 +94,25 @@
                 mobileMenu.classList.add('hidden');
             }
         });
+
+        // Hide error message after 3 seconds
+        setTimeout(() => {
+            const errorMessage = document.getElementById('error-message');
+            if (errorMessage) {
+                errorMessage.remove();
+            }
+        }, 3000);
     </script>
+
+
+    <div>
+        @if (session()->has('error'))
+            <div id="error-message"
+                class="fixed z-30 top-0 right-0 mt-4 mr-4 bg-red-500 text-white px-4 py-2 rounded shadow-lg">
+                {{ session('error') }}
+            </div>
+        @endif
+    </div>
 
     <!-- Main Wrapper -->
     {{ $slot }}

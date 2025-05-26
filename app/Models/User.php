@@ -129,4 +129,22 @@ class User extends Authenticatable implements \Illuminate\Contracts\Auth\MustVer
     // {
     //     return $this->hasOne(Astr::class);
     // }
+
+    public function connection()
+    {
+        return $this->hasOne(Connection::class);
+    }
+    public function visitedProfiles()
+    {
+        return $this->hasMany(VisitedProfile::class, 'user_id');
+    }
+    public function visitedBy()
+    {
+        return $this->hasMany(VisitedProfile::class, 'visited_user_id');
+    }
+
+    public function isVisited($id): bool
+    {
+        return $this->visitedProfiles()->where('visited_user_id', $id)->exists();
+    }
 }

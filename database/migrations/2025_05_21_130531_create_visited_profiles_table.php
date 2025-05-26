@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('visited_profiles', function (Blueprint $table) {
             $table->id();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('visited_user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('visited_user_id')->constrained('users')->onDelete('cascade');
             $table->integer('count')->default(0);
             $table->timestamps();
         });

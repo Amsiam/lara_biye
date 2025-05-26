@@ -40,9 +40,13 @@ $deleteAccount = function () {
 
         <!-- Package Information -->
         @if (auth()->user()?->id == $this->user->id)
-            <div class="mt-4 p-4 bg-white text-black rounded-lg shadow">
+            <div class="mt-4 p-4 bg-white text-black rounded-lg shadow flex flex-col space-y-2">
+                <button
+                    class="w-full bg-white text-custom-pink py-2 rounded-md shadow hover:bg-custom-pink hover:text-white transition">
+                    🎟️ Buy Connection ({{ auth()->user()?->connection()?->first()?->connection ?? 0 }})
+                </button>
                 <button wire:click="deleteAccount" wire:confirm="Are you sure you want to delete your account?"
-                    class="w-full bg-custom-pink text-white py-2 rounded-md shadow hover:bg-custom-red hover:text-white transition">
+                    class="w-full bg-red-500 text-white py-2 rounded-md shadow hover:bg-red-700 hover:text-white transition">
                     Close Account
                 </button>
             </div>
