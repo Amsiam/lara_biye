@@ -54,6 +54,9 @@ new #[Layout('components.layouts.auth')] class extends Component {
                     'religion' => $this->religion,
                     'height' => 0,
                     'weight' => 0,
+                    'nid' => $this->nid,
+                    'student_id' => $this->student_id,
+                    'university' => $this->university,
                 ]);
                 $user->physical_attr()->create();
                 $user->personal()->create();
