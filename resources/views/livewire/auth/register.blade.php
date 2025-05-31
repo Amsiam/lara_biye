@@ -17,6 +17,9 @@ new #[Layout('components.layouts.auth')] class extends Component {
     public string $dob = '';
     public string $gender = 'MALE';
     public string $religion = 'ISLAM';
+    public ?string $nid = '';
+    public ?string $student_id = '';
+    public ?string $university = '';
     public string $password_confirmation = '';
 
     /**
@@ -31,6 +34,9 @@ new #[Layout('components.layouts.auth')] class extends Component {
             'dob' => ['required', 'date'],
             'gender' => ['required', 'string'],
             'religion' => ['required', 'string'],
+            'nid' => ['required', 'string', 'max:20'],
+            'student_id' => ['required', 'string', 'max:20'],
+            'university' => ['required', 'string', 'max:100'],
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
@@ -116,6 +122,27 @@ new #[Layout('components.layouts.auth')] class extends Component {
                     @endforeach
                 </select>
                 @error('religion')
+                    <span class="text-sm text-red-500">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="mb-5">
+                <input wire:model="nid" type="text" placeholder="Enter nid number"
+                    class="w-full p-3 border border-custom-pink rounded focus:outline-none focus:ring-2 focus:ring-custom-pink transition-all duration-300 ease-in-out" />
+                @error('nid')
+                    <span class="text-sm text-red-500">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="mb-5">
+                <input wire:model="student_id" type="text" placeholder="Enter student id number"
+                    class="w-full p-3 border border-custom-pink rounded focus:outline-none focus:ring-2 focus:ring-custom-pink transition-all duration-300 ease-in-out" />
+                @error('student_id')
+                    <span class="text-sm text-red-500">{{ $message }}</span>
+                @enderror
+            </div>
+            <div class="mb-5">
+                <input wire:model="university" type="text" placeholder="Enter university name"
+                    class="w-full p-3 border border-custom-pink rounded focus:outline-none focus:ring-2 focus:ring-custom-pink transition-all duration-300 ease-in-out" />
+                @error('university')
                     <span class="text-sm text-red-500">{{ $message }}</span>
                 @enderror
             </div>
