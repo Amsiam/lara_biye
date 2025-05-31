@@ -152,45 +152,69 @@ $createProfile = function () {
     </section>
 
     <!-- Trust Section -->
-    <section class="min-h-screen flex items-center py-16">
-        <div class="container mx-auto px-4 text-center">
-            <h5 class="text-custom-pink text-2xl mb-2">Trusted Brand</h5>
-            <h2 class="text-4xl md:text-5xl font-bold mb-8 text-custom-red">Trusted by 1600+ Couples</h2>
-            <img src="{{ asset('img/hero-img-leaf.png') }}" alt="" class="mx-auto mb-5 h-12">
+    <section id="guide" class="py-16 bg-white">
+    <div class="container mx-auto px-4 lg:px-0">
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mt-12">
-                <div
-                    class="bg-white p-8 rounded-lg shadow-md border border-gray-300 transition-transform hover:scale-105 hover:shadow-xl">
-                    <img src="{{ asset('img/Rectangle 8762.png') }}" class="w-32 h-40 mx-auto mb-4">
-                    <p class="text-gray-600">Lorem ipsum dolor sit amet consectetur, adipisicing elit...</p>
-                    <h5 class="font-bold mt-4">MST. SADIA AKTER</h5>
-                    <p class="text-gray-500">Dhaka</p>
-                </div>
+      <!-- Top Centered Heading -->
+      <h2 class="text-4xl font-semibold text-center mb-12">
+        <span class="text-custom-pink font-bold">VIP</span> Assistant Service
+      </h2>
 
-                <div
-                    class="bg-white p-8 rounded-lg shadow-md border border-gray-300 transition-transform hover:scale-105 hover:shadow-xl">
-                    <img src="{{ asset('img/Rectangle 8762(1).png') }}" class="w-32 h-40 mx-auto mb-4">
-                    <p class="text-gray-600">Lorem ipsum dolor sit amet consectetur, adipisicing elit...</p>
-                    <h5 class="font-bold mt-4">MIZANUR ISLAM</h5>
-                    <p class="text-gray-500">Khulna</p>
-                </div>
+      <!-- Content Flexbox -->
+      <div class="flex flex-col lg:flex-row items-center justify-center">
 
-                <div
-                    class="bg-white p-8 rounded-lg shadow-md border border-gray-300 transition-transform hover:scale-105 hover:shadow-xl">
-                    <img src="{{ asset('img/Rectangle 8762(2).png') }}" class="w-32 h-40 mx-auto mb-4">
-                    <p class="text-gray-600">Lorem ipsum dolor sit amet consectetur, adipisicing elit...</p>
-                    <h5 class="font-bold mt-4">MD. MAHIM MIYA</h5>
-                    <p class="text-gray-500">Chittagong</p>
-                </div>
+        <!-- Left Image -->
+        <div class="w-full lg:w-1/2 mb-12 lg:mb-0 flex justify-center">
+          <img src="./assets/assistant2.jpg" alt="Assistant Service Illustration" class="max-w-md w-full">
+        </div>
+
+        <!-- Right Content -->
+        <div class="w-full lg:w-1/2">
+          <!-- Timeline -->
+          <div class="relative">
+            <div class="absolute left-2.5 top-0 bottom-0 w-0.5 bg-black"></div>
+
+            <!-- Timeline Item -->
+            <div class="flex items-center mb-6 relative">
+              <div class="w-6 h-5 rounded-full bg-white border-4 border-custom-pink z-10 "></div>
+              <div class="ml-6 bg-gray-100 text-custom-pink rounded-md px-3 py-2 w-full">
+                Assign Personal Advisor
+              </div>
             </div>
 
-            <button class="mt-10 bg-custom-pink text-white px-6 py-3 rounded-md hover:bg-opacity-90">
-                More Customer Reviews
-            </button>
-        </div>
-    </section>
+            <div class="flex items-center mb-6 relative">
+              <div class="w-6 h-5 rounded-full bg-white border-4 border-custom-pink z-10"></div>
+              <div class="ml-6 bg-gray-100 text-custom-pink rounded-md px-4 py-2 w-full">
+                Advisor Will Manage Your Profile
+              </div>
+            </div>
 
-    <!-- Why Choose Us Section -->
+            <div class="flex items-center mb-6 relative">
+              <div class="w-6 h-5 rounded-full bg-white border-4 border-custom-pink z-10"></div>
+              <div class="ml-6 bg-gray-100 text-custom-pink rounded-md px-4 py-2 w-full">
+                Handpick Matches For You
+              </div>
+            </div>
+
+            <div class="flex items-center relative">
+              <div class="w-6 h-5 rounded-full bg-white border-4 border-custom-pink z-10"></div>
+              <div class="ml-6 bg-gray-100 text-custom-pink rounded-md px-4 py-2 w-full">
+                Arranging Meetings
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Button - Now centered at the bottom -->
+      <div class="mt-10 text-center w-full">
+        <button class="border border-custom-pink text-custom-pink rounded-md px-6 py-2 hover:bg-custom-pink hover:text-white transition">
+          View More Details
+        </button>
+      </div>
+    </div>
+  </section>
+  <!-- Why Choose Us Section -->
     <section class="bg-maroon min-h-screen flex items-center">
         <div class="container mx-auto px-4 text-center">
             <p class="mb-2 text-custom-pink">#1 WEDDING WEBSITE</p>
