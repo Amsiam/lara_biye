@@ -46,21 +46,22 @@ $profiles = computed(function () {
             <h2 class="text-xl font-bold text-custom-red text-center mb-4">
                 Refine Your Search
             </h2>
+            <form method="GET" action="">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <select wire:model.live="gender"
+                <select wire:model.live="gender" name="gender"
                     class="w-full p-3 border-2 border-gray-300 rounded-lg text-black focus:ring-2 focus:ring-custom-pink">
-                    <option>I'm looking for</option>
+                    <option value="">I'm looking for</option>
                     <option>Male</option>
                     <option>Female</option>
                 </select>
-                <select wire:model.live="marital_status"
+                <select wire:model.live="marital_status" name="marital_status"
                     class="w-full p-3 border-2 border-gray-300 rounded-lg text-black focus:ring-2 focus:ring-custom-pink">
                     <option>Marital Status</option>
                     @foreach (['UNMARRIED', 'MARRIED', 'DIVORCED', 'WIDOWED'] as $maritalStatus)
                         <option>{{ $maritalStatus }}</option>
                     @endforeach
                 </select>
-                <select wire:model.live="age"
+                <select wire:model.live="age" name="age"
                     class="w-full p-3 border-2 border-gray-300 rounded-lg text-black focus:ring-2 focus:ring-custom-pink">
                     <option>Select Age</option>
                     <option>18-25</option>
@@ -71,6 +72,7 @@ $profiles = computed(function () {
                     Search <i class="fas fa-search ml-2"></i>
                 </button>
             </div>
+        </form>
         </div>
     </div>
 

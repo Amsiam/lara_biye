@@ -85,7 +85,7 @@
                 <!-- Options Section -->
                 <div class="space-y-4">
                     <a href="/" class="block w-full py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-bold text-center">
-                        Continue Shopping
+                        Continue Connecting
                     </a>
                 </div>
             </div>

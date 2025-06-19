@@ -147,4 +147,51 @@ class User extends Authenticatable implements \Illuminate\Contracts\Auth\MustVer
     {
         return $this->visitedProfiles()->where('visited_user_id', $id)->exists();
     }
+
+    public function isConnected($connectionId)
+    {
+        return $this->connectedUsers()->where('connected_user_id', $connectionId)
+            ->where('status', 'ACCEPTED')
+            ->exists();
+    }
+
+    public function isConnectionPending($connectionId)
+    {
+        return $this->connectedUsers()->where('connected_user_id', $connectionId)
+            ->where('status', 'PENDING')
+            ->exists();
+    }
+
+
+    public function connectedUsers()
+    {
+        return $this->belongsToMany(User::class, 'connected', 'user_id', 'connected_user_id')
+            ->withPivot('status');
+    }
+
+    public function sendConnectionRequest(User $user)
+    {
+        if ($this->isConnected($user->id) || $this->isConnectionPending($user->id)) {
+            return false; // Already connected or request is pending
+        }
+        if ($this->id === $user->id) {
+            return false; // Cannot send a connection request to oneself
+        }
+
+        //check if that this user has already sent a request to the user
+        if ($user->isConnectionPending($this->id)) {
+            // If the user has already sent a request, we can accept it instead of sending a new one
+            $this->connectedUsers()->updateExistingPivot($user->id, ['status' => 'ACCEPTED']);
+            return true; // Request accepted
+        }
+        return $this->connectedUsers()->attach($user->id, ['status' => 'PENDING']);
+    }
+
+    public function acceptConnectionRequest(User $user)
+    {
+        if ($this->isConnectionPending($user->id)) {
+            return $this->connectedUsers()->updateExistingPivot($user->id, ['status' => 'ACCEPTED']);
+        }
+        return false; // No pending request to accept
+    }
 }

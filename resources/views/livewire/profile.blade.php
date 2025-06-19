@@ -22,6 +22,20 @@ $buyConnection = function () {
     return redirect(route('payment', ['provider' => 'bkash']));
 };
 
+$sendConnection = function () {
+    if ($this->user->id == auth()->user()?->id) {
+        session()->flash('error', 'You cannot send a connection request to yourself.');
+        return redirect()->route('profile', ['profileId' => $this->user->id]);
+    }
+    if (auth()->user()?->connection()?->first()?->connection <= 0) {
+        session()->flash('error', 'You do not have enough connections to send a request.');
+        return redirect()->route('profile', ['profileId' => $this->user->id]);
+    }
+    auth()->user()?->sendConnectionRequest($this->user);
+    session()->flash('message', 'Connection request sent successfully.');
+    return redirect()->route('profile', ['profileId' => $this->user->id]);
+};
+
 ?>
 
 <div class="max-w-6xl mx-auto flex flex-col md:flex-row mt-20">
@@ -46,7 +60,7 @@ $buyConnection = function () {
         @if (auth()->user()?->id == $this->user->id)
             <div class="mt-4 p-4 bg-white text-black rounded-lg shadow flex flex-col space-y-2">
                 <button wire:click="buyConnection" wire:confirm="Are you sure you want to buy a connection?"
-                    class="w-full bg-white text-custom-pink py-2 rounded-md shadow hover:bg-custom-pink hover:text-white transition">
+                    class="w-full hover:bg-white hover:text-custom-pink py-2 rounded-md shadow bg-custom-pink text-white transition">
                     🎟️ Buy Connection ({{ auth()->user()?->connection()?->first()?->connection ?? 0 }})
                 </button>
                 <button wire:click="deleteAccount" wire:confirm="Are you sure you want to delete your account?"
@@ -54,6 +68,23 @@ $buyConnection = function () {
                     Close Account
                 </button>
             </div>
+        @else
+        @if (auth()->user()->isConnected($this->user->id))
+            <div class="mt-4 p-4 bg-white text-black rounded-lg shadow flex flex-col space-y-2">
+                <button
+                    class="w-full bg-gray-300 text-gray-700 py-2 rounded-md shadow cursor-not-allowed">
+                    You are already connected with this profile.
+                </button>
+            </div>
+            @else
+            <div class="mt-4 p-4 bg-white text-black rounded-lg shadow flex flex-col space-y-2">
+                <button wire:click="sendConnection" wire:confirm="This action cost you a connection. Will you proceed?"
+                    class="w-full hover:bg-white hover:text-custom-pink py-2 rounded-md shadow bg-custom-pink text-white transition">
+                    🎟️ Send Connection Request
+                </button>
+            </div>
+        @endif
+
         @endif
 
         <!-- Sidebar Buttons -->

@@ -42,9 +42,11 @@ $save = function () {
         @endif
     </div>
     <div class="p-4 grid grid-cols-2 gap-4">
+
+
         <div>
             <p class="text-gray-600 text-sm">NAME</p>
-
+            @if (auth()->user()?->id == $bio?->user_id || auth()->user()?->isConnected($bio?->user_id))
             @if ($isEditing)
                 <input wire:model="user.name" class="w-full p-2 border border-gray-200 rounded-lg" />
                 @error('user.name')
@@ -55,7 +57,11 @@ $save = function () {
                     {{ $user->name }}
                 </p>
             @endif
+            @else
+            Send Connection to see name.
+            @endif
         </div>
+
         <div>
             <p class="text-gray-600 text-sm">GENDER</p>
             @if ($isEditing)
@@ -73,20 +79,27 @@ $save = function () {
                 </p>
             @endif
         </div>
+        @if (auth()->user()?->id == $bio?->user_id)
         <div>
             <p class="text-gray-600 text-sm">EMAIL</p>
             <p>
                 {{ $user->email }}
             </p>
         </div>
+        @endif
+
         <div>
             <p class="text-gray-600 text-sm">MOBILE</p>
+            @if(auth()->user()?->id == $bio?->user_id || auth()->user()?->isConnected($bio?->user_id))
             @if ($isEditing)
                 <input wire:model="user.mobile" class="w-full p-2 border border-gray-200 rounded-lg" />
             @else
                 <p>
                     {{ $bio->mobile }}
                 </p>
+            @endif
+            @else
+            Send Connection to see mobile no.
             @endif
         </div>
         <div>
@@ -211,6 +224,8 @@ $save = function () {
             @endif
         </div>
 
+        @if (auth()->user()?->id == $bio->user_id)
+
         <div>
             <p class="text-gray-600 text-sm">DATE OF BIRTH</p>
             @if ($isEditing)
@@ -224,5 +239,7 @@ $save = function () {
                 </p>
             @endif
         </div>
+
+        @endif
     </div>
 </div>
