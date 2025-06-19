@@ -47,32 +47,32 @@ $profiles = computed(function () {
                 Refine Your Search
             </h2>
             <form method="GET" action="">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <select wire:model.live="gender" name="gender"
-                    class="w-full p-3 border-2 border-gray-300 rounded-lg text-black focus:ring-2 focus:ring-custom-pink">
-                    <option value="">I'm looking for</option>
-                    <option>Male</option>
-                    <option>Female</option>
-                </select>
-                <select wire:model.live="marital_status" name="marital_status"
-                    class="w-full p-3 border-2 border-gray-300 rounded-lg text-black focus:ring-2 focus:ring-custom-pink">
-                    <option>Marital Status</option>
-                    @foreach (['UNMARRIED', 'MARRIED', 'DIVORCED', 'WIDOWED'] as $maritalStatus)
-                        <option>{{ $maritalStatus }}</option>
-                    @endforeach
-                </select>
-                <select wire:model.live="age" name="age"
-                    class="w-full p-3 border-2 border-gray-300 rounded-lg text-black focus:ring-2 focus:ring-custom-pink">
-                    <option>Select Age</option>
-                    <option>18-25</option>
-                    <option>26-35</option>
-                    <option>36-45</option>
-                </select>
-                <button class="w-full bg-custom-pink text-white  p-3 rounded-lg hover:bg-opacity-90 transition-all">
-                    Search <i class="fas fa-search ml-2"></i>
-                </button>
-            </div>
-        </form>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <select wire:model.live="gender" name="gender"
+                        class="w-full p-3 border-2 border-gray-300 rounded-lg text-black focus:ring-2 focus:ring-custom-pink">
+                        <option value="">I'm looking for</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                    </select>
+                    <select wire:model.live="marital_status" name="marital_status"
+                        class="w-full p-3 border-2 border-gray-300 rounded-lg text-black focus:ring-2 focus:ring-custom-pink">
+                        <option>Marital Status</option>
+                        @foreach (['UNMARRIED', 'MARRIED', 'DIVORCED', 'WIDOWED'] as $maritalStatus)
+                            <option>{{ $maritalStatus }}</option>
+                        @endforeach
+                    </select>
+                    <select wire:model.live="age" name="age"
+                        class="w-full p-3 border-2 border-gray-300 rounded-lg text-black focus:ring-2 focus:ring-custom-pink">
+                        <option>Select Age</option>
+                        <option>18-25</option>
+                        <option>26-35</option>
+                        <option>36-45</option>
+                    </select>
+                    <button class="w-full bg-custom-pink text-white  p-3 rounded-lg hover:bg-opacity-90 transition-all">
+                        Search <i class="fas fa-search ml-2"></i>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -92,8 +92,7 @@ $profiles = computed(function () {
                         👤 Age: {{ floor(-1 * now()->diffInYears($profile->basicInfo?->dob)) }} | 🕌 Religion:
                         {{ $profile?->basicInfo?->religion }}
                     </p>
-                    <a @if (auth()?->check() && !auth()->user()?->isVisited($profile->id)) onclick="return confirm('This action will cost you a connection. Do you want to continue?');" @endif
-                        href="{{ route('profile', $profile->id) }}"
+                    <a href="{{ route('profile', $profile->id) }}"
                         class="mt-3 p-2 w-full bg-custom-pink text-white font-bold rounded hover:bg-opacity-90">
                         View Profile
                     </a>

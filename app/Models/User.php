@@ -180,18 +180,26 @@ class User extends Authenticatable implements \Illuminate\Contracts\Auth\MustVer
 
         //check if that this user has already sent a request to the user
         if ($user->isConnectionPending($this->id)) {
-            // If the user has already sent a request, we can accept it instead of sending a new one
-            $this->connectedUsers()->updateExistingPivot($user->id, ['status' => 'ACCEPTED']);
-            return true; // Request accepted
+
+            $this->connectedUsers()->attach($user->id, ['status' => 'ACCEPTED']);
+            $user->connectedUsers()->updateExistingPivot($this->id, ['status' => 'ACCEPTED']);
+            return true;
         }
-        return $this->connectedUsers()->attach($user->id, ['status' => 'PENDING']);
+        $this->connectedUsers()->attach($user->id, ['status' => 'PENDING']);
+
+        return true;
     }
 
-    public function acceptConnectionRequest(User $user)
+    public function hasSentConnectionRequest(User $user)
     {
-        if ($this->isConnectionPending($user->id)) {
-            return $this->connectedUsers()->updateExistingPivot($user->id, ['status' => 'ACCEPTED']);
-        }
-        return false; // No pending request to accept
+        return $user->connectedUsers()->where('connected_user_id', $this->id)
+            ->where('status', 'PENDING')->exists();
+    }
+
+
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
     }
 }

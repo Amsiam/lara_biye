@@ -31,8 +31,26 @@ $sendConnection = function () {
         session()->flash('error', 'You do not have enough connections to send a request.');
         return redirect()->route('profile', ['profileId' => $this->user->id]);
     }
-    auth()->user()?->sendConnectionRequest($this->user);
-    session()->flash('message', 'Connection request sent successfully.');
+    if (auth()->user()?->sendConnectionRequest($this->user)) {
+        auth()->user()->connection()->decrement('connection', 1);
+
+        if (auth()->user()->isConnected($this->user->id)) {
+            $this->user->notifications()->create([
+                'sender_id' => auth()->user()->id,
+                'message' => auth()->user()->name . ' accepted your connection request.',
+            ]);
+        } else {
+            $this->user->notifications()->create([
+                'sender_id' => auth()->user()->id,
+                'message' => auth()->user()->name . ' sent you a connection request.',
+            ]);
+        }
+
+        session()->flash('message', 'Connection request sent successfully.');
+    } else {
+        session()->flash('error', 'Connection request failed.');
+    }
+
     return redirect()->route('profile', ['profileId' => $this->user->id]);
 };
 
@@ -69,21 +87,35 @@ $sendConnection = function () {
                 </button>
             </div>
         @else
-        @if (auth()->user()->isConnected($this->user->id))
-            <div class="mt-4 p-4 bg-white text-black rounded-lg shadow flex flex-col space-y-2">
-                <button
-                    class="w-full bg-gray-300 text-gray-700 py-2 rounded-md shadow cursor-not-allowed">
-                    You are already connected with this profile.
-                </button>
-            </div>
+            @if (auth()->user()->isConnected($this->user->id))
+                <div class="mt-4 p-4 bg-white text-black rounded-lg shadow flex flex-col space-y-2">
+                    <button class="w-full bg-gray-300 text-gray-700 py-2 rounded-md shadow cursor-not-allowed">
+                        You are already connected with this profile.
+                    </button>
+                </div>
+            @elseif (auth()->user()->hasSentConnectionRequest($this->user))
+                <div class="mt-4 p-4 bg-white text-black rounded-lg shadow flex flex-col space-y-2">
+                    <button wire:click="sendConnection"
+                        wire:confirm="This action cost you a connection. Will you proceed?"
+                        class="w-full hover:bg-white hover:text-custom-pink py-2 rounded-md shadow bg-green-500 text-white transition">
+                        🎟️ Accept Request
+                    </button>
+                </div>
+            @elseif (auth()->user()->isConnectionPending($this->user->id))
+                <div class="mt-4 p-4 bg-white text-black rounded-lg shadow flex flex-col space-y-2">
+                    <button class="w-full bg-gray-300 text-gray-700 py-2 rounded-md shadow cursor-not-allowed">
+                        You have a pending connection request.
+                    </button>
+                </div>
             @else
-            <div class="mt-4 p-4 bg-white text-black rounded-lg shadow flex flex-col space-y-2">
-                <button wire:click="sendConnection" wire:confirm="This action cost you a connection. Will you proceed?"
-                    class="w-full hover:bg-white hover:text-custom-pink py-2 rounded-md shadow bg-custom-pink text-white transition">
-                    🎟️ Send Connection Request
-                </button>
-            </div>
-        @endif
+                <div class="mt-4 p-4 bg-white text-black rounded-lg shadow flex flex-col space-y-2">
+                    <button wire:click="sendConnection"
+                        wire:confirm="This action cost you a connection. Will you proceed?"
+                        class="w-full hover:bg-white hover:text-custom-pink py-2 rounded-md shadow bg-custom-pink text-white transition">
+                        🎟️ Send Connection Request
+                    </button>
+                </div>
+            @endif
 
         @endif
 

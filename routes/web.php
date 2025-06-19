@@ -3,6 +3,7 @@
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\Vendor\Bkash\BkashController;
 use App\Http\Middleware\CheckConnection;
+use App\Models\Notification;
 use Ihasan\Bkash\Facades\Bkash;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
@@ -32,6 +33,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('bkash/callback', [BkashController::class, 'callback'])->name('bkash.callback');
     Route::get('bkash/success', [BkashController::class, 'success'])->name('bkash.success');
     Route::get('bkash/failed', [BkashController::class, 'failed'])->name('bkash.failed');
+
+
+    //Notifications
+    Route::get('markAsRead', function () {
+        auth()->user()->notifications()->update(['read' => true]);
+        return back();
+    })->name('notifications.markAllAsRead');
+
+
+    Route::get('markAsRead/{notification}', function (Notification $notification) {
+        auth()->user()->notifications()->where('id', $notification->id)->update(['read' => true]);
+
+        return redirect()->route('profile', ['profileId' => $notification->sender_id]);
+    })->name('notifications.show');
 });
 
 Route::get('migrate', function () {

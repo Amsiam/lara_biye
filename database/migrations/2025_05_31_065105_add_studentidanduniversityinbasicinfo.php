@@ -24,7 +24,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('basic_infos', function (Blueprint $table) {
-            //
+            $table->dropColumn('student_id');
+            $table->dropColumn('university');
+            $table->dropColumn('is_student_verified');
         });
     }
 };

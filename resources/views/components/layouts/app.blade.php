@@ -37,7 +37,10 @@
                     <a href="#" class="text-gray-600 hover:text-custom-pink">Guide</a>
                     <a href="#" class="text-gray-600 hover:text-custom-pink">Contact</a>
 
+
+
                     @if (auth()->check())
+                        <x-notification />
                         <a href="{{ route('profile', auth()->user()->id) }}"
                             class="bg-custom-pink text-white rounded-full px-6 py-2 hover:bg-opacity-90">My Profile</a>
                         @livewire('logout')
@@ -116,6 +119,8 @@
 
     <!-- Main Wrapper -->
     {{ $slot }}
+
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
 
 </body>
 
