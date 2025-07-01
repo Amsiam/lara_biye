@@ -47,22 +47,23 @@ $toggle = function () {
     </div>
     <div class="p-4 grid grid-cols-2 gap-4">
         @foreach ([
-        'BIRTH COUNTRY' => 'birth_country',
-        'RESIDENCY COUNTRY' => 'residency_country',
-        'CITIZENSHIP COUNTRY' => 'citizenship_country',
-        'GROW UP COUNTRY' => 'grow_up_country',
-        'IMMIGRATION STATUS' => 'immigration_status',
-    ] as $label => $field)
+        'BIRTH COUNTRY' => ['field' => 'birth_country', 'example' => 'Bangladesh'],
+        'RESIDENCY COUNTRY' => ['field' => 'residency_country', 'example' => 'United States'],
+        'CITIZENSHIP COUNTRY' => ['field' => 'citizenship_country', 'example' => 'Bangladesh'],
+        'GROW UP COUNTRY' => ['field' => 'grow_up_country', 'example' => 'Bangladesh'],
+        'IMMIGRATION STATUS' => ['field' => 'immigration_status', 'example' => 'Permanent Resident'],
+    ] as $label => $data)
             <div>
                 <p class="text-gray-600 text-sm">{{ $label }}</p>
                 @if ($isEditing)
-                    <input type="text" wire:model="residencyInfo.{{ $field }}"
-                        class="w-full p-2 border border-gray-200 rounded-lg">
-                    @error('residencyInfo.' . $field)
+                    <input type="text" wire:model="residencyInfo.{{ $data['field'] }}"
+                        placeholder="e.g., {{ $data['example'] }}" class="w-full p-2 border border-gray-200 rounded-lg">
+                    @error('residencyInfo.' . $data['field'])
                         <p class="text-red-500 text-sm">{{ $message }}</p>
                     @enderror
+                    <p class="text-gray-400 text-xs italic mt-1">Example: {{ $data['example'] }}</p>
                 @else
-                    <p>{{ $residencyInfo->{$field} ?? '-' }}</p>
+                    <p>{{ $residencyInfo->{$data['field']} ?? '-' }}</p>
                 @endif
             </div>
         @endforeach

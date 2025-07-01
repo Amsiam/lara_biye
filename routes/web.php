@@ -29,6 +29,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 
+    Volt::route('your-connections', 'connections')->name('your.connections');
+
 
     Route::get('bkash/callback', [BkashController::class, 'callback'])->name('bkash.callback');
     Route::get('bkash/success', [BkashController::class, 'success'])->name('bkash.success');

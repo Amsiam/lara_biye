@@ -46,21 +46,25 @@ $toggle = function () {
     </div>
     <div class="p-4 grid grid-cols-2 gap-4">
         @foreach ([
-        'HIGHEST EDUCATION' => 'highest_education',
-        'OCCUPATION' => 'occupation',
-        'ANNUAL INCOME' => 'annual_income',
-        'Last Academic Background' => 'last_academic_background',
-    ] as $label => $field)
+        'HIGHEST EDUCATION' => ['field' => 'highest_education', 'placeholder' => "e.g., Bachelor's in Computer Science"],
+        'OCCUPATION' => ['field' => 'occupation', 'placeholder' => 'e.g., Software Engineer'],
+        'ANNUAL INCOME' => ['field' => 'annual_income', 'placeholder' => 'e.g., 50000'],
+        'Last Academic Background' => ['field' => 'last_academic_background', 'placeholder' => 'e.g., Graduated from XYZ University in 2020'],
+    ] as $label => $data)
+            @php $field = $data['field']; @endphp
             <div>
                 <p class="text-gray-600 text-sm">{{ $label }}</p>
                 @if ($isEditing)
                     @if ($field == 'annual_income')
-                        <input type="number" step="0.01" wire:model="education.{{ $field }}"
+                        <input type="number" step="0.01" placeholder="{{ $data['placeholder'] }}"
+                            wire:model="education.{{ $field }}"
                             class="w-full p-2 border border-gray-200 rounded-lg">
                     @elseif ($field == 'last_academic_background')
-                        <textarea wire:model="education.{{ $field }}" class="w-full p-2 border border-gray-200 rounded-lg"></textarea>
+                        <textarea placeholder="{{ $data['placeholder'] }}" wire:model="education.{{ $field }}"
+                            class="w-full p-2 border border-gray-200 rounded-lg"></textarea>
                     @else
-                        <input type="text" wire:model="education.{{ $field }}"
+                        <input type="text" placeholder="{{ $data['placeholder'] }}"
+                            wire:model="education.{{ $field }}"
                             class="w-full p-2 border border-gray-200 rounded-lg">
                     @endif
                     @error('education.' . $field)

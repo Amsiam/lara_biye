@@ -69,55 +69,51 @@ $sendConnection = function () {
             <livewire:profile.upload-profile :user="$this->user" :previewUrl="$this->user->basicInfo?->image" />
 
             <!-- User Name & Followers -->
-            <h2 class="mt-4 text-xl font-bold uppercase">{{ $this->user->name }}</h2>
+            @if (auth()->user()->isConnected($this->user->id) || auth()->user()?->id == $this->user->id)
+                <h2 class="mt-4 text-xl font-bold uppercase">{{ $this->user->name }}</h2>
+            @endif
             {{-- <p class="text-gray-100 text-sm mt-1">0 Followers</p> --}}
             <hr class="my-3 border-gray-300">
         </div>
 
         <!-- Package Information -->
-        @if (auth()->user()?->id == $this->user->id)
-            <div class="mt-4 p-4 bg-white text-black rounded-lg shadow flex flex-col space-y-2">
-                <button wire:click="buyConnection" wire:confirm="Are you sure you want to buy a connection?"
-                    class="w-full hover:bg-white hover:text-custom-pink py-2 rounded-md shadow bg-custom-pink text-white transition">
-                    🎟️ Buy Connection ({{ auth()->user()?->connection()?->first()?->connection ?? 0 }})
-                </button>
+
+        <div class="mt-4 p-4 bg-white text-black rounded-lg shadow flex flex-col space-y-2">
+            <button wire:click="buyConnection" wire:confirm="Are you sure you want to buy a connection?"
+                class="w-full hover:bg-white hover:text-custom-pink py-2 rounded-md shadow bg-custom-pink text-white transition">
+                🎟️ Buy Connection ({{ auth()->user()?->connection()?->first()?->connection ?? 0 }})
+            </button>
+            @if (auth()->user()?->id == $this->user->id)
+
                 <button wire:click="deleteAccount" wire:confirm="Are you sure you want to delete your account?"
                     class="w-full bg-red-500 text-white py-2 rounded-md shadow hover:bg-red-700 hover:text-white transition">
                     Close Account
                 </button>
-            </div>
-        @else
-            @if (auth()->user()->isConnected($this->user->id))
-                <div class="mt-4 p-4 bg-white text-black rounded-lg shadow flex flex-col space-y-2">
+            @else
+                @if (auth()->user()->isConnected($this->user->id))
                     <button class="w-full bg-gray-300 text-gray-700 py-2 rounded-md shadow cursor-not-allowed">
                         You are already connected with this profile.
                     </button>
-                </div>
-            @elseif (auth()->user()->hasSentConnectionRequest($this->user))
-                <div class="mt-4 p-4 bg-white text-black rounded-lg shadow flex flex-col space-y-2">
+                @elseif (auth()->user()->hasSentConnectionRequest($this->user))
                     <button wire:click="sendConnection"
                         wire:confirm="This action cost you a connection. Will you proceed?"
                         class="w-full hover:bg-white hover:text-custom-pink py-2 rounded-md shadow bg-green-500 text-white transition">
                         🎟️ Accept Request
                     </button>
-                </div>
-            @elseif (auth()->user()->isConnectionPending($this->user->id))
-                <div class="mt-4 p-4 bg-white text-black rounded-lg shadow flex flex-col space-y-2">
+                @elseif (auth()->user()->isConnectionPending($this->user->id))
                     <button class="w-full bg-gray-300 text-gray-700 py-2 rounded-md shadow cursor-not-allowed">
                         You have a pending connection request.
                     </button>
-                </div>
-            @else
-                <div class="mt-4 p-4 bg-white text-black rounded-lg shadow flex flex-col space-y-2">
+                @else
                     <button wire:click="sendConnection"
                         wire:confirm="This action cost you a connection. Will you proceed?"
                         class="w-full hover:bg-white hover:text-custom-pink py-2 rounded-md shadow bg-custom-pink text-white transition">
                         🎟️ Send Connection Request
                     </button>
-                </div>
-            @endif
+                @endif
 
-        @endif
+            @endif
+        </div>
 
         <!-- Sidebar Buttons -->
         {{-- <div class="mt-6 space-y-2">

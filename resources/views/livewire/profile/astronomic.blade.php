@@ -46,21 +46,22 @@ $toggle = function () {
     </div>
     <div class="p-4 grid grid-cols-2 gap-4">
         @foreach ([
-        'SUN SIGN' => 'sun_sign',
-        'MOON SIGN' => 'moon_sign',
-        'CITY OF BIRTH' => 'city_of_birth',
-        'TIME OF BIRTH' => 'time_of_birth',
-    ] as $label => $field)
+        'SUN SIGN' => ['field' => 'sun_sign', 'placeholder' => 'e.g., Aries'],
+        'MOON SIGN' => ['field' => 'moon_sign', 'placeholder' => 'e.g., Cancer'],
+        'CITY OF BIRTH' => ['field' => 'city_of_birth', 'placeholder' => 'e.g., Dhaka'],
+        'TIME OF BIRTH' => ['field' => 'time_of_birth', 'placeholder' => 'e.g., 03:45 AM'],
+    ] as $label => $data)
             <div>
                 <p class="text-gray-600 text-sm">{{ $label }}</p>
                 @if ($isEditing)
-                    <input type="text" wire:model="astronomicInfo.{{ $field }}"
+                    <input type="text" placeholder="{{ $data['placeholder'] }}"
+                        wire:model="astronomicInfo.{{ $data['field'] }}"
                         class="w-full p-2 border border-gray-200 rounded-lg">
-                    @error('astronomicInfo.' . $field)
+                    @error('astronomicInfo.' . $data['field'])
                         <p class="text-red-500 text-sm">{{ $message }}</p>
                     @enderror
                 @else
-                    <p>{{ $astronomicInfo->{$field} ?? '-' }}</p>
+                    <p>{{ $astronomicInfo->{$data['field']} ?? '-' }}</p>
                 @endif
             </div>
         @endforeach

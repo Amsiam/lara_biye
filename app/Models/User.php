@@ -169,6 +169,12 @@ class User extends Authenticatable implements \Illuminate\Contracts\Auth\MustVer
             ->withPivot('status');
     }
 
+    public function rConnectedUsers()
+    {
+        return $this->belongsToMany(User::class, 'connected',  'connected_user_id', 'user_id')
+            ->withPivot('status');
+    }
+
     public function sendConnectionRequest(User $user)
     {
         if ($this->isConnected($user->id) || $this->isConnectionPending($user->id)) {

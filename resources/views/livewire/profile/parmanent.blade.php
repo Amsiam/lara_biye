@@ -16,9 +16,7 @@ $enableEditing = fn() => ($this->isEditing = !$this->isEditing);
 
 $save = function () {
     $this->validate();
-
     $this->{$this->view}->save();
-
     $this->isEditing = false;
 };
 
@@ -29,15 +27,13 @@ $toggle = function () {
 
 ?>
 
-
-
 <div class="mt-4 border border-gray-200 rounded-lg overflow-hidden">
     <div class="flex justify-between items-center bg-custom-red p-3 border-b">
         <h3 class="font-semibold text-white">Residency Information</h3>
         <div>
-            @if (auth()->user()?->id == $$view?->user_id)
+            @if (auth()->user()?->id == ${$view}?->user_id)
                 <button wire:click="toggle" class="text-white bg-custom-pink px-2 rounded mr-2">
-                    {{ $$view->is_shown ? 'Hide' : 'Show' }}
+                    {{ ${$view}->is_shown ? 'Hide' : 'Show' }}
                 </button>
                 @if (!$isEditing)
                     <button wire:click="enableEditing" class="text-white bg-custom-pink px-2 rounded">✎</button>
@@ -48,18 +44,23 @@ $toggle = function () {
         </div>
     </div>
     <div class="p-4 grid grid-cols-2 gap-4">
-        @foreach (['BIRTH COUNTRY' => 'birth_country', 'RESIDENCY COUNTRY' => 'residency_country', 'CITIZENSHIP COUNTRY' => 'citizenship_country', 'GROW UP COUNTRY' => 'grow_up_country', 'IMMIGRATION STATUS' => 'immigration_status'] as $label => $field)
+        @foreach ([
+        'BIRTH COUNTRY' => ['field' => 'birth_country', 'placeholder' => 'e.g., Bangladesh'],
+        'RESIDENCY COUNTRY' => ['field' => 'residency_country', 'placeholder' => 'e.g., Canada'],
+        'CITIZENSHIP COUNTRY' => ['field' => 'citizenship_country', 'placeholder' => 'e.g., United States'],
+        'GROW UP COUNTRY' => ['field' => 'grow_up_country', 'placeholder' => 'e.g., United Kingdom'],
+        'IMMIGRATION STATUS' => ['field' => 'immigration_status', 'placeholder' => 'e.g., Permanent Resident'],
+    ] as $label => $data)
             <div>
                 <p class="text-gray-600 text-sm">{{ $label }}</p>
                 @if ($isEditing)
-                    <input type="text" wire:model="{{ $view }}.{{ $field }}"
-                        class="w-full p-2 border border-gray-200 rounded-lg">
-
-                    @error($view . '.' . $field)
+                    <input type="text" wire:model="{{ $view }}.{{ $data['field'] }}"
+                        placeholder="{{ $data['placeholder'] }}" class="w-full p-2 border border-gray-200 rounded-lg">
+                    @error($view . '.' . $data['field'])
                         <p class="text-red-500 text-sm">{{ $message }}</p>
                     @enderror
                 @else
-                    <p>{{ $$view->{$field} ?? '-' }}</p>
+                    <p>{{ ${$view}->{$data['field']} ?? '-' }}</p>
                 @endif
             </div>
         @endforeach

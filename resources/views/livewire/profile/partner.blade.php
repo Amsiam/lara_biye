@@ -51,8 +51,6 @@ $toggle = function () {
 
 ?>
 
-
-
 <div class="mt-4 border border-gray-200 rounded-lg overflow-hidden">
     <div class="flex justify-between items-center bg-custom-red p-3 border-b">
         <h3 class="font-semibold text-white">Partner Expectation</h3>
@@ -68,70 +66,71 @@ $toggle = function () {
     </div>
     <div class="p-4 grid grid-cols-2 gap-4">
         @foreach ([
-        'GENERAL REQUIREMENT' => 'general_requirement',
-        'AGE' => 'age',
-        'HEIGHT FROM(cm)' => 'height_from',
-        'HEIGHT TO(cm)' => 'height_to',
-        'WEIGHT FROM(kg)' => 'weight_from',
-        'WEIGHT TO(kg)' => 'weight_to',
-        'MARITAL STATUS' => 'marital_status',
-        'WITH CHILDREN ACCEPTABLES' => 'with_children_acceptables',
-        'COUNTRY OF RESIDENCE' => 'country_of_residence',
-        'RELIGION' => 'religion',
-        'CASTE / SECT' => 'caste_sect',
-        'SUB CASTE' => 'sub_caste',
-        'EDUCATION' => 'education',
-        'PROFESSION' => 'profession',
-        'DRINKING HABITS' => 'drinking_habits',
-        'SMOKING HABITS' => 'smoking_habits',
-        'DIET' => 'diet',
-        'BODY TYPE' => 'body_type',
-        'PERSONAL VALUE' => 'personal_value',
-        'MANGLIK' => 'manglik',
-        'ANY DISABILITY' => 'any_disability',
-        'MOTHER TONGUE' => 'mother_tongue',
-        'FAMILY VALUE' => 'family_value',
-        'PREFERED COUNTRY' => 'prefered_country',
-        'PREFERED STATE' => 'prefered_state',
-        'PREFERED STATUS' => 'prefered_status',
-        'COMPLEXION' => 'complexion',
-    ] as $label => $field)
+        'GENERAL REQUIREMENT' => ['field' => 'general_requirement', 'placeholder' => 'Describe general expectations...'],
+        'AGE' => ['field' => 'age', 'placeholder' => 'e.g., 25'],
+        'HEIGHT FROM(cm)' => ['field' => 'height_from', 'placeholder' => 'e.g., 150'],
+        'HEIGHT TO(cm)' => ['field' => 'height_to', 'placeholder' => 'e.g., 180'],
+        'WEIGHT FROM(kg)' => ['field' => 'weight_from', 'placeholder' => 'e.g., 50'],
+        'WEIGHT TO(kg)' => ['field' => 'weight_to', 'placeholder' => 'e.g., 75'],
+        'MARITAL STATUS' => ['field' => 'marital_status', 'placeholder' => 'e.g., Never Married'],
+        'WITH CHILDREN ACCEPTABLES' => ['field' => 'with_children_acceptables', 'placeholder' => 'Yes or No'],
+        'COUNTRY OF RESIDENCE' => ['field' => 'country_of_residence', 'placeholder' => 'e.g., Bangladesh'],
+        'RELIGION' => ['field' => 'religion', 'placeholder' => 'e.g., Islam'],
+        'CASTE / SECT' => ['field' => 'caste_sect', 'placeholder' => 'e.g., Sunni'],
+        'SUB CASTE' => ['field' => 'sub_caste', 'placeholder' => 'e.g., Hanafi'],
+        'EDUCATION' => ['field' => 'education', 'placeholder' => 'e.g., Bachelor\'s Degree'],
+        'PROFESSION' => ['field' => 'profession', 'placeholder' => 'e.g., Engineer'],
+        'DRINKING HABITS' => ['field' => 'drinking_habits', 'placeholder' => 'e.g., Occasionally'],
+        'SMOKING HABITS' => ['field' => 'smoking_habits', 'placeholder' => 'e.g., No'],
+        'DIET' => ['field' => 'diet', 'placeholder' => 'e.g., Vegetarian'],
+        'BODY TYPE' => ['field' => 'body_type', 'placeholder' => 'e.g., Athletic'],
+        'PERSONAL VALUE' => ['field' => 'personal_value', 'placeholder' => 'e.g., Family Oriented'],
+        'MANGLIK' => ['field' => 'manglik'],
+        'ANY DISABILITY' => ['field' => 'any_disability', 'placeholder' => 'Specify if any'],
+        'MOTHER TONGUE' => ['field' => 'mother_tongue', 'placeholder' => 'e.g., Bengali'],
+        'FAMILY VALUE' => ['field' => 'family_value', 'placeholder' => 'e.g., Traditional'],
+        'PREFERED COUNTRY' => ['field' => 'prefered_country', 'placeholder' => 'e.g., Bangladesh'],
+        'PREFERED STATE' => ['field' => 'prefered_state', 'placeholder' => 'e.g., Dhaka'],
+        'PREFERED STATUS' => ['field' => 'prefered_status', 'placeholder' => 'e.g., Citizen'],
+        'COMPLEXION' => ['field' => 'complexion', 'placeholder' => 'e.g., Fair'],
+    ] as $label => $data)
             <div>
                 <p class="text-gray-600 text-sm">{{ $label }}</p>
                 @if ($isEditing)
-                    @if ($field == 'manglik' || $field == 'any_disability')
-                        <select wire:model="partner.{{ $field }}"
-                            class="w-full p-2 border border-gray-200 rounded-lg">
+                    @if ($data['field'] == 'manglik')
+                        <select wire:model="partner.manglik" class="w-full p-2 border border-gray-200 rounded-lg">
                             <option value="">Select</option>
                             <option value="1">Yes</option>
                             <option value="0">No</option>
                         </select>
-                    @elseif (
-                        $field == 'age' ||
-                            $field == 'height_from' ||
-                            $field == 'height_to' ||
-                            $field == 'weight_from' ||
-                            $field == 'weight_to')
-                        <input type="number" step="0.01" wire:model="partner.{{ $field }}"
+                    @elseif ($data['field'] == 'any_disability')
+                        <input type="text" wire:model="partner.any_disability"
+                            placeholder="{{ $data['placeholder'] }}"
                             class="w-full p-2 border border-gray-200 rounded-lg">
-                    @elseif ($field == 'general_requirement')
-                        <textarea wire:model="partner.{{ $field }}" class="w-full p-2 border border-gray-200 rounded-lg"></textarea>
+                    @elseif (in_array($data['field'], ['age', 'height_from', 'height_to', 'weight_from', 'weight_to']))
+                        <input type="number" step="0.01" wire:model="partner.{{ $data['field'] }}"
+                            placeholder="{{ $data['placeholder'] }}"
+                            class="w-full p-2 border border-gray-200 rounded-lg">
+                    @elseif ($data['field'] == 'general_requirement')
+                        <textarea wire:model="partner.general_requirement" placeholder="{{ $data['placeholder'] }}"
+                            class="w-full p-2 border border-gray-200 rounded-lg"></textarea>
                     @else
-                        <input type="text" wire:model="partner.{{ $field }}"
+                        <input type="text" wire:model="partner.{{ $data['field'] }}"
+                            placeholder="{{ $data['placeholder'] }}"
                             class="w-full p-2 border border-gray-200 rounded-lg">
                     @endif
-                    @error('partner.' . $field)
+                    @error('partner.' . $data['field'])
                         <p class="text-red-500 text-sm">{{ $message }}</p>
                     @enderror
                 @else
-                    @if ($field == 'manglik' && $partner->manglik)
-                        <p>{{ $partner->manglik ? 'Yes' : 'No' }}</p>
-                    @elseif ($field == 'any_disability' && $partner->any_disability)
-                        <p>{{ $partner->any_disability ? 'Yes' : 'No' }}</p>
-                    @elseif ($field == 'age' && $partner->age)
+                    @if ($data['field'] == 'manglik')
+                        <p>{{ $partner->manglik === null ? '-' : ($partner->manglik ? 'Yes' : 'No') }}</p>
+                    @elseif ($data['field'] == 'any_disability')
+                        <p>{{ $partner->any_disability ?? '-' }}</p>
+                    @elseif ($data['field'] == 'age' && $partner->age)
                         <p>{{ $partner->age . ' years' }}</p>
                     @else
-                        <p>{{ $partner->{$field} ?? '-' }}</p>
+                        <p>{{ $partner->{$data['field']} ?? '-' }}</p>
                     @endif
                 @endif
             </div>

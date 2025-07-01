@@ -26,7 +26,6 @@ $addSibling = function () {
         'occupation' => '',
         'academic_background' => '',
     ];
-    // dd($this->siblingInfo);
 };
 
 $removeSibling = function ($index) {
@@ -54,6 +53,7 @@ $toggle = function () {
 };
 
 ?>
+
 <div class="mt-4 border border-gray-200 rounded-lg overflow-hidden">
 
     <div class="flex justify-between items-center bg-custom-red p-3 border-b">
@@ -76,7 +76,8 @@ $toggle = function () {
         <div>
             <p class="text-gray-600 text-sm">FATHER Name</p>
             @if ($isEditing)
-                <input type="text" wire:model="family.father" class="w-full p-2 border border-gray-200 rounded-lg">
+                <input type="text" wire:model="family.father" placeholder="e.g., Md. Rahim Uddin"
+                    class="w-full p-2 border border-gray-200 rounded-lg">
                 @error('family.father')
                     <span class="text-red-500 text-xs">{{ $message }}</span>
                 @enderror
@@ -87,7 +88,7 @@ $toggle = function () {
         <div>
             <p class="text-gray-600 text-sm">FATHER OCCUPATION</p>
             @if ($isEditing)
-                <input type="text" wire:model="family.father_occupation"
+                <input type="text" wire:model="family.father_occupation" placeholder="e.g., Retired Govt. Officer"
                     class="w-full p-2 border border-gray-200 rounded-lg">
                 @error('family.father_occupation')
                     <span class="text-red-500 text-xs">{{ $message }}</span>
@@ -99,7 +100,8 @@ $toggle = function () {
         <div>
             <p class="text-gray-600 text-sm">MOTHER Name</p>
             @if ($isEditing)
-                <input type="text" wire:model="family.mother" class="w-full p-2 border border-gray-200 rounded-lg">
+                <input type="text" wire:model="family.mother" placeholder="e.g., Jahanara Begum"
+                    class="w-full p-2 border border-gray-200 rounded-lg">
                 @error('family.mother')
                     <span class="text-red-500 text-xs">{{ $message }}</span>
                 @enderror
@@ -110,7 +112,7 @@ $toggle = function () {
         <div>
             <p class="text-gray-600 text-sm">MOTHER OCCUPATION</p>
             @if ($isEditing)
-                <input type="text" wire:model="family.mother_occupation"
+                <input type="text" wire:model="family.mother_occupation" placeholder="e.g., Homemaker"
                     class="w-full p-2 border border-gray-200 rounded-lg">
                 @error('family.mother_occupation')
                     <span class="text-red-500 text-xs">{{ $message }}</span>
@@ -122,7 +124,8 @@ $toggle = function () {
         <div>
             <p class="text-gray-600 text-sm">BROTHER</p>
             @if ($isEditing)
-                <input type="text" wire:model="family.brother" class="w-full p-2 border border-gray-200 rounded-lg">
+                <input type="text" wire:model="family.brother" placeholder="e.g., 2 (1 married)"
+                    class="w-full p-2 border border-gray-200 rounded-lg">
                 @error('family.brother')
                     <span class="text-red-500 text-xs">{{ $message }}</span>
                 @enderror
@@ -133,7 +136,8 @@ $toggle = function () {
         <div>
             <p class="text-gray-600 text-sm">Sister</p>
             @if ($isEditing)
-                <input type="text" wire:model="family.sister" class="w-full p-2 border border-gray-200 rounded-lg">
+                <input type="text" wire:model="family.sister" placeholder="e.g., 1 (unmarried)"
+                    class="w-full p-2 border border-gray-200 rounded-lg">
                 @error('family.sister')
                     <span class="text-red-500 text-xs">{{ $message }}</span>
                 @enderror
@@ -148,6 +152,7 @@ $toggle = function () {
             </div>
         @endif
     </div>
+
     <div class="p-4">
         <p class="text-gray-600 text-sm">Sibling Info</p>
         @if ($isEditing)
@@ -178,9 +183,7 @@ $toggle = function () {
                 @foreach ($user?->siblingInfo as $sibling)
                     <div class="flex items-center mb-2">
                         <p class="w-full p-2  mr-2">{{ $sibling?->occupation }}</p>
-                        </p>
-                        <p class="w-full p-2  mr-2">
-                            {{ $sibling?->academic_background }}</p>
+                        <p class="w-full p-2  mr-2">{{ $sibling?->academic_background }}</p>
                     </div>
                 @endforeach
             @endif

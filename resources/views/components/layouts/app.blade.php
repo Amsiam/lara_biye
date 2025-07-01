@@ -31,7 +31,12 @@
 
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="#" class="text-gray-900 hover:text-custom-pink">Home</a>
+                    <a href="{{ route('home') }}"
+                        class="text-gray-900 hover:text-custom-pink {{ Route::is('home') ? 'text-custom-pink font-bold' : '' }}">Home</a>
+                    <a href="{{ route('your.connections') }}"
+                        class="text-gray-900 hover:text-custom-pink {{ Route::is('your.connections') ? 'text-custom-pink font-bold' : '' }}">Your
+                        Connections</a>
+
                     <a href="#" class="text-gray-600 hover:text-custom-pink">About Us</a>
                     <a href="#" class="text-gray-600 hover:text-custom-pink">FAQ</a>
                     <a href="#" class="text-gray-600 hover:text-custom-pink">Guide</a>

@@ -46,21 +46,21 @@ $toggle = function () {
     </div>
     <div class="p-4 grid grid-cols-2 gap-4">
         @foreach ([
-        'AFFECTION' => 'affection',
-        'HUMOR' => 'humor',
-        'POLITICAL VIEW' => 'political_view',
-        'RELIGIOUS SERVICE' => 'religious_service',
-    ] as $label => $field)
+        'AFFECTION' => ['field' => 'affection', 'placeholder' => 'e.g., Loving and caring'],
+        'HUMOR' => ['field' => 'humor', 'placeholder' => 'e.g., Good sense of humor'],
+        'POLITICAL VIEW' => ['field' => 'political_view', 'placeholder' => 'e.g., Moderate'],
+        'RELIGIOUS SERVICE' => ['field' => 'religious_service', 'placeholder' => 'e.g., Attends weekly'],
+    ] as $label => $data)
             <div>
                 <p class="text-gray-600 text-sm">{{ $label }}</p>
                 @if ($isEditing)
-                    <input type="text" wire:model="personal.{{ $field }}"
-                        class="w-full p-2 border border-gray-200 rounded-lg">
-                    @error('personal.' . $field)
+                    <input type="text" wire:model="personal.{{ $data['field'] }}"
+                        class="w-full p-2 border border-gray-200 rounded-lg" placeholder="{{ $data['placeholder'] }}">
+                    @error('personal.' . $data['field'])
                         <p class="text-red-500 text-sm">{{ $message }}</p>
                     @enderror
                 @else
-                    <p>{{ $personal->{$field} ?? '-' }}</p>
+                    <p>{{ $personal->{$data['field']} ?? '-' }}</p>
                 @endif
             </div>
         @endforeach

@@ -48,42 +48,36 @@ $toggle = function () {
     </div>
     <div class="p-4 grid grid-cols-2 gap-4">
         @foreach ([
-        'EYE COLOR' => 'eye_color',
-        'HAIR COLOR' => 'hair_color',
-        'COMPLEXION' => 'complexion',
-        'BODY TYPE' => 'body_type',
-        'BODY ART' => 'body_art',
-        'ANY DISABILITY' => 'any_disability',
-    ] as $label => $field)
+        'EYE COLOR' => ['field' => 'eye_color', 'placeholder' => 'e.g., Brown'],
+        'HAIR COLOR' => ['field' => 'hair_color', 'placeholder' => 'e.g., Black'],
+        'COMPLEXION' => ['field' => 'complexion', 'placeholder' => 'e.g., Fair'],
+        'BODY TYPE' => ['field' => 'body_type', 'placeholder' => 'e.g., Athletic'],
+        'BODY ART' => ['field' => 'body_art', 'placeholder' => 'e.g., Tattoo on arm'],
+        'ANY DISABILITY' => ['field' => 'any_disability', 'placeholder' => 'Select Yes or No'],
+    ] as $label => $data)
             <div>
                 <p class="text-gray-600 text-sm">{{ $label }}</p>
                 @if ($isEditing)
-                    @if ($field == 'any_disability')
-                        <select wire:model="physical.{{ $field }}"
+                    @if ($data['field'] == 'any_disability')
+                        <select wire:model="physical.{{ $data['field'] }}"
                             class="w-full p-2 border border-gray-200 rounded-lg">
                             <option value="">Select</option>
                             <option value="1">Yes</option>
                             <option value="0">No</option>
                         </select>
-                    @elseif ($field == 'height' || $field == 'weight')
-                        <input type="number" wire:model="physical.{{ $field }}"
-                            class="w-full p-2 border border-gray-200 rounded-lg">
                     @else
-                        <input type="text" wire:model="physical.{{ $field }}"
-                            class="w-full p-2 border border-gray-200 rounded-lg">
+                        <input type="text" wire:model="physical.{{ $data['field'] }}"
+                            class="w-full p-2 border border-gray-200 rounded-lg"
+                            placeholder="{{ $data['placeholder'] }}">
                     @endif
-                    @error('physical.' . $field)
+                    @error('physical.' . $data['field'])
                         <p class="text-red-500 text-sm">{{ $message }}</p>
                     @enderror
                 @else
-                    @if ($field == 'any_disability' && !is_null($physical->any_disability))
+                    @if ($data['field'] == 'any_disability' && !is_null($physical->any_disability))
                         <p>{{ $physical->any_disability ? 'Yes' : 'No' }}</p>
-                    @elseif ($field == 'height' && $physical->height)
-                        <p>{{ number_format($physical->height, 2) }} cm</p>
-                    @elseif ($field == 'weight' && $physical->weight)
-                        <p>{{ number_format($physical->weight, 2) }} kg</p>
                     @else
-                        <p>{{ $physical->{$field} ?? '-' }}</p>
+                        <p>{{ $physical->{$data['field']} ?? '-' }}</p>
                     @endif
                 @endif
             </div>

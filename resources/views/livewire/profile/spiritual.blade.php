@@ -50,40 +50,40 @@ $toggle = function () {
     </div>
     <div class="p-4 grid grid-cols-2 gap-4">
         @foreach ([
-        'CASTE / SECT' => 'caste',
-        'SUB-CASTE' => 'sub_caste',
-        'ETHNICITY' => 'ethnicity',
-        'PERSONAL VALUE' => 'personal_value',
-        'FAMILY VALUE' => 'family_value',
-        'COMMUNITY VALUE' => 'community_value',
-        'FAMILY STATUS' => 'family_status',
-        'MANGLIK' => 'manglik',
-    ] as $label => $field)
-            @if ($field == 'manglik' && $user?->basicInfo?->religion != 'HINDU')
-                @continue
-            @endif
+        'CASTE / SECT' => ['field' => 'caste', 'example' => 'Sunni'],
+        'SUB-CASTE' => ['field' => 'sub_caste', 'example' => 'Barelvi'],
+        'ETHNICITY' => ['field' => 'ethnicity', 'example' => 'South Asian'],
+        'PERSONAL VALUE' => ['field' => 'personal_value', 'example' => 'Religious'],
+        'FAMILY VALUE' => ['field' => 'family_value', 'example' => 'Conservative'],
+        'COMMUNITY VALUE' => ['field' => 'community_value', 'example' => 'Community-Oriented'],
+        'FAMILY STATUS' => ['field' => 'family_status', 'example' => 'Middle Class'],
+        'MANGLIK' => ['field' => 'manglik', 'example' => 'Yes / No'],
+    ] as $label => $data)
             <div>
                 <p class="text-gray-600 text-sm">{{ $label }}</p>
                 @if ($isEditing)
-                    @if ($field == 'manglik')
-                        <select wire:model="spiritualSocial.{{ $field }}"
+                    @if ($data['field'] === 'manglik')
+                        <select wire:model="spiritualSocial.{{ $data['field'] }}"
                             class="w-full p-2 border border-gray-200 rounded-lg">
                             <option value="">Select</option>
                             <option value="1">Yes</option>
                             <option value="0">No</option>
                         </select>
                     @else
-                        <input type="text" wire:model="spiritualSocial.{{ $field }}"
-                            class="w-full p-2 border border-gray-200 rounded-lg">
+                        <input type="text" wire:model="spiritualSocial.{{ $data['field'] }}"
+                            placeholder="e.g., {{ $data['example'] }}"
+                            class="w-full p-2 border border-gray-200 rounded-lg" />
+                        <p class="text-gray-400 text-xs italic mt-1">Example: {{ $data['example'] }}</p>
                     @endif
-                    @error('spiritualSocial.' . $field)
+
+                    @error('spiritualSocial.' . $data['field'])
                         <p class="text-red-500 text-sm">{{ $message }}</p>
                     @enderror
                 @else
-                    @if ($field == 'manglik' && !is_null($spiritualSocial->manglik))
+                    @if ($data['field'] === 'manglik' && !is_null($spiritualSocial->manglik))
                         <p>{{ $spiritualSocial->manglik ? 'Yes' : 'No' }}</p>
                     @else
-                        <p>{{ $spiritualSocial->{$field} ?? '-' }}</p>
+                        <p>{{ $spiritualSocial->{$data['field']} ?? '-' }}</p>
                     @endif
                 @endif
             </div>

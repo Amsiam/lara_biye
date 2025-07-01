@@ -52,27 +52,27 @@ $toggle = function () {
     </div>
     <div class="p-4 grid grid-cols-2 gap-4">
         @foreach ([
-        'HOBBY' => 'hobby',
-        'INTEREST' => 'interest',
-        'MUSIC' => 'music',
-        'BOOKS' => 'books',
-        'MOVIE' => 'movie',
-        'TV SHOW' => 'tv_show',
-        'SPORTS SHOW' => 'sports_show',
-        'FITNESS ACTIVITY' => 'fitness_activity',
-        'CUISINE' => 'cuisine',
-        'DRESS STYLE' => 'dress_style',
-    ] as $label => $field)
+        'HOBBY' => ['field' => 'hobby', 'placeholder' => 'e.g., Painting, Gardening'],
+        'INTEREST' => ['field' => 'interest', 'placeholder' => 'e.g., Philosophy, History'],
+        'MUSIC' => ['field' => 'music', 'placeholder' => 'e.g., Classical, Rock'],
+        'BOOKS' => ['field' => 'books', 'placeholder' => 'e.g., Fiction, Biographies'],
+        'MOVIE' => ['field' => 'movie', 'placeholder' => 'e.g., Sci-Fi, Drama'],
+        'TV SHOW' => ['field' => 'tv_show', 'placeholder' => 'e.g., Breaking Bad'],
+        'SPORTS SHOW' => ['field' => 'sports_show', 'placeholder' => 'e.g., Football, Cricket'],
+        'FITNESS ACTIVITY' => ['field' => 'fitness_activity', 'placeholder' => 'e.g., Yoga, Gym'],
+        'CUISINE' => ['field' => 'cuisine', 'placeholder' => 'e.g., Italian, Bengali'],
+        'DRESS STYLE' => ['field' => 'dress_style', 'placeholder' => 'e.g., Casual, Traditional'],
+    ] as $label => $data)
             <div>
                 <p class="text-gray-600 text-sm">{{ $label }}</p>
                 @if ($isEditing)
-                    <input type="text" wire:model="hobby.{{ $field }}"
-                        class="w-full p-2 border border-gray-200 rounded-lg">
-                    @error('hobby.' . $field)
+                    <input type="text" placeholder="{{ $data['placeholder'] }}"
+                        wire:model="hobby.{{ $data['field'] }}" class="w-full p-2 border border-gray-200 rounded-lg">
+                    @error('hobby.' . $data['field'])
                         <p class="text-red-500 text-sm">{{ $message }}</p>
                     @enderror
                 @else
-                    <p>{{ $hobby->{$field} ?? '-' }}</p>
+                    <p>{{ $hobby->{$data['field']} ?? '-' }}</p>
                 @endif
             </div>
         @endforeach

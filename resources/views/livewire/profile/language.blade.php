@@ -46,21 +46,21 @@ $toggle = function () {
     </div>
     <div class="p-4 grid grid-cols-2 gap-4">
         @foreach ([
-        'MOTHER TONGUE' => 'mother_tongue',
-        'LANGUAGE' => 'language',
-        'SPEAK' => 'speak',
-        'READ' => 'read',
-    ] as $label => $field)
+        'MOTHER TONGUE' => ['field' => 'mother_tongue', 'placeholder' => 'e.g., Bengali'],
+        'LANGUAGE' => ['field' => 'language', 'placeholder' => 'e.g., English, Hindi'],
+        'SPEAK' => ['field' => 'speak', 'placeholder' => 'e.g., Fluent'],
+        'READ' => ['field' => 'read', 'placeholder' => 'e.g., Moderate'],
+    ] as $label => $data)
             <div>
                 <p class="text-gray-600 text-sm">{{ $label }}</p>
                 @if ($isEditing)
-                    <input type="text" wire:model="lang.{{ $field }}"
-                        class="w-full p-2 border border-gray-200 rounded-lg">
-                    @error('lang.' . $field)
+                    <input type="text" wire:model="lang.{{ $data['field'] }}"
+                        placeholder="{{ $data['placeholder'] }}" class="w-full p-2 border border-gray-200 rounded-lg">
+                    @error('lang.' . $data['field'])
                         <p class="text-red-500 text-sm">{{ $message }}</p>
                     @enderror
                 @else
-                    <p>{{ $lang->{$field} ?? '-' }}</p>
+                    <p>{{ $lang->{$data['field']} ?? '-' }}</p>
                 @endif
             </div>
         @endforeach
