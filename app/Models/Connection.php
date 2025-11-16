@@ -8,6 +8,10 @@ class Connection extends Model
 {
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'connection' => 'integer',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);

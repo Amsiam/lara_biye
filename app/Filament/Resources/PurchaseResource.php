@@ -91,10 +91,36 @@ class PurchaseResource extends Resource
                                 'completed' => 'Completed',
                                 'pending' => 'Pending',
                                 'failed' => 'Failed',
-                                'refunded' => 'Refunded',
                             ])
                             ->required()
                             ->native(false),
+
+                        Forms\Components\Select::make('payment_stage')
+                            ->options([
+                                'initiated' => 'Initiated',
+                                'pending' => 'Pending',
+                                'completed' => 'Completed',
+                                'failed' => 'Failed',
+                                'refunded' => 'Refunded',
+                                'cancelled' => 'Cancelled',
+                            ])
+                            ->required()
+                            ->native(false),
+
+                        Forms\Components\Toggle::make('connections_applied')
+                            ->label('Connections Applied')
+                            ->disabled()
+                            ->inline(false),
+
+                        Forms\Components\Toggle::make('is_refunded')
+                            ->label('Refunded')
+                            ->inline(false),
+
+                        Forms\Components\Textarea::make('error_message')
+                            ->label('Error Message')
+                            ->rows(3)
+                            ->columnSpanFull()
+                            ->disabled(),
                     ])
                     ->columns(2),
 
@@ -158,15 +184,39 @@ class PurchaseResource extends Resource
                     ->color('info')
                     ->toggleable(),
 
+                Tables\Columns\TextColumn::make('payment_stage')
+                    ->label('Stage')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'initiated' => 'gray',
+                        'pending' => 'warning',
+                        'completed' => 'success',
+                        'failed' => 'danger',
+                        'refunded' => 'info',
+                        'cancelled' => 'gray',
+                        default => 'gray',
+                    })
+                    ->sortable(),
+
+                Tables\Columns\IconColumn::make('connections_applied')
+                    ->label('Applied')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->trueColor('success')
+                    ->falseColor('danger')
+                    ->alignCenter()
+                    ->toggleable(),
+
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'completed' => 'success',
                         'pending' => 'warning',
                         'failed' => 'danger',
-                        'refunded' => 'gray',
                         default => 'gray',
-                    }),
+                    })
+                    ->toggleable(),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Purchase Date')
@@ -209,6 +259,79 @@ class PurchaseResource extends Resource
             ->recordActions([
                 Actions\ViewAction::make(),
                 Actions\EditAction::make(),
+                Actions\Action::make('applyConnections')
+                    ->label('Apply Connections')
+                    ->icon('heroicon-o-plus-circle')
+                    ->color('success')
+                    ->visible(fn (Purchase $record): bool => !$record->connections_applied && $record->payment_stage === 'completed')
+                    ->requiresConfirmation()
+                    ->modalHeading('Apply Connections')
+                    ->modalDescription(fn (Purchase $record): string => "This will add {$record->connections_purchased} connections to {$record->user->name}'s account.")
+                    ->modalSubmitActionLabel('Apply Connections')
+                    ->action(function (Purchase $record) {
+                        $success = $record->applyConnections();
+
+                        if ($success) {
+                            \Filament\Notifications\Notification::make()
+                                ->success()
+                                ->title('Connections Applied')
+                                ->body("Successfully added {$record->connections_purchased} connections to user's account.")
+                                ->send();
+                        } else {
+                            \Filament\Notifications\Notification::make()
+                                ->warning()
+                                ->title('Already Applied')
+                                ->body('Connections have already been applied to this purchase.')
+                                ->send();
+                        }
+                    }),
+                Actions\Action::make('markCompleted')
+                    ->label('Mark as Completed')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->visible(fn (Purchase $record): bool => $record->payment_stage !== 'completed')
+                    ->requiresConfirmation()
+                    ->modalHeading('Mark Payment as Completed')
+                    ->modalDescription('This will mark the payment as completed. Connections will NOT be automatically applied.')
+                    ->form([
+                        Forms\Components\TextInput::make('transaction_id')
+                            ->label('Transaction ID (Optional)')
+                            ->maxLength(255),
+                    ])
+                    ->action(function (Purchase $record, array $data) {
+                        $record->update([
+                            'payment_stage' => Purchase::STAGE_COMPLETED,
+                            'status' => Purchase::STATUS_COMPLETED,
+                            'payment_completed_at' => now(),
+                            'transaction_id' => $data['transaction_id'] ?? $record->transaction_id,
+                        ]);
+
+                        \Filament\Notifications\Notification::make()
+                            ->success()
+                            ->title('Payment Marked as Completed')
+                            ->body('Use "Apply Connections" action to add connections to user account.')
+                            ->send();
+                    }),
+                Actions\Action::make('markFailed')
+                    ->label('Mark as Failed')
+                    ->icon('heroicon-o-x-circle')
+                    ->color('danger')
+                    ->visible(fn (Purchase $record): bool => $record->payment_stage !== 'failed')
+                    ->requiresConfirmation()
+                    ->form([
+                        Forms\Components\Textarea::make('error_message')
+                            ->label('Error Message')
+                            ->required()
+                            ->rows(3),
+                    ])
+                    ->action(function (Purchase $record, array $data) {
+                        $record->markAsFailed($data['error_message']);
+
+                        \Filament\Notifications\Notification::make()
+                            ->success()
+                            ->title('Payment Marked as Failed')
+                            ->send();
+                    }),
             ])
             ->toolbarActions([
                 Actions\BulkActionGroup::make([

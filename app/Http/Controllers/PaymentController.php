@@ -24,19 +24,44 @@ class PaymentController extends Controller
         }
 
         if ($provider === 'bkash') {
+            $invoiceNumber = 'INV-' . time();
             $paymentData = [
                 'amount'                  => $package->price, // Payment amount in BDT
                 'payer_reference'         => 'pkg_' . $packageId . '_user_' . Auth::user()->id . '_' . time(), // Unique identifier for the payer
                 'callback_url'            => route('bkash.callback'), //If you use this built in route then this package will handle your callback automatically otherwise you have to implement your own callback logic. So don't change this to use automatic callback handling
-                'merchant_invoice_number' => 'INV-' . time(), // Unique invoice number
+                'merchant_invoice_number' => $invoiceNumber, // Unique invoice number
             ];
 
 
             try {
+                // Create initial purchase record with 'initiated' stage
+                $purchase = \App\Models\Purchase::create([
+                    'user_id' => Auth::user()->id,
+                    'package_id' => $packageId,
+                    'amount' => $package->price,
+                    'invoice_number' => $invoiceNumber,
+                    'payment_method' => 'bkash',
+                    'status' => \App\Models\Purchase::STATUS_PENDING,
+                    'payment_stage' => \App\Models\Purchase::STAGE_INITIATED,
+                    'connections_purchased' => $package->connections,
+                    'payment_initiated_at' => now(),
+                ]);
+
                 $response = Bkash::createPayment($paymentData);
+
+                // Update purchase record with payment ID from bKash
+                $purchase->update([
+                    'payment_id' => $response['paymentID'] ?? null,
+                    'payment_stage' => \App\Models\Purchase::STAGE_PENDING,
+                ]);
+
                 // Redirect to the bKash payment page
                 return redirect()->away($response['bkashURL']);
             } catch (\Exception $e) {
+                // Mark purchase as failed if it was created
+                if (isset($purchase)) {
+                    $purchase->markAsFailed($e->getMessage());
+                }
                 return back()->with('error', $e->getMessage());
             }
         }

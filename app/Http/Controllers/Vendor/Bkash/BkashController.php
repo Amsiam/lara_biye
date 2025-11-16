@@ -45,60 +45,73 @@ class BkashController extends Controller
                 $response = Bkash::executePayment($paymentId);
             }
 
-            //update connection
-
-            //payerReference format: pkg_{packageId}_user_{userId}_{timestamp}
+            // Extract package ID and user ID from payerReference
+            // payerReference format: pkg_{packageId}_user_{userId}_{timestamp}
             $payerReference = $response['payerReference'] ?? "0_0_0_0_0";
             $payerReferenceParts = explode('_', $payerReference);
-
-            // Extract package ID and user ID
             $packageId = isset($payerReferenceParts[1]) ? $payerReferenceParts[1] : null;
             $userId = isset($payerReferenceParts[3]) ? $payerReferenceParts[3] : null;
 
-            //connect update or create
             if ($userId && $packageId) {
-                // Get the package to determine connection count
                 $package = Package::find($packageId);
                 $user = User::find($userId);
 
                 if ($package && $user) {
-                    $connection = Connection::where('user_id', $userId)->first();
-                    if (!$connection) {
-                        $connection = new Connection();
-                        $connection->user_id = $userId;
+                    // Find existing purchase record or create new one
+                    $purchase = Purchase::where('payment_id', $paymentId)->first();
+
+                    if (!$purchase) {
+                        // Create new purchase record if it doesn't exist
+                        $purchase = Purchase::create([
+                            'user_id' => $userId,
+                            'package_id' => $packageId,
+                            'amount' => $package->price,
+                            'transaction_id' => $response['trxID'] ?? null,
+                            'payment_id' => $response['paymentID'] ?? null,
+                            'invoice_number' => $response['merchantInvoiceNumber'] ?? null,
+                            'payment_method' => 'bkash',
+                            'status' => Purchase::STATUS_PENDING,
+                            'payment_stage' => Purchase::STAGE_PENDING,
+                            'connections_purchased' => $package->connections,
+                            'payment_response' => $response,
+                            'payment_initiated_at' => now(),
+                        ]);
                     }
-                    $connection->connection += $package->connections; // Increment by package connections
-                    $connection->save();
 
-                    // Create purchase record
-                    Purchase::create([
-                        'user_id' => $userId,
-                        'package_id' => $packageId,
-                        'amount' => $package->price,
-                        'transaction_id' => $response['trxID'] ?? null,
-                        'payment_id' => $response['paymentID'] ?? null,
-                        'invoice_number' => $response['merchantInvoiceNumber'] ?? null,
-                        'payment_method' => 'bkash',
-                        'status' => 'completed',
-                        'connections_purchased' => $package->connections,
-                        'payment_response' => $response,
-                    ]);
+                    // Check if payment was actually successful
+                    $transactionStatus = $response['transactionStatus'] ?? null;
 
-                    // Send invoice email
-                    try {
-                        Mail::to($user->email)->send(new InvoiceMail($user, $package, $response));
-                    } catch (\Exception $e) {
-                        // Log the error but don't fail the payment
-                        Log::error('Failed to send invoice email: ' . $e->getMessage());
+                    if ($transactionStatus === 'Completed') {
+                        // Mark purchase as completed
+                        $purchase->update([
+                            'transaction_id' => $response['trxID'] ?? null,
+                            'payment_stage' => Purchase::STAGE_COMPLETED,
+                            'status' => Purchase::STATUS_COMPLETED,
+                            'payment_response' => $response,
+                            'payment_completed_at' => now(),
+                        ]);
+
+                        // Apply connections ONLY if payment is completed and not already applied
+                        if (!$purchase->connections_applied) {
+                            $purchase->applyConnections();
+                        }
+
+                        // Send invoice email
+                        try {
+                            Mail::to($user->email)->send(new InvoiceMail($user, $package, $response));
+                        } catch (\Exception $e) {
+                            // Log the error but don't fail the payment
+                            Log::error('Failed to send invoice email: ' . $e->getMessage());
+                        }
+                    } else {
+                        // Payment execution failed
+                        $purchase->markAsFailed('Payment execution failed. Status: ' . $transactionStatus);
                     }
                 }
             }
 
-
             $successUrl = config('bkash.redirect_urls.success');
             if ($successUrl) {
-
-
                 return redirect()->to($successUrl)
                     ->with('payment', $response);
             }
@@ -106,6 +119,14 @@ class BkashController extends Controller
             return redirect()->route('bkash.success')
                 ->with('payment', $response);
         } catch (\Exception $e) {
+            // Mark purchase as failed
+            if (isset($paymentId)) {
+                $purchase = Purchase::where('payment_id', $paymentId)->first();
+                if ($purchase) {
+                    $purchase->markAsFailed($e->getMessage());
+                }
+            }
+
             $failedUrl = config('bkash.redirect_urls.failed');
             if ($failedUrl) {
                 return redirect()->to($failedUrl)

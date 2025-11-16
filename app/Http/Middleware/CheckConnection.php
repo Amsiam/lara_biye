@@ -46,20 +46,21 @@ class CheckConnection
 
 
         //check has connection or not
-        $connection = Connection::where('user_id', auth()->user()->id)->firstOrCreate(
+        $userConnection = Connection::where('user_id', auth()->user()->id)->firstOrCreate(
             ['user_id' => auth()->user()->id]
         );
 
-        if ($connection->connection > 0) {
+        if ($userConnection->getAttribute('connection') > 0) {
             //first or new
             $visitedProfile = VisitedProfile::where('user_id', auth()->user()->id)->where('visited_user_id', $profileId)->firstOrCreate();
 
             $visitedProfile->count = 10;
             $visitedProfile->save();
 
-            $connection->connection = $connection->connection - 1;
+            $currentCount = (int) $userConnection->getAttribute('connection');
+            $userConnection->setAttribute('connection', $currentCount - 1);
 
-            $connection->save();
+            $userConnection->save();
         } else {
             return redirect()->with('error', 'You have no connections left to view this profile');
         }
