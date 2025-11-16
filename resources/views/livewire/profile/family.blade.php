@@ -54,138 +54,149 @@ $toggle = function () {
 
 ?>
 
-<div class="mt-4 border border-gray-200 rounded-lg overflow-hidden">
+<div class="mt-6 border border-gray-200 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
 
-    <div class="flex justify-between items-center bg-custom-red p-3 border-b">
-        <h3 class="font-semibold text-white">Family Information</h3>
-        <div>
+    <div class="flex justify-between items-center bg-custom-red p-4 border-b">
+        <h3 class="font-bold text-white text-lg">Family Information</h3>
+        <div class="flex gap-2">
             @if (auth()->user()?->id == $family?->user_id)
-                <button wire:click="toggle" class="text-white bg-custom-pink px-2 rounded mr-2">
-                    {{ $family->is_shown ? 'Hide' : 'Show' }}
+                <button wire:click="toggle" class="text-white bg-custom-pink hover:bg-pink-600 px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105">
+                    {{ $family->is_shown ? '👁️ Hide' : '👁️‍🗨️ Show' }}
                 </button>
                 @if (!$isEditing)
-                    <button wire:click="enableEditing" class="text-white bg-custom-pink px-2 rounded">✎</button>
+                    <button wire:click="enableEditing" class="text-white bg-custom-pink hover:bg-pink-600 px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105">✎ Edit</button>
                 @else
-                    <button wire:click="save" class="text-white bg-custom-pink px-2 rounded">Save</button>
+                    <button wire:click="save" class="text-white bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105">✓ Save</button>
                 @endif
             @endif
         </div>
     </div>
 
-    <div class="p-4 grid grid-cols-2 gap-4">
+    <div class="p-6 bg-white grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-            <p class="text-gray-600 text-sm">FATHER Name</p>
+            <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Father Name</p>
             @if ($isEditing)
                 <input type="text" wire:model="family.father" placeholder="e.g., Md. Rahim Uddin"
-                    class="w-full p-2 border border-gray-200 rounded-lg">
+                    class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all">
                 @error('family.father')
-                    <span class="text-red-500 text-xs">{{ $message }}</span>
+                    <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
                 @enderror
             @else
-                <p>{{ $family->father ?? '-' }}</p>
+                <p class="text-gray-900 font-medium">{{ $family->father ?? '-' }}</p>
             @endif
         </div>
         <div>
-            <p class="text-gray-600 text-sm">FATHER OCCUPATION</p>
+            <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Father Occupation</p>
             @if ($isEditing)
                 <input type="text" wire:model="family.father_occupation" placeholder="e.g., Retired Govt. Officer"
-                    class="w-full p-2 border border-gray-200 rounded-lg">
+                    class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all">
                 @error('family.father_occupation')
-                    <span class="text-red-500 text-xs">{{ $message }}</span>
+                    <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
                 @enderror
             @else
-                <p>{{ $family->father_occupation ?? '-' }}</p>
+                <p class="text-gray-900 font-medium">{{ $family->father_occupation ?? '-' }}</p>
             @endif
         </div>
         <div>
-            <p class="text-gray-600 text-sm">MOTHER Name</p>
+            <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Mother Name</p>
             @if ($isEditing)
                 <input type="text" wire:model="family.mother" placeholder="e.g., Jahanara Begum"
-                    class="w-full p-2 border border-gray-200 rounded-lg">
+                    class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all">
                 @error('family.mother')
-                    <span class="text-red-500 text-xs">{{ $message }}</span>
+                    <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
                 @enderror
             @else
-                <p>{{ $family->mother ?? '-' }}</p>
+                <p class="text-gray-900 font-medium">{{ $family->mother ?? '-' }}</p>
             @endif
         </div>
         <div>
-            <p class="text-gray-600 text-sm">MOTHER OCCUPATION</p>
+            <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Mother Occupation</p>
             @if ($isEditing)
                 <input type="text" wire:model="family.mother_occupation" placeholder="e.g., Homemaker"
-                    class="w-full p-2 border border-gray-200 rounded-lg">
+                    class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all">
                 @error('family.mother_occupation')
-                    <span class="text-red-500 text-xs">{{ $message }}</span>
+                    <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
                 @enderror
             @else
-                <p>{{ $family->mother_occupation ?? '-' }}</p>
+                <p class="text-gray-900 font-medium">{{ $family->mother_occupation ?? '-' }}</p>
             @endif
         </div>
         <div>
-            <p class="text-gray-600 text-sm">BROTHER</p>
+            <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Brother</p>
             @if ($isEditing)
                 <input type="text" wire:model="family.brother" placeholder="e.g., 2 (1 married)"
-                    class="w-full p-2 border border-gray-200 rounded-lg">
+                    class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all">
                 @error('family.brother')
-                    <span class="text-red-500 text-xs">{{ $message }}</span>
+                    <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
                 @enderror
             @else
-                <p>{{ $family->brother ?? '-' }}</p>
+                <p class="text-gray-900 font-medium">{{ $family->brother ?? '-' }}</p>
             @endif
         </div>
         <div>
-            <p class="text-gray-600 text-sm">Sister</p>
+            <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Sister</p>
             @if ($isEditing)
                 <input type="text" wire:model="family.sister" placeholder="e.g., 1 (unmarried)"
-                    class="w-full p-2 border border-gray-200 rounded-lg">
+                    class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all">
                 @error('family.sister')
-                    <span class="text-red-500 text-xs">{{ $message }}</span>
+                    <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
                 @enderror
             @else
-                <p>{{ $family->sister ?? '-' }}</p>
+                <p class="text-gray-900 font-medium">{{ $family->sister ?? '-' }}</p>
+            @endif
+        </div>
+    </div>
+
+    <div class="px-6 pb-6">
+        <div class="flex justify-between items-center mb-4">
+            <p class="text-gray-600 text-sm font-semibold uppercase">Sibling Information</p>
+            @if ($isEditing)
+                <button wire:click="addSibling" class="text-white bg-custom-pink hover:bg-pink-600 px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105">
+                    + Add Sibling
+                </button>
             @endif
         </div>
 
         @if ($isEditing)
-            <div>
-                <button wire:click="addSibling" class="text-white bg-custom-pink px-2 rounded">Add Sibling</button>
-            </div>
-        @endif
-    </div>
-
-    <div class="p-4">
-        <p class="text-gray-600 text-sm">Sibling Info</p>
-        @if ($isEditing)
-            @if (isset($siblingInfo))
-                @foreach ($siblingInfo as $index => $sibling)
-                    <div class="flex items-center mb-2">
-                        <input type="text" wire:model="siblingInfo.{{ $index }}.occupation"
-                            class="w-full p-2 border border-gray-200 rounded-lg mr-2" placeholder="Occupation">
-                        <input type="text" wire:model="siblingInfo.{{ $index }}.academic_background"
-                            class="w-full p-2 border border-gray-200 rounded-lg mr-2" placeholder="Academic Background">
-                        <button wire:click="removeSibling({{ $index }})"
-                            class="text-red-500 hover:text-red-700">Remove</button>
-                    </div>
-                @endforeach
+            @if (isset($siblingInfo) && count($siblingInfo) > 0)
+                <div class="space-y-3">
+                    @foreach ($siblingInfo as $index => $sibling)
+                        <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                            <input type="text" wire:model="siblingInfo.{{ $index }}.occupation"
+                                class="flex-1 p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all" placeholder="Occupation">
+                            <input type="text" wire:model="siblingInfo.{{ $index }}.academic_background"
+                                class="flex-1 p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all" placeholder="Academic Background">
+                            <button wire:click="removeSibling({{ $index }})"
+                                class="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition-all">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                            </button>
+                        </div>
+                    @endforeach
+                </div>
                 @error('siblingInfo.*')
-                    <span class="text-red-500 text-xs">{{ $message }}</span>
+                    <span class="text-red-500 text-sm mt-2 block">{{ $message }}</span>
                 @enderror
+            @else
+                <p class="text-gray-500 italic text-sm">No siblings added yet. Click "Add Sibling" to add one.</p>
             @endif
         @else
             @if ($user->siblingInfo?->count() == 0)
-                <p class="text-gray-600 text-sm">No Sibling Info Available</p>
+                <p class="text-gray-500 italic text-sm">No sibling information available</p>
             @else
-                <div class="flex items-center text-gray-600 text-sm">
-                    <p class="w-full p-2  mr-2">Occupation</p>
-                    <p class="w-full p-2  mr-2">Academic Background</p>
-                </div>
-                <hr class="border-gray-200 mb-2">
-                @foreach ($user?->siblingInfo as $sibling)
-                    <div class="flex items-center mb-2">
-                        <p class="w-full p-2  mr-2">{{ $sibling?->occupation }}</p>
-                        <p class="w-full p-2  mr-2">{{ $sibling?->academic_background }}</p>
+                <div class="overflow-hidden rounded-lg border border-gray-200">
+                    <div class="grid grid-cols-2 bg-gray-50 p-3 font-semibold text-sm text-gray-700">
+                        <p>Occupation</p>
+                        <p>Academic Background</p>
                     </div>
-                @endforeach
+                    <div class="divide-y divide-gray-200">
+                        @foreach ($user?->siblingInfo as $sibling)
+                            <div class="grid grid-cols-2 p-3 text-sm">
+                                <p class="text-gray-900 font-medium">{{ $sibling?->occupation ?? '-' }}</p>
+                                <p class="text-gray-900 font-medium">{{ $sibling?->academic_background ?? '-' }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
             @endif
         @endif
     </div>

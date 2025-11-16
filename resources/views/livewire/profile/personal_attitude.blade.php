@@ -28,23 +28,23 @@ $toggle = function () {
 
 ?>
 
-<div class="mt-4 border border-gray-200 rounded-lg overflow-hidden">
-    <div class="flex justify-between items-center bg-custom-red p-3 border-b">
-        <h3 class="font-semibold text-white">Personal Attitude And Behavior</h3>
-        <div>
+<div class="mt-6 border border-gray-200 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+    <div class="flex justify-between items-center bg-custom-red p-4 border-b">
+        <h3 class="font-bold text-white text-lg">Personal Attitude And Behavior</h3>
+        <div class="flex gap-2">
             @if (auth()->user()?->id == $personal?->user_id)
-                <button wire:click="toggle" class="text-white bg-custom-pink px-2 rounded mr-2">
-                    {{ $personal->is_shown ? 'Hide' : 'Show' }}
+                <button wire:click="toggle" class="text-white bg-custom-pink hover:bg-pink-600 px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105">
+                    {{ $personal->is_shown ? '👁️ Hide' : '👁️‍🗨️ Show' }}
                 </button>
                 @if (!$isEditing)
-                    <button wire:click="enableEditing" class="text-white bg-custom-pink px-2 rounded">✎</button>
+                    <button wire:click="enableEditing" class="text-white bg-custom-pink hover:bg-pink-600 px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105">✎ Edit</button>
                 @else
-                    <button wire:click="save" class="text-white bg-custom-pink px-2 rounded">Save</button>
+                    <button wire:click="save" class="text-white bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105">✓ Save</button>
                 @endif
             @endif
         </div>
     </div>
-    <div class="p-4 grid grid-cols-2 gap-4">
+    <div class="p-6 bg-white grid grid-cols-1 md:grid-cols-2 gap-6">
         @foreach ([
         'AFFECTION' => ['field' => 'affection', 'placeholder' => 'e.g., Loving and caring'],
         'HUMOR' => ['field' => 'humor', 'placeholder' => 'e.g., Good sense of humor'],
@@ -52,15 +52,15 @@ $toggle = function () {
         'RELIGIOUS SERVICE' => ['field' => 'religious_service', 'placeholder' => 'e.g., Attends weekly'],
     ] as $label => $data)
             <div>
-                <p class="text-gray-600 text-sm">{{ $label }}</p>
+                <p class="text-gray-600 text-xs font-semibold uppercase mb-2">{{ $label }}</p>
                 @if ($isEditing)
                     <input type="text" wire:model="personal.{{ $data['field'] }}"
-                        class="w-full p-2 border border-gray-200 rounded-lg" placeholder="{{ $data['placeholder'] }}">
+                        class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all" placeholder="{{ $data['placeholder'] }}">
                     @error('personal.' . $data['field'])
-                        <p class="text-red-500 text-sm">{{ $message }}</p>
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
                 @else
-                    <p>{{ $personal->{$data['field']} ?? '-' }}</p>
+                    <p class="text-gray-900 font-medium">{{ $personal->{$data['field']} ?? '-' }}</p>
                 @endif
             </div>
         @endforeach

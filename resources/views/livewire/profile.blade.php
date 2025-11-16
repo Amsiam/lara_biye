@@ -5,7 +5,7 @@ use function Livewire\Volt\{state, computed};
 state(['profileId']);
 
 $user = computed(function () {
-    return \App\Models\User::with('basicInfo', 'location', 'education', 'physical_attr', 'hobby', 'language', 'personal', 'spiritualSocial', 'lifestyle', 'partnerExpectation', 'family', 'parmanent', 'siblingInfo')->findOrFail($this->profileId);
+    return \App\Models\User::with('basicInfo', 'location', 'education', 'physical_attr', 'hobby', 'language', 'personal', 'spiritualSocial', 'lifestyle', 'partnerExpectation', 'family', 'parmanent', 'siblingInfo')->where('id', $this->profileId)->findOrFail($this->profileId);
 });
 
 $deleteAccount = function () {
@@ -56,9 +56,9 @@ $sendConnection = function () {
 
 ?>
 
-<div class="max-w-6xl mx-auto flex flex-col md:flex-row mt-20">
+<div class="max-w-6xl mx-auto flex flex-col md:flex-row mt-20 px-4 gap-6">
     <!-- Sidebar -->
-    <div class="w-full md:w-1/4 bg-custom-red text-white p-6 rounded-lg shadow-lg">
+    <div class="w-full md:w-1/4 bg-custom-red text-white p-6 rounded-2xl shadow-xl border border-gray-200">
         <div class="text-center">
             <!-- Profile Image -->
             {{-- <div
@@ -71,53 +71,58 @@ $sendConnection = function () {
             <!-- User Name & Followers -->
             <div class="mt-4 flex items-center justify-center gap-2">
                 @if (auth()->user()->isConnected($this->user->id) || auth()->user()?->id == $this->user->id)
-                    <h2 class="text-xl font-bold uppercase">{{ $this->user->name }}</h2>
+                    <h2 class="text-xl font-bold uppercase text-white">{{ $this->user->name }}</h2>
                 @endif
 
                 @if ($this->user->isProfileVerified())
-                    <span class="inline-flex items-center" title="Profile Verified by Admin">
-                        <svg class="w-6 h-6 text-blue-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
+                    <span class="inline-flex items-center group" title="Profile Verified by Admin">
+                        <svg class="w-6 h-6 text-blue-300 group-hover:text-blue-400 transition-colors drop-shadow-lg"
+                            fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd"
+                                d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
+                                clip-rule="evenodd" />
                         </svg>
                     </span>
                 @endif
             </div>
             {{-- <p class="text-gray-100 text-sm mt-1">0 Followers</p> --}}
-            <hr class="my-3 border-gray-300">
+            <hr class="my-4 border-white/30">
         </div>
 
         <!-- Package Information -->
 
-        <div class="mt-4 p-4 bg-white text-black rounded-lg shadow flex flex-col space-y-2">
+        <div class="mt-4 p-4 bg-white rounded-xl shadow-lg flex flex-col space-y-3">
             <button wire:click="buyConnection" wire:confirm="Are you sure you want to buy a connection?"
-                class="w-full hover:bg-white hover:text-custom-pink py-2 rounded-md shadow bg-custom-pink text-white transition">
+                class="w-full bg-custom-pink hover:bg-pink-600 py-3 rounded-lg shadow-md hover:shadow-xl text-white font-semibold transition-all duration-300 transform hover:scale-105">
                 🎟️ Buy Connection ({{ auth()->user()?->connection()?->first()?->connection ?? 0 }})
             </button>
             @if (auth()->user()?->id == $this->user->id)
 
                 <button wire:click="deleteAccount" wire:confirm="Are you sure you want to delete your account?"
-                    class="w-full bg-red-500 text-white py-2 rounded-md shadow hover:bg-red-700 hover:text-white transition">
-                    Close Account
+                    class="w-full bg-red-500 hover:bg-red-600 py-3 rounded-lg shadow-md hover:shadow-xl text-white font-semibold transition-all duration-300 transform hover:scale-105">
+                    ❌ Close Account
                 </button>
             @else
                 @if (auth()->user()->isConnected($this->user->id))
-                    <button class="w-full bg-gray-300 text-gray-700 py-2 rounded-md shadow cursor-not-allowed">
-                        You are already connected with this profile.
+                    <button
+                        class="w-full bg-gray-200 text-gray-700 py-3 rounded-lg shadow-md cursor-not-allowed border-2 border-gray-300 font-semibold">
+                        ✅ You are already connected
                     </button>
                 @elseif (auth()->user()->hasSentConnectionRequest($this->user))
                     <button wire:click="sendConnection"
                         wire:confirm="This action cost you a connection. Will you proceed?"
-                        class="w-full hover:bg-white hover:text-custom-pink py-2 rounded-md shadow bg-green-500 text-white transition">
-                        🎟️ Accept Request
+                        class="w-full bg-green-500 hover:bg-green-600 py-3 rounded-lg shadow-md hover:shadow-xl text-white font-semibold transition-all duration-300 transform hover:scale-105">
+                        ✓ Accept Request
                     </button>
                 @elseif (auth()->user()->isConnectionPending($this->user->id))
-                    <button class="w-full bg-gray-300 text-gray-700 py-2 rounded-md shadow cursor-not-allowed">
-                        You have a pending connection request.
+                    <button
+                        class="w-full bg-gray-200 text-gray-700 py-3 rounded-lg shadow-md cursor-not-allowed border-2 border-gray-300 font-semibold">
+                        ⏳ Pending connection request
                     </button>
                 @else
                     <button wire:click="sendConnection"
                         wire:confirm="This action cost you a connection. Will you proceed?"
-                        class="w-full hover:bg-white hover:text-custom-pink py-2 rounded-md shadow bg-custom-pink text-white transition">
+                        class="w-full bg-custom-pink hover:bg-pink-600 py-3 rounded-lg shadow-md hover:shadow-xl text-white font-semibold transition-all duration-300 transform hover:scale-105">
                         🎟️ Send Connection Request
                     </button>
                 @endif
@@ -153,11 +158,11 @@ $sendConnection = function () {
 
 
     <!-- Main Profile Section -->
-    <div class="w-full md:w-3/4 bg-white p-6 rounded-lg shadow-lg ml-0 md:ml-6">
-        <div class="flex  justify-between items-center">
-            <h2 class="text-2xl font-bold text-gray-800">Profile Information</h2>
+    <div class="w-full md:w-3/4 bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
+        <div class="flex justify-between items-center mb-2">
+            <h2 class="text-3xl font-bold text-gray-900">Profile Information</h2>
         </div>
-        <p class="text-custom-pink">Member ID - {{ $this->user->id }}</p>
+        <p class="text-custom-pink font-semibold mb-6">Member ID - {{ $this->user->id }}</p>
 
         <!-- Introduction -->
         <livewire:profile.introduction :bio="$this->user?->basicInfo" />

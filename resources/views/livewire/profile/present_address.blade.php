@@ -29,86 +29,85 @@ $toggle = function () {
 
 ?>
 
-<div class="mt-4 border border-gray-200 rounded-lg overflow-hidden">
-    <div class="flex justify-between items-center bg-custom-red p-3 border-b">
-        <h3 class="font-semibold text-white">Present Address</h3>
-        <div>
+<div class="mt-6 border border-gray-200 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+    <div class="flex justify-between items-center bg-custom-red p-4 border-b">
+        <h3 class="font-bold text-white text-lg">Present Address</h3>
+        <div class="flex gap-2">
             @if (auth()->user()?->id == $address?->user_id)
-                <button wire:click="toggle" class="text-white bg-custom-pink px-2 rounded mr-2">
-                    {{ $address->is_shown ? 'Hide' : 'Show' }}
+                <button wire:click="toggle" class="text-white bg-custom-pink hover:bg-pink-600 px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105">
+                    {{ $address->is_shown ? '👁️ Hide' : '👁️‍🗨️ Show' }}
                 </button>
                 @if (!$isEditing)
-                    <button wire:click="enableEditing" class="text-white bg-custom-pink px-2 rounded">✎</button>
+                    <button wire:click="enableEditing" class="text-white bg-custom-pink hover:bg-pink-600 px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105">
+                        ✎ Edit
+                    </button>
                 @else
-                    <button wire:click="save" class="text-white bg-custom-pink px-2 rounded">Save</button>
+                    <button wire:click="save" class="text-white bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105">
+                        ✓ Save
+                    </button>
                 @endif
             @endif
         </div>
     </div>
-    <div class="p-4 grid grid-cols-2 gap-4">
+    <div class="p-6 bg-white grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-            <p class="text-gray-600 text-sm">COUNTRY</p>
+            <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Country</p>
             @if ($isEditing)
-                <input wire:model="address.country" class="w-full p-2 border border-gray-200 rounded-lg"
+                <input wire:model="address.country" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all"
                     placeholder="e.g., Bangladesh" />
                 @error('address.country')
-                    <p class="text-red-500 text-sm">{{ $message }}</p>
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
-                <p class="text-gray-400 text-xs italic mt-1">Example: Bangladesh</p>
             @else
-                <p>{{ $address->country ?? '-' }}</p>
+                <p class="text-gray-900 font-medium">{{ $address->country ?? '-' }}</p>
             @endif
         </div>
         <div>
-            <p class="text-gray-600 text-sm">DIVISION</p>
+            <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Division</p>
             @if ($isEditing)
-                <input wire:model="address.division" class="w-full p-2 border border-gray-200 rounded-lg"
+                <input wire:model="address.division" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all"
                     placeholder="e.g., Dhaka" />
                 @error('address.division')
-                    <p class="text-red-500 text-sm">{{ $message }}</p>
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
-                <p class="text-gray-400 text-xs italic mt-1">Example: Dhaka</p>
             @else
-                <p>{{ $address->division ?? '-' }}</p>
+                <p class="text-gray-900 font-medium">{{ $address->division ?? '-' }}</p>
             @endif
         </div>
         <div>
-            <p class="text-gray-600 text-sm">DISTRICT</p>
+            <p class="text-gray-600 text-xs font-semibold uppercase mb-2">District</p>
             @if ($isEditing)
-                <input wire:model="address.district" class="w-full p-2 border border-gray-200 rounded-lg"
+                <input wire:model="address.district" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all"
                     placeholder="e.g., Gazipur" />
                 @error('address.district')
-                    <p class="text-red-500 text-sm">{{ $message }}</p>
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
-                <p class="text-gray-400 text-xs italic mt-1">Example: Gazipur</p>
             @else
-                <p>{{ $address->district ?? '-' }}</p>
+                <p class="text-gray-900 font-medium">{{ $address->district ?? '-' }}</p>
             @endif
         </div>
         <div>
-            <p class="text-gray-600 text-sm">UPAZILLA</p>
+            <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Upazilla</p>
             @if ($isEditing)
-                <input wire:model="address.upazilla" class="w-full p-2 border border-gray-200 rounded-lg"
+                <input wire:model="address.upazilla" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all"
                     placeholder="e.g., Kaliakair" />
                 @error('address.upazilla')
-                    <p class="text-red-500 text-sm">{{ $message }}</p>
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
-                <p class="text-gray-400 text-xs italic mt-1">Example: Kaliakair</p>
             @else
-                <p>{{ $address->upazilla ?? '-' }}</p>
+                <p class="text-gray-900 font-medium">{{ $address->upazilla ?? '-' }}</p>
             @endif
         </div>
         <div>
-            <p class="text-gray-600 text-sm">UNION</p>
+            <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Union</p>
             @if ($isEditing)
-                <input wire:model="address.union" class="w-full p-2 border border-gray-200 rounded-lg"
+                <input wire:model="address.union" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all"
                     placeholder="e.g., Kanchanpur" />
                 @error('address.union')
-                    <p class="text-red-500 text-sm">{{ $message }}</p>
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
-                <p class="text-gray-400 text-xs italic mt-1">Example: Kanchanpur</p>
             @else
-                <p>{{ $address->union ?? '-' }}</p>
+                <p class="text-gray-900 font-medium">{{ $address->union ?? '-' }}</p>
             @endif
         </div>
     </div>

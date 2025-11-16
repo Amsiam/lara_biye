@@ -51,20 +51,20 @@ $toggle = function () {
 
 ?>
 
-<div class="mt-4 border border-gray-200 rounded-lg overflow-hidden">
-    <div class="flex justify-between items-center bg-custom-red p-3 border-b">
-        <h3 class="font-semibold text-white">Partner Expectation</h3>
+<div class="mt-6 border border-gray-200 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+    <div class="flex justify-between items-center bg-custom-red p-4 border-b">
+        <h3 class="font-bold text-white text-lg">Partner Expectation</h3>
         <div>
             @if (auth()->user()?->id == $partner?->user_id)
                 @if (!$isEditing)
-                    <button wire:click="enableEditing" class="text-white bg-custom-pink px-2 rounded">✎</button>
+                    <button wire:click="enableEditing" class="text-white bg-custom-pink hover:bg-pink-600 px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105">✎ Edit</button>
                 @else
-                    <button wire:click="save" class="text-white bg-custom-pink px-2 rounded">Save</button>
+                    <button wire:click="save" class="text-white bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105">✓ Save</button>
                 @endif
             @endif
         </div>
     </div>
-    <div class="p-4 grid grid-cols-2 gap-4">
+    <div class="p-6 bg-white grid grid-cols-1 md:grid-cols-2 gap-6">
         @foreach ([
         'GENERAL REQUIREMENT' => ['field' => 'general_requirement', 'placeholder' => 'Describe general expectations...'],
         'AGE' => ['field' => 'age', 'placeholder' => 'e.g., 25'],
@@ -95,42 +95,42 @@ $toggle = function () {
         'COMPLEXION' => ['field' => 'complexion', 'placeholder' => 'e.g., Fair'],
     ] as $label => $data)
             <div>
-                <p class="text-gray-600 text-sm">{{ $label }}</p>
+                <p class="text-gray-600 text-xs font-semibold uppercase mb-2">{{ $label }}</p>
                 @if ($isEditing)
                     @if ($data['field'] == 'manglik')
-                        <select wire:model="partner.manglik" class="w-full p-2 border border-gray-200 rounded-lg">
-                            <option value="">Select</option>
-                            <option value="1">Yes</option>
-                            <option value="0">No</option>
-                        </select>
+                        <x-select-input
+                            wireModel="partner.manglik"
+                            placeholder="Select Yes or No"
+                            :options="[1 => 'Yes', 0 => 'No']"
+                        />
                     @elseif ($data['field'] == 'any_disability')
                         <input type="text" wire:model="partner.any_disability"
                             placeholder="{{ $data['placeholder'] }}"
-                            class="w-full p-2 border border-gray-200 rounded-lg">
+                            class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all">
                     @elseif (in_array($data['field'], ['age', 'height_from', 'height_to', 'weight_from', 'weight_to']))
                         <input type="number" step="0.01" wire:model="partner.{{ $data['field'] }}"
                             placeholder="{{ $data['placeholder'] }}"
-                            class="w-full p-2 border border-gray-200 rounded-lg">
+                            class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all">
                     @elseif ($data['field'] == 'general_requirement')
-                        <textarea wire:model="partner.general_requirement" placeholder="{{ $data['placeholder'] }}"
-                            class="w-full p-2 border border-gray-200 rounded-lg"></textarea>
+                        <textarea wire:model="partner.general_requirement" placeholder="{{ $data['placeholder'] }}" rows="4"
+                            class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all"></textarea>
                     @else
                         <input type="text" wire:model="partner.{{ $data['field'] }}"
                             placeholder="{{ $data['placeholder'] }}"
-                            class="w-full p-2 border border-gray-200 rounded-lg">
+                            class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all">
                     @endif
                     @error('partner.' . $data['field'])
-                        <p class="text-red-500 text-sm">{{ $message }}</p>
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
                 @else
                     @if ($data['field'] == 'manglik')
-                        <p>{{ $partner->manglik === null ? '-' : ($partner->manglik ? 'Yes' : 'No') }}</p>
+                        <p class="text-gray-900 font-medium">{{ $partner->manglik === null ? '-' : ($partner->manglik ? 'Yes' : 'No') }}</p>
                     @elseif ($data['field'] == 'any_disability')
-                        <p>{{ $partner->any_disability ?? '-' }}</p>
+                        <p class="text-gray-900 font-medium">{{ $partner->any_disability ?? '-' }}</p>
                     @elseif ($data['field'] == 'age' && $partner->age)
-                        <p>{{ $partner->age . ' years' }}</p>
+                        <p class="text-gray-900 font-medium">{{ $partner->age . ' years' }}</p>
                     @else
-                        <p>{{ $partner->{$data['field']} ?? '-' }}</p>
+                        <p class="text-gray-900 font-medium">{{ $partner->{$data['field']} ?? '-' }}</p>
                     @endif
                 @endif
             </div>
