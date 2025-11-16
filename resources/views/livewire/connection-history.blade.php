@@ -14,7 +14,7 @@ $connections = computed(function () {
             // Determine which user is the connected user
             $connectedUserId = $connection->user_id == auth()->id() ? $connection->connected_user_id : $connection->user_id;
 
-            $connectedUser = \App\Models\User::with('basicInfo', 'location', 'education')->find($connectedUserId);
+            $connectedUser = \App\Models\User::where('is_admin', false)->with('basicInfo', 'location', 'education')->find($connectedUserId);
 
             return (object) [
                 'user' => $connectedUser,

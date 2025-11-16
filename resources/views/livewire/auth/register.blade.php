@@ -81,111 +81,156 @@ new #[Layout('components.layouts.auth')] class extends Component {
     }
 }; ?>
 
-<div
-    class="w-full max-w-4xl p-8 bg-white rounded-2xl shadow-xl flex flex-col lg:flex-row overflow-hidden border-4 border-white">
+<div class="w-full max-w-6xl bg-white rounded-xl shadow-2xl flex flex-col lg:flex-row overflow-hidden border border-gray-100">
     <!-- Left Section with Image -->
-    <div class="w-full lg:w-1/3 relative mb-6 lg:mb-0 sm:hidden">
-        <img src="{{ asset('img/image 70.png') }}" alt="Login Image" class="w-full h-full object-cover rounded-lg">
+    <div class="hidden lg:flex lg:w-2/5 relative bg-gradient-to-br from-custom-pink/10 to-custom-red/10 p-8 items-center justify-center">
+        <div class="text-center space-y-4">
+            <img src="{{ asset('img/image 70.png') }}" alt="Registration Image" class="w-full max-w-sm mx-auto rounded-xl shadow-lg">
+            <h3 class="text-2xl font-bold text-custom-red">Join Us Today!</h3>
+            <p class="text-gray-600">Create an account to start your journey</p>
+        </div>
     </div>
 
     <!-- Right Section -->
-    <div class="w-full lg:w-2/3 p-10 flex flex-col justify-center">
-        <h2 class="text-4xl font-semibold mb-6 text-custom-pink">Create your account</h2>
-        <form wire:submit.prevent="register">
-            <div class="mb-5">
-                <input wire:model="name" type="text" placeholder="Enter name"
-                    class="w-full p-3 border border-custom-pink rounded focus:outline-none focus:ring-2 focus:ring-custom-pink transition-all duration-300 ease-in-out" />
-                @error('name')
-                    <span class="text-sm text-red-500">{{ $message }}</span>
-                @enderror
-            </div>
-            <div class="mb-5">
-                <input wire:model="dob" type="date" placeholder="Enter Date of birth"
-                    class="w-full p-3 border border-custom-pink rounded focus:outline-none focus:ring-2 focus:ring-custom-pink transition-all duration-300 ease-in-out" />
-                @error('dob')
-                    <span class="text-sm text-red-500">{{ $message }}</span>
-                @enderror
-            </div>
-            <div class="mb-5">
-                <select wire:model="gender"
-                    class="w-full p-3 border border-custom-pink rounded focus:outline-none focus:ring-2 focus:ring-custom-pink transition-all duration-300 ease-in-out">
-                    @foreach (['MALE', 'FEMALE'] as $gender)
-                        <option>{{ $gender }}</option>
-                    @endforeach
-                </select>
-                @error('gender')
-                    <span class="text-sm text-red-500">{{ $message }}</span>
-                @enderror
-            </div>
-            <div class="mb-5">
-                <select wire:model="religion"
-                    class="w-full p-3 border border-custom-pink rounded focus:outline-none focus:ring-2 focus:ring-custom-pink transition-all duration-300 ease-in-out">
-                    @foreach (['ISLAM', 'HINDU', 'CHRISTIAN', 'BUDDHIST', 'OTHER'] as $religion)
-                        <option>{{ $religion }}</option>
-                    @endforeach
-                </select>
-                @error('religion')
-                    <span class="text-sm text-red-500">{{ $message }}</span>
-                @enderror
-            </div>
-            <div class="mb-5">
-                <input wire:model="nid" type="text" placeholder="Enter nid number"
-                    class="w-full p-3 border border-custom-pink rounded focus:outline-none focus:ring-2 focus:ring-custom-pink transition-all duration-300 ease-in-out" />
-                @error('nid')
-                    <span class="text-sm text-red-500">{{ $message }}</span>
-                @enderror
-            </div>
-            <div class="mb-5">
-                <input wire:model="student_id" type="text" placeholder="Enter student id number"
-                    class="w-full p-3 border border-custom-pink rounded focus:outline-none focus:ring-2 focus:ring-custom-pink transition-all duration-300 ease-in-out" />
-                @error('student_id')
-                    <span class="text-sm text-red-500">{{ $message }}</span>
-                @enderror
-            </div>
-            <div class="mb-5">
-                <input wire:model="university" type="text" placeholder="Enter university name"
-                    class="w-full p-3 border border-custom-pink rounded focus:outline-none focus:ring-2 focus:ring-custom-pink transition-all duration-300 ease-in-out" />
-                @error('university')
-                    <span class="text-sm text-red-500">{{ $message }}</span>
-                @enderror
-            </div>
-            <hr class="my-4 border-t border-custom-pink" />
-            <div class="mb-5">
-                <input wire:model="email" type="email" placeholder="Enter email"
-                    class="w-full p-3 border border-custom-pink rounded focus:outline-none focus:ring-2 focus:ring-custom-pink transition-all duration-300 ease-in-out" />
-                @error('email')
-                    <span class="text-sm text-red-500">{{ $message }}</span>
-                @enderror
-            </div>
-            <div class="mb-5 relative">
-                <input wire:model="password" type="password" id="password" placeholder="Enter password"
-                    class="w-full p-3 border border-custom-pink rounded focus:outline-none focus:ring-2 focus:ring-custom-pink transition-all duration-300 ease-in-out" />
-                @error('password')
-                    <span class="text-sm text-red-500">{{ $message }}</span>
-                @enderror
+    <div class="w-full lg:w-3/5 p-8 lg:p-10 flex flex-col justify-center">
+        <div class="mb-6">
+            <h2 class="text-3xl lg:text-4xl font-bold text-custom-red mb-2">Create your account</h2>
+            <p class="text-gray-600">Fill in the details below to get started</p>
+        </div>
+
+        <form wire:submit.prevent="register" class="space-y-5 max-h-[calc(100vh-250px)] overflow-y-auto pr-2">
+            <!-- Personal Information Section -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold text-custom-red border-b-2 border-custom-pink/30 pb-2">Personal Information</h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
+                        <input wire:model="name" type="text" id="name" placeholder="Enter your full name"
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all duration-300" />
+                        @error('name')
+                            <span class="text-sm text-red-500 mt-1 block">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="dob" class="block text-sm font-semibold text-gray-700 mb-2">Date of Birth</label>
+                        <input wire:model="dob" type="date" id="dob"
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all duration-300" />
+                        @error('dob')
+                            <span class="text-sm text-red-500 mt-1 block">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="gender" class="block text-sm font-semibold text-gray-700 mb-2">Gender</label>
+                        <x-select-input
+                            wireModel="gender"
+                            placeholder="Select Gender"
+                            :options="['MALE' => 'Male', 'FEMALE' => 'Female']"
+                        />
+                        @error('gender')
+                            <span class="text-sm text-red-500 mt-1 block">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="religion" class="block text-sm font-semibold text-gray-700 mb-2">Religion</label>
+                        <x-select-input
+                            wireModel="religion"
+                            placeholder="Select Religion"
+                            :options="['ISLAM' => 'Islam', 'HINDU' => 'Hindu', 'CHRISTIAN' => 'Christian', 'BUDDHIST' => 'Buddhist', 'OTHER' => 'Other']"
+                        />
+                        @error('religion')
+                            <span class="text-sm text-red-500 mt-1 block">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
             </div>
 
-            <div class="mb-5 relative">
-                <input wire:model="password_confirmation" type="password" id="password_confirmation"
-                    placeholder="Enter password again"
-                    class="w-full p-3 border border-custom-pink rounded focus:outline-none focus:ring-2 focus:ring-custom-pink transition-all duration-300 ease-in-out" />
-                @error('password_confirmation')
-                    <span class="text-sm text-red-500">{{ $message }}</span>
-                @enderror
+            <!-- Verification Information Section -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold text-custom-red border-b-2 border-custom-pink/30 pb-2">Verification Details</h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="nid" class="block text-sm font-semibold text-gray-700 mb-2">NID Number</label>
+                        <input wire:model="nid" type="text" id="nid" placeholder="Enter NID number"
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all duration-300" />
+                        @error('nid')
+                            <span class="text-sm text-red-500 mt-1 block">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="student_id" class="block text-sm font-semibold text-gray-700 mb-2">Student ID</label>
+                        <input wire:model="student_id" type="text" id="student_id" placeholder="Enter student ID"
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all duration-300" />
+                        @error('student_id')
+                            <span class="text-sm text-red-500 mt-1 block">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label for="university" class="block text-sm font-semibold text-gray-700 mb-2">University Name</label>
+                        <input wire:model="university" type="text" id="university" placeholder="Enter university name"
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all duration-300" />
+                        @error('university')
+                            <span class="text-sm text-red-500 mt-1 block">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
             </div>
-            <button
-                class="w-full bg-custom-pink text-white py-3 rounded hover:bg-pink-700 transition-colors duration-300 ease-in-out">Register</button>
+
+            <!-- Account Credentials Section -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold text-custom-red border-b-2 border-custom-pink/30 pb-2">Account Credentials</h3>
+
+                <div class="space-y-4">
+                    <div>
+                        <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
+                        <input wire:model="email" type="email" id="email" placeholder="example@email.com"
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all duration-300" />
+                        @error('email')
+                            <span class="text-sm text-red-500 mt-1 block">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+                            <input wire:model="password" type="password" id="password" placeholder="Create a strong password"
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all duration-300" />
+                            @error('password')
+                                <span class="text-sm text-red-500 mt-1 block">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="password_confirmation" class="block text-sm font-semibold text-gray-700 mb-2">Confirm Password</label>
+                            <input wire:model="password_confirmation" type="password" id="password_confirmation" placeholder="Re-enter your password"
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all duration-300" />
+                            @error('password_confirmation')
+                                <span class="text-sm text-red-500 mt-1 block">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit"
+                class="w-full bg-custom-pink text-white py-3.5 rounded-lg font-semibold hover:bg-custom-red shadow-md hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300">
+                Create Account
+            </button>
         </form>
 
-        {{-- <!-- Google Sign-In Button -->
-            <div class="mt-5">
-                <button class="w-full bg-blue-500 text-white py-3 rounded hover:bg-blue-600 transition-colors duration-300 ease-in-out">
-                    <i class="fab fa-google mr-3"></i> Login with Google
-                </button>
-            </div> --}}
-
-        <p class="mt-4 text-sm text-center text-gray-700">Already have an account? <a href="{{ route('login') }}"
-                class="text-custom-pink font-medium hover:text-pink-700 transition-colors duration-200">Sign in here</a>
-        </p>
+        <div class="mt-6 text-center">
+            <p class="text-sm text-gray-600">
+                Already have an account?
+                <a href="{{ route('login') }}" class="font-semibold text-custom-pink hover:text-custom-red transition-colors duration-200 hover:underline">
+                    Sign in here
+                </a>
+            </p>
+        </div>
     </div>
 </div>

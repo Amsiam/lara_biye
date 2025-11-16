@@ -48,6 +48,7 @@ $goToPage = function ($page) {
 
 $profiles = computed(function () {
     return \App\Models\User::query()
+        ->where('is_admin', false)
         ->whereHas('basicInfo', function ($query) {
             $query->when($this->gender, function ($query) {
                 $query->where('gender', strtoupper($this->gender));

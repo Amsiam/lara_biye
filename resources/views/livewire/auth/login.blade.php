@@ -74,53 +74,67 @@ new #[Layout('components.layouts.auth')] class extends Component {
 }; ?>
 
 
-<div
-    class="w-full max-w-4xl p-8 bg-white rounded-2xl shadow-xl flex flex-col lg:flex-row overflow-hidden border-4 border-white">
+<div class="w-full max-w-5xl bg-white rounded-xl shadow-2xl flex flex-col lg:flex-row overflow-hidden border border-gray-100">
     <!-- Left Section with Image -->
-    <div class="w-full lg:w-1/3 relative mb-6 lg:mb-0">
-        <img src="{{ asset('img/image 70.png') }}" alt="Login Image" class="w-full h-full object-cover rounded-lg">
+    <div class="w-full lg:w-2/5 relative bg-gradient-to-br from-custom-pink/10 to-custom-red/10 p-8 flex items-center justify-center">
+        <div class="text-center space-y-4">
+            <img src="{{ asset('img/image 70.png') }}" alt="Login Image" class="w-full max-w-sm mx-auto rounded-xl shadow-lg">
+            <h3 class="text-2xl font-bold text-custom-red">Welcome Back!</h3>
+            <p class="text-gray-600">Login to continue your journey</p>
+        </div>
     </div>
 
     <!-- Right Section -->
-    <div class="w-full lg:w-2/3 p-10 flex flex-col justify-center">
-        <h2 class="text-4xl font-semibold mb-6 text-custom-pink">Login to your account</h2>
-        <form wire:submit.prevent="login">
-            <div class="mb-5">
-                <input wire:model="email" type="email" placeholder="Enter email"
-                    class="w-full p-3 border border-custom-pink rounded focus:outline-none focus:ring-2 focus:ring-custom-pink transition-all duration-300 ease-in-out" />
+    <div class="w-full lg:w-3/5 p-10 lg:p-12 flex flex-col justify-center">
+        <div class="mb-8">
+            <h2 class="text-3xl lg:text-4xl font-bold text-custom-red mb-2">Login to your account</h2>
+            <p class="text-gray-600">Enter your credentials to access your profile</p>
+        </div>
+
+        <form wire:submit.prevent="login" class="space-y-6">
+            <div>
+                <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
+                <input wire:model="email" type="email" id="email" placeholder="example@email.com"
+                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all duration-300" />
                 @error('email')
-                    <span class="text-sm text-red-500">{{ $message }}</span>
+                    <span class="text-sm text-red-500 mt-1 block">{{ $message }}</span>
                 @enderror
             </div>
-            <div class="mb-5 relative">
-                <input wire:model="password" type="password" id="password" placeholder="Enter password"
-                    class="w-full p-3 border border-custom-pink rounded focus:outline-none focus:ring-2 focus:ring-custom-pink transition-all duration-300 ease-in-out" />
+
+            <div>
+                <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+                <input wire:model="password" type="password" id="password" placeholder="Enter your password"
+                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all duration-300" />
                 @error('password')
-                    <span class="text-sm text-red-500">{{ $message }}</span>
+                    <span class="text-sm text-red-500 mt-1 block">{{ $message }}</span>
                 @enderror
             </div>
-            <div class="mb-4 flex items-center justify-between">
-                <div class="flex items-center ml-1">
-                    <input wire:model="remember" type="checkbox" id="checkbox1" class="custom-checkbox mr-3">
-                    <label for="checkbox1" class="text-gray-700 cursor-pointer">Remember me</label>
+
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <input wire:model="remember" type="checkbox" id="remember"
+                        class="w-4 h-4 text-custom-pink bg-gray-100 border-gray-300 rounded focus:ring-custom-pink focus:ring-2 cursor-pointer">
+                    <label for="remember" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer select-none">Remember me</label>
                 </div>
                 <a href="{{ route('password.request') }}"
-                    class="text-sm text-custom-pink font-medium hover:text-pink-700 transition-colors duration-200">Forgot
-                    password?</a>
+                    class="text-sm font-semibold text-custom-pink hover:text-custom-red transition-colors duration-200 hover:underline">
+                    Forgot password?
+                </a>
             </div>
-            <button
-                class="w-full bg-custom-pink text-white py-3 rounded hover:bg-pink-700 transition-colors duration-300 ease-in-out">Login</button>
+
+            <button type="submit"
+                class="w-full bg-custom-pink text-white py-3.5 rounded-lg font-semibold hover:bg-custom-red shadow-md hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300">
+                Login to Account
+            </button>
         </form>
 
-        {{-- <!-- Google Sign-In Button -->
-            <div class="mt-5">
-                <button class="w-full bg-blue-500 text-white py-3 rounded hover:bg-blue-600 transition-colors duration-300 ease-in-out">
-                    <i class="fab fa-google mr-3"></i> Login with Google
-                </button>
-            </div> --}}
-
-        <p class="mt-4 text-sm text-center text-gray-700">Don't have an account? <a href="{{ route('register') }}"
-                class="text-custom-pink font-medium hover:text-pink-700 transition-colors duration-200">Sign up here</a>
-        </p>
+        <div class="mt-6 text-center">
+            <p class="text-sm text-gray-600">
+                Don't have an account?
+                <a href="{{ route('register') }}" class="font-semibold text-custom-pink hover:text-custom-red transition-colors duration-200 hover:underline">
+                    Create one now
+                </a>
+            </p>
+        </div>
     </div>
 </div>

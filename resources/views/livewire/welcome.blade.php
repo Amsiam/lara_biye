@@ -14,14 +14,14 @@ $createProfile = function () {
 // Computed properties for statistics with caching
 $totalProfiles = computed(function () {
     return Cache::remember('stats.total_profiles', 3600, function () {
-        $dbCount = User::whereHas('basicInfo')->count();
+        $dbCount = User::where('is_admin', false)->whereHas('basicInfo')->count();
         return 5165 + $dbCount; // Adding to base value
     });
 });
 
 $groomProfiles = computed(function () {
     return Cache::remember('stats.groom_profiles', 3600, function () {
-        $dbCount = User::whereHas('basicInfo', function ($query) {
+        $dbCount = User::where('is_admin', false)->whereHas('basicInfo', function ($query) {
             $query->where('gender', 'Male');
         })->count();
         return 2184 + $dbCount; // Adding to base value
@@ -30,7 +30,7 @@ $groomProfiles = computed(function () {
 
 $brideProfiles = computed(function () {
     return Cache::remember('stats.bride_profiles', 3600, function () {
-        $dbCount = User::whereHas('basicInfo', function ($query) {
+        $dbCount = User::where('is_admin', false)->whereHas('basicInfo', function ($query) {
             $query->where('gender', 'Female');
         })->count();
         return 2981 + $dbCount; // Adding to base value

@@ -15,6 +15,9 @@ rules([
     'bio.height' => 'required|numeric',
     'bio.weight' => 'required|numeric',
     'bio.religion' => 'required|string',
+    'bio.nid' => 'nullable|string|max:20',
+    'bio.student_id' => 'nullable|string|max:20',
+    'bio.university' => 'nullable|string|max:100',
 ]);
 
 $enableEditing = fn() => ($this->isEditing = !$this->isEditing);
@@ -248,6 +251,48 @@ $save = function () {
             @else
                 <p class="text-gray-900 font-medium">
                     {{ $bio->dob }}
+                </p>
+            @endif
+        </div>
+
+        <div>
+            <p class="text-gray-600 text-xs font-semibold uppercase mb-2">NID Number</p>
+            @if ($isEditing)
+                <input wire:model="bio.nid" type="text" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all" placeholder="Enter NID number" />
+                @error('bio.nid')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            @else
+                <p class="text-gray-900 font-medium">
+                    {{ $bio->nid ?? '-' }}
+                </p>
+            @endif
+        </div>
+
+        <div>
+            <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Student ID</p>
+            @if ($isEditing)
+                <input wire:model="bio.student_id" type="text" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all" placeholder="Enter student ID" />
+                @error('bio.student_id')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            @else
+                <p class="text-gray-900 font-medium">
+                    {{ $bio->student_id ?? '-' }}
+                </p>
+            @endif
+        </div>
+
+        <div>
+            <p class="text-gray-600 text-xs font-semibold uppercase mb-2">University</p>
+            @if ($isEditing)
+                <input wire:model="bio.university" type="text" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all" placeholder="Enter university name" />
+                @error('bio.university')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            @else
+                <p class="text-gray-900 font-medium">
+                    {{ $bio->university ?? '-' }}
                 </p>
             @endif
         </div>
