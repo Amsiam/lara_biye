@@ -339,6 +339,13 @@ class UserResource extends Resource
                     ->falseLabel('Unverified only')
                     ->native(false),
 
+                Tables\Filters\TernaryFilter::make('profile_verified_at')
+                    ->label('Profile Verification')
+                    ->nullable()
+                    ->trueLabel('Verified profiles')
+                    ->falseLabel('Unverified profiles')
+                    ->native(false),
+
                 Tables\Filters\SelectFilter::make('gender')
                     ->relationship('basicInfo', 'gender')
                     ->options([
