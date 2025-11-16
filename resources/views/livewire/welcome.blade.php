@@ -3,6 +3,7 @@
 use function Livewire\Volt\{layout, computed};
 use App\Models\User;
 use App\Models\Setting;
+use App\Models\Page;
 use Illuminate\Support\Facades\Cache;
 
 layout('components.layouts.app');
@@ -35,6 +36,15 @@ $brideProfiles = computed(function () {
         })->count();
         return 2981 + $dbCount; // Adding to base value
     });
+});
+
+// Footer pages grouped by category
+$legalPages = computed(function () {
+    return Page::footer()->category('legal')->ordered()->get();
+});
+
+$supportPages = computed(function () {
+    return Page::footer()->category('support')->ordered()->get();
 });
 
 ?>
@@ -883,54 +893,22 @@ $brideProfiles = computed(function () {
                 <div>
                     <h5 class="text-xl font-extrabold mb-6 text-custom-pink">Support</h5>
                     <ul class="space-y-3">
-                        <li>
-                            <a href="#"
-                                class="text-gray-300 hover:text-custom-pink text-sm transition-colors flex items-center gap-2 group">
-                                <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"
-                                    fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd"
-                                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                                <span>Help Center</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#"
-                                class="text-gray-300 hover:text-custom-pink text-sm transition-colors flex items-center gap-2 group">
-                                <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"
-                                    fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd"
-                                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                                <span>Safety Information</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#"
-                                class="text-gray-300 hover:text-custom-pink text-sm transition-colors flex items-center gap-2 group">
-                                <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"
-                                    fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd"
-                                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                                <span>Cancellation & Returns</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#"
-                                class="text-gray-300 hover:text-custom-pink text-sm transition-colors flex items-center gap-2 group">
-                                <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"
-                                    fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd"
-                                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                                <span>Our COVID-19 Response</span>
-                            </a>
-                        </li>
+                        @forelse($this->supportPages as $page)
+                            <li>
+                                <a href="{{ route('page', $page->slug) }}"
+                                    class="text-gray-300 hover:text-custom-pink text-sm transition-colors flex items-center gap-2 group">
+                                    <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                    <span>{{ $page->title }}</span>
+                                </a>
+                            </li>
+                        @empty
+                            <li class="text-gray-400 text-sm">No support pages available</li>
+                        @endforelse
                     </ul>
                 </div>
 
@@ -974,15 +952,12 @@ $brideProfiles = computed(function () {
             <div class="border-t border-white/20 mt-12 pt-8">
                 <div class="flex flex-col md:flex-row justify-between items-center gap-4">
                     <div class="flex flex-wrap justify-center gap-4 text-sm text-gray-300">
-                        <a href="#" class="hover:text-custom-pink transition-colors">Privacy Policy</a>
-                        <span class="text-gray-600">|</span>
-                        <a href="#" class="hover:text-custom-pink transition-colors">Terms of Use</a>
-                        <span class="text-gray-600">|</span>
-                        <a href="#" class="hover:text-custom-pink transition-colors">Sales and Refunds</a>
-                        <span class="text-gray-600">|</span>
-                        <a href="#" class="hover:text-custom-pink transition-colors">Legal</a>
-                        <span class="text-gray-600">|</span>
-                        <a href="#" class="hover:text-custom-pink transition-colors">Site Map</a>
+                        @foreach($this->legalPages as $index => $page)
+                            @if($index > 0)
+                                <span class="text-gray-600">|</span>
+                            @endif
+                            <a href="{{ route('page', $page->slug) }}" class="hover:text-custom-pink transition-colors">{{ $page->title }}</a>
+                        @endforeach
                     </div>
                     <div class="text-center md:text-right">
                         <p class="text-sm text-gray-300">&copy; {{ date('Y') }} <span

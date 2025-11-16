@@ -20,6 +20,9 @@ Volt::route('about', 'about')->name('about');
 
 Volt::route('faq', 'faq')->name('faq');
 
+// Dynamic page route
+Volt::route('page/{slug}', 'page')->name('page');
+
 // CAPTCHA image route
 Route::get('captcha-image', [App\Http\Controllers\CaptchaController::class, 'generate'])->name('captcha.image');
 
