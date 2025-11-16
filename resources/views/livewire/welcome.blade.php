@@ -22,18 +22,22 @@ $totalProfiles = computed(function () {
 
 $groomProfiles = computed(function () {
     return Cache::remember('stats.groom_profiles', 3600, function () {
-        $dbCount = User::where('is_admin', false)->whereHas('basicInfo', function ($query) {
-            $query->where('gender', 'Male');
-        })->count();
+        $dbCount = User::where('is_admin', false)
+            ->whereHas('basicInfo', function ($query) {
+                $query->where('gender', 'Male');
+            })
+            ->count();
         return 2184 + $dbCount; // Adding to base value
     });
 });
 
 $brideProfiles = computed(function () {
     return Cache::remember('stats.bride_profiles', 3600, function () {
-        $dbCount = User::where('is_admin', false)->whereHas('basicInfo', function ($query) {
-            $query->where('gender', 'Female');
-        })->count();
+        $dbCount = User::where('is_admin', false)
+            ->whereHas('basicInfo', function ($query) {
+                $query->where('gender', 'Female');
+            })
+            ->count();
         return 2981 + $dbCount; // Adding to base value
     });
 });
@@ -108,16 +112,16 @@ $supportPages = computed(function () {
                 <div class="flex items-center mt-12 justify-center lg:justify-start gap-6 flex-wrap">
                     <div class="flex -space-x-3">
                         <img src="{{ asset('img/hero-img1.png') }}"
-                            class="w-12 h-12 rounded-full border-4 border-maroon hover:scale-110 transition-transform cursor-pointer"
+                            class="w-12 h-12 rounded-full border-4 border-maroon hover:scale-110 transition-transform cursor-pointer blur-sm"
                             alt="Profile 1">
                         <img src="{{ asset('img/hero-img2.png') }}"
-                            class="w-12 h-12 rounded-full border-4 border-maroon hover:scale-110 transition-transform cursor-pointer"
+                            class="w-12 h-12 rounded-full border-4 border-maroon hover:scale-110 transition-transform cursor-pointer blur-sm"
                             alt="Profile 2">
                         <img src="{{ asset('img/hero-img3.png') }}"
-                            class="w-12 h-12 rounded-full border-4 border-maroon hover:scale-110 transition-transform cursor-pointer"
+                            class="w-12 h-12 rounded-full border-4 border-maroon hover:scale-110 transition-transform cursor-pointer blur-sm"
                             alt="Profile 3">
                         <img src="{{ asset('img/hero-img4.png') }}"
-                            class="w-12 h-12 rounded-full border-4 border-maroon hover:scale-110 transition-transform cursor-pointer"
+                            class="w-12 h-12 rounded-full border-4 border-maroon hover:scale-110 transition-transform cursor-pointer blur-sm"
                             alt="Profile 4">
                     </div>
                     <div class="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full">
@@ -187,7 +191,7 @@ $supportPages = computed(function () {
 
                             <!-- Search Button -->
                             <button type="submit"
-                                class="w-full bg-gradient-to-r from-custom-pink to-pink-600 text-white py-4 px-6 rounded-xl hover:shadow-2xl hover:scale-105 font-bold text-lg transition-all duration-300 flex items-center justify-center gap-2 group">
+                                class="w-full bg-gradient-to-r from-custom-pink to-pink-600 text-white py-3 px-6 rounded-xl hover:shadow-2xl hover:scale-105 font-bold text-lg transition-all duration-300 flex items-center justify-center gap-2 group">
                                 <svg class="w-5 h-5 group-hover:rotate-12 transition-transform" fill="none"
                                     stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -952,11 +956,12 @@ $supportPages = computed(function () {
             <div class="border-t border-white/20 mt-12 pt-8">
                 <div class="flex flex-col md:flex-row justify-between items-center gap-4">
                     <div class="flex flex-wrap justify-center gap-4 text-sm text-gray-300">
-                        @foreach($this->legalPages as $index => $page)
-                            @if($index > 0)
+                        @foreach ($this->legalPages as $index => $page)
+                            @if ($index > 0)
                                 <span class="text-gray-600">|</span>
                             @endif
-                            <a href="{{ route('page', $page->slug) }}" class="hover:text-custom-pink transition-colors">{{ $page->title }}</a>
+                            <a href="{{ route('page', $page->slug) }}"
+                                class="hover:text-custom-pink transition-colors">{{ $page->title }}</a>
                         @endforeach
                     </div>
                     <div class="text-center md:text-right">
