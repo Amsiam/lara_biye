@@ -7,7 +7,7 @@
     <title>Engineer's Matrimony</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Marko One' rel='stylesheet'>
-
+    @fluxAppearance
     @vite(['resources/css/app.css'])
 </head>
 
@@ -37,6 +37,21 @@
                         class="text-gray-900 hover:text-custom-pink {{ Route::is('your.connections') ? 'text-custom-pink font-bold' : '' }}">Your
                         Connections</a>
 
+                    @if (auth()->check())
+                        <flux:dropdown>
+                            <flux:button variant="ghost"
+                                class="{{ Route::is('payment.history') || Route::is('connection.history') ? 'text-custom-pink font-bold' : '' }}"
+                                icon:trailing="chevron-down">History</flux:button>
+                            <flux:menu>
+                                <flux:menu.item href="{{ route('payment.history') }}" icon="credit-card">Payment
+                                </flux:menu.item>
+                                <flux:menu.item icon="users" href="{{ route('connection.history') }}">Connection
+                                </flux:menu.item>
+                            </flux:menu>
+                        </flux:dropdown>
+                        <!-- History Dropdown -->
+                    @endif
+
                     <a href="#" class="text-gray-600 hover:text-custom-pink">About Us</a>
                     <a href="#" class="text-gray-600 hover:text-custom-pink">FAQ</a>
                     <a href="#" class="text-gray-600 hover:text-custom-pink">Guide</a>
@@ -65,7 +80,20 @@
     <div id="mobile-menu"
         class="md:hidden hidden absolute top-16 left-0 w-full bg-white shadow-md z-[100] transition-transform transform duration-500 ease-in-out">
         <div class="flex flex-col space-y-4 py-4 px-6">
-            <a href="#" class="text-gray-900 hover:text-custom-pink text-center">Home</a>
+            <a href="{{ route('home') }}" class="text-gray-900 hover:text-custom-pink text-center">Home</a>
+            @if (auth()->check())
+                <a href="{{ route('your.connections') }}" class="text-gray-600 hover:text-custom-pink text-center">Your
+                    Connections</a>
+                <a href="{{ route('payment.history') }}"
+                    class="text-gray-600 hover:text-custom-pink text-center flex justify-center items-center gap-1">
+                    <flux:icon.credit-card />
+                    Payment History</a>
+                <a href="{{ route('connection.history') }}"
+                    class="text-gray-600 hover:text-custom-pink text-center flex justify-center items-center gap-1">
+                    <flux:icon.users />
+                    Connection History
+                </a>
+            @endif
             <a href="#" class="text-gray-600 hover:text-custom-pink text-center">About Us</a>
             <a href="#" class="text-gray-600 hover:text-custom-pink text-center">FAQ</a>
             <a href="#" class="text-gray-600 hover:text-custom-pink text-center">Guide</a>
@@ -90,16 +118,36 @@
         // Select elements
         const hamburgerButton = document.getElementById('hamburger');
         const mobileMenu = document.getElementById('mobile-menu');
+        const historyDropdownButton = document.getElementById('history-dropdown-button');
+        const historyDropdown = document.getElementById('history-dropdown');
 
         // Toggle mobile menu
-        hamburgerButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
+        if (hamburgerButton && mobileMenu) {
+            hamburgerButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
 
-        // Close menu when clicking outside
+        // Toggle history dropdown
+        if (historyDropdownButton && historyDropdown) {
+            historyDropdownButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                historyDropdown.classList.toggle('hidden');
+            });
+        }
+
+        // Close menus when clicking outside
         document.addEventListener('click', (event) => {
-            if (!mobileMenu.contains(event.target) && !hamburgerButton.contains(event.target)) {
+            // Close mobile menu
+            if (mobileMenu && hamburgerButton && !mobileMenu.contains(event.target) && !hamburgerButton.contains(
+                    event.target)) {
                 mobileMenu.classList.add('hidden');
+            }
+
+            // Close history dropdown
+            if (historyDropdown && historyDropdownButton && !historyDropdown.contains(event.target) && !
+                historyDropdownButton.contains(event.target)) {
+                historyDropdown.classList.add('hidden');
             }
         });
 
@@ -124,7 +172,7 @@
 
     <!-- Main Wrapper -->
     {{ $slot }}
-
+    @fluxScripts
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
 
 </body>

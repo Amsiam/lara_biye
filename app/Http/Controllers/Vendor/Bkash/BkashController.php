@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers\Vendor\Bkash;
 
+use App\Mail\InvoiceMail;
 use App\Models\Connection;
+use App\Models\Package;
+use App\Models\Purchase;
+use App\Models\User;
 use Ihasan\Bkash\Facades\Bkash;
 use Ihasan\Bkash\Models\BkashPayment;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class BkashController extends Controller
 {
@@ -42,20 +47,51 @@ class BkashController extends Controller
 
             //update connection
 
-            //payerReference is connection_id
-            $payerReference = $response['payerReference'] ?? "0_0_0";
+            //payerReference format: pkg_{packageId}_user_{userId}_{timestamp}
+            $payerReference = $response['payerReference'] ?? "0_0_0_0_0";
             $payerReferenceParts = explode('_', $payerReference);
-            $connectionId = isset($payerReferenceParts[1]) ? $payerReferenceParts[1] : null;
+
+            // Extract package ID and user ID
+            $packageId = isset($payerReferenceParts[1]) ? $payerReferenceParts[1] : null;
+            $userId = isset($payerReferenceParts[3]) ? $payerReferenceParts[3] : null;
 
             //connect update or create
-            if ($connectionId) {
-                $connection = Connection::where('user_id', $connectionId)->first();
-                if (!$connection) {
-                    $connection = new Connection();
-                    $connection->user_id = $connectionId;
+            if ($userId && $packageId) {
+                // Get the package to determine connection count
+                $package = Package::find($packageId);
+                $user = User::find($userId);
+
+                if ($package && $user) {
+                    $connection = Connection::where('user_id', $userId)->first();
+                    if (!$connection) {
+                        $connection = new Connection();
+                        $connection->user_id = $userId;
+                    }
+                    $connection->connection += $package->connections; // Increment by package connections
+                    $connection->save();
+
+                    // Create purchase record
+                    Purchase::create([
+                        'user_id' => $userId,
+                        'package_id' => $packageId,
+                        'amount' => $package->price,
+                        'transaction_id' => $response['trxID'] ?? null,
+                        'payment_id' => $response['paymentID'] ?? null,
+                        'invoice_number' => $response['merchantInvoiceNumber'] ?? null,
+                        'payment_method' => 'bkash',
+                        'status' => 'completed',
+                        'connections_purchased' => $package->connections,
+                        'payment_response' => $response,
+                    ]);
+
+                    // Send invoice email
+                    try {
+                        Mail::to($user->email)->send(new InvoiceMail($user, $package, $response));
+                    } catch (\Exception $e) {
+                        // Log the error but don't fail the payment
+                        Log::error('Failed to send invoice email: ' . $e->getMessage());
+                    }
                 }
-                $connection->connection += 3; // Increment connection count
-                $connection->save();
             }
 
 

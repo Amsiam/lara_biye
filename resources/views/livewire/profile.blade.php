@@ -19,7 +19,7 @@ $deleteAccount = function () {
 };
 
 $buyConnection = function () {
-    return redirect(route('payment', ['provider' => 'bkash']));
+    return redirect(route('packages'));
 };
 
 $sendConnection = function () {

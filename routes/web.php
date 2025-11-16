@@ -21,7 +21,8 @@ Route::get('dashboard', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    Route::get('payment/{provider}', [PaymentController::class, 'processPayment'])->name('payment');
+    Volt::route('packages', 'packages')->name('packages');
+    Route::get('payment/{provider}/{package}', [PaymentController::class, 'processPayment'])->name('payment');
 
     Route::redirect('settings', 'settings/profile');
     Volt::route('profile/{profileId}', 'profile')->name('profile');
@@ -30,6 +31,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 
     Volt::route('your-connections', 'connections')->name('your.connections');
+    Volt::route('payment-history', 'payment-history')->name('payment.history');
+    Volt::route('connection-history', 'connection-history')->name('connection.history');
 
 
     Route::get('bkash/callback', [BkashController::class, 'callback'])->name('bkash.callback');

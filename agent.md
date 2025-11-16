@@ -1,0 +1,762 @@
+# Agent Context: Engineer's Matrimony Platform
+
+## Project Overview
+
+**Name:** Engineer's Matrimony
+**Type:** Matrimony/Matchmaking Platform for Engineers
+**Framework:** Laravel 12.0
+**PHP Version:** ^8.2
+**Current Branch:** siam (main branch: main)
+
+This is a comprehensive matrimony platform with profile management, connection system, payment integration, and notifications.
+
+---
+
+## Technology Stack
+
+### Backend
+- **Laravel:** 12.0
+- **Database:** MySQL (production), SQLite (development)
+- **Session/Cache/Queue:** Database driver
+- **Payment Gateway:** bKash (via `theihasan/laravel-bkash`)
+
+### Frontend
+- **CSS Framework:** Tailwind CSS v4 with Vite
+- **Components:** Livewire Volt v1.7 (Livewire 3)
+- **UI Kit:** Livewire Flux v2, Flowbite
+- **JavaScript:** Alpine.js, Axios, ES Modules
+- **Build Tool:** Vite 6.0
+- **Fonts:** Inter, Marko One
+
+### Development Tools
+- `laravel/tinker` - REPL
+- `laravel/pint` - Code formatting
+- `pestphp/pest` - Testing
+- `barryvdh/laravel-debugbar` - Debugging
+
+---
+
+## Project Structure
+
+```
+lara_biye/
+├── app/
+│   ├── Models/                  # 19 models (User + 18 profile models)
+│   ├── Http/
+│   │   ├── Controllers/         # 4 controllers (minimal, Volt handles most logic)
+│   │   └── Middleware/          # CheckConnection middleware
+│   ├── Livewire/                # Livewire components
+│   └── View/Components/         # Blade components
+├── database/
+│   ├── migrations/              # 27 migrations
+│   └── seeders/
+├── resources/
+│   ├── views/                   # 60+ Blade templates (31 Volt components)
+│   ├── css/                     # Tailwind + custom styles
+│   └── js/
+├── routes/
+│   ├── web.php                  # Main application routes
+│   └── auth.php                 # Authentication routes
+├── config/                      # Laravel configs + bkash.php
+├── storage/app/public/photos/   # User uploaded images
+└── public/
+```
+
+---
+
+## Database Architecture
+
+### Core Models & Relationships
+
+**User Model (Central Hub):**
+- Implements `MustVerifyEmail`
+- **HasOne:** basicInfo, education, location, physicalAttribute, language, hobbiesAndInterest, personalAttitude, lifeStyle, familyInformation, spiritualAndSocialBackground, residencyInformation, partnerExpectation, presentAddress, connection, galary
+- **HasMany:** siblingInfo, visitedProfiles
+- **BelongsToMany:** connectedUsers (via `connected` pivot table)
+
+### Profile Models (18 models)
+
+| Model | Key Fields | Purpose |
+|-------|-----------|---------|
+| **BasicInfo** | name, dob, gender, religion, blood_group, profile_image, NID, student_id, university, is_nid_verified | Core identity |
+| **PhysicalAttribute** | eye_color, hair, complexion, body_type, disability | Physical traits |
+| **EducationCareer** | education, employment, occupation, annual_income | Professional info |
+| **Language** | language preferences | Communication |
+| **Location** | country, division, district, upazilla, union | Present address |
+| **HobbiesAndInterest** | hobbies, interests | Personal interests |
+| **PersonalAttitude** | attitude, behavior | Personality |
+| **LifeStyle** | lifestyle choices | Living preferences |
+| **FamilyInformation** | father_name, mother_name, siblings | Family details |
+| **SpiritualAndSocialBackground** | spiritual/social info | Background |
+| **ResidencyInformation** | permanent address details | Residency |
+| **PartnerExpectation** | 27 fields for ideal partner criteria | Match preferences |
+| **SiblingsInfo** | Multiple sibling records | Family structure |
+| **Galary** | Gallery images | Photo gallery |
+| **PresentAddress** | Current address | Location |
+| **Connection** | connection_count | Available connections |
+| **VisitedProfile** | visited_user_id, count | Profile visit tracking |
+| **Notification** | message, is_read, sender_id | Notifications |
+
+### Database Schema Pattern
+
+- **Privacy Control:** Most tables have `is_shown` boolean for visibility control
+- **Soft Identity Verification:** `is_nid_verified` field for NID validation
+- **Atomic Design:** Each profile section is a separate table (allows independent CRUD)
+
+---
+
+## Core Features & Business Logic
+
+### 1. Authentication System
+
+**Flow:**
+- Email/password registration with verification required
+- Password reset with token-based flow
+- Bcrypt hashing (12 rounds)
+- Session-based authentication
+- Middleware: `guest`, `auth`, `verified`, `signed`
+
+**Files:**
+- Routes: `routes/auth.php`
+- Components: `resources/views/livewire/auth/*.blade.php`
+
+### 2. Profile Management
+
+**Structure:**
+- Comprehensive profile with 15+ editable sections
+- Each section independently editable
+- Privacy controls per section (show to: all, free users, premium, none)
+- Profile image upload (stored in `storage/app/public/photos`)
+
+**Pattern:**
+```php
+// Conditional visibility
+if (auth()->user()?->id == $user->id) {
+    // Show own profile - all sections
+} elseif (auth()->user()?->isConnected($user->id)) {
+    // Show connected user - visible sections only
+} else {
+    // Show limited public info
+}
+```
+
+**Files:**
+- Components: `resources/views/livewire/profile/*.blade.php`
+- Models: `app/Models/*.php`
+
+### 3. Connection System
+
+**State Machine:**
+```
+User A sends request → PENDING
+                    ↓
+         ┌──────────┴──────────┐
+         ↓                     ↓
+     ACCEPTED              REJECTED
+```
+
+**Smart Logic:**
+```php
+// If mutual interest, auto-accept
+if (userB->isConnectionPending(userA->id)) {
+    // Auto-accept both directions
+}
+```
+
+**Connection Purchase:**
+- Payment via bKash: 1 purchase = 3 connections
+- Connection cost: 1 connection = view 1 profile
+- Tracked in `connections.connection_count`
+
+**Files:**
+- Model: `app/Models/User.php` (connection methods)
+- Component: `resources/views/livewire/connections.blade.php`
+- Middleware: `app/Http/Middleware/CheckConnection.php`
+
+### 4. Profile Access Control
+
+**CheckConnection Middleware Logic:**
+1. First visit to a profile = free (10 total free views)
+2. Track visits in `visited_profiles` table
+3. After free views exhausted: 1 connection = 1 view
+4. Redirect with error if no connections remaining
+
+**Files:**
+- Middleware: `app/Http/Middleware/CheckConnection.php`
+- Applied to: `routes/web.php` profile route
+
+### 5. Search & Discovery
+
+**Features:**
+- Filter by: gender, age range (18-25, 26-35, 36-45), marital status
+- Real-time filtering with `wire:model.live`
+- Computed properties for lazy loading
+
+**Files:**
+- Component: `resources/views/livewire/search.blade.php`
+
+### 6. Notifications System
+
+**Triggers:**
+- Connection request sent
+- Connection request accepted
+
+**Features:**
+- Read/unread tracking
+- Mark individual as read
+- Mark all as read
+- Navbar dropdown display
+
+**Files:**
+- Model: `app/Models/Notification.php`
+- Routes: `/markAsRead`, `/markAsRead/{notification}`
+
+### 7. Payment Integration (bKash)
+
+**Flow:**
+```
+User initiates payment
+    ↓
+PaymentController creates bKash transaction
+    ↓
+Redirect to bKash
+    ↓
+User completes payment
+    ↓
+bKash callback to /bkash/callback
+    ↓
+BkashController verifies payment
+    ↓
+On success: increment connection_count by 3
+    ↓
+Redirect to /bkash/success or /bkash/failed
+```
+
+**Configuration:**
+```env
+BKASH_SANDBOX=false  # Set true for testing
+BKASH_APP_KEY=...
+BKASH_APP_SECRET=...
+BKASH_USERNAME=...
+BKASH_PASSWORD=...
+```
+
+**Files:**
+- Controller: `app/Http/Controllers/PaymentController.php`
+- Controller: `app/Http/Controllers/BkashController.php`
+- Config: `config/bkash.php`
+- Routes: `/payment/{provider}`, `/bkash/callback`, `/bkash/success`, `/bkash/failed`
+
+---
+
+## Routing Structure
+
+### Main Routes (`routes/web.php`)
+
+```php
+GET  /                      → welcome (public landing)
+GET  /search                → search with filters
+GET  /dashboard             → redirect to /profile
+GET  /profile/{profileId}   → view profile (CheckConnection middleware)
+GET  /settings              → redirect to /settings/profile
+GET  /settings/profile      → edit profile
+GET  /settings/password     → change password
+GET  /settings/appearance   → appearance settings
+GET  /your-connections      → manage connections
+GET  /payment/{provider}    → initiate payment
+GET  /bkash/callback        → payment callback
+GET  /bkash/success         → payment success
+GET  /bkash/failed          → payment failure
+GET  /markAsRead            → mark all notifications read
+GET  /markAsRead/{id}       → mark single notification read
+POST /logout                → logout
+```
+
+### Auth Routes (`routes/auth.php`)
+
+```php
+GET  /login                     → login form
+GET  /register                  → registration form
+GET  /forgot-password           → forgot password
+GET  /reset-password/{token}    → reset password
+GET  /verify-email              → verification notice
+GET  /verify-email/{id}/{hash}  → verification handler (signed)
+GET  /confirm-password          → confirm password
+POST /logout                    → logout
+```
+
+**Middleware Groups:**
+- `guest` - Auth pages (redirect if authenticated)
+- `auth` + `verified` - Protected pages
+- `signed` - Email verification links
+- `throttle:6,1` - Rate limiting on verification
+
+---
+
+## Livewire/Volt Architecture
+
+### Component Pattern
+
+```php
+<?php
+use function Livewire\Volt\{state, computed};
+
+// State declaration
+state(['field1', 'field2']);
+
+// Computed property (cached)
+$user = computed(function () {
+    return User::with('relations')->find($this->id);
+});
+
+// Actions
+$save = function () {
+    $this->validate();
+    // Save logic
+};
+?>
+
+<div>
+    <!-- Blade template with wire: directives -->
+</div>
+```
+
+### Key Patterns
+
+1. **Computed Properties:** Lazy-loaded, cached
+2. **File Uploads:** `WithFileUploads` trait
+3. **Form Validation:** `rules()` function
+4. **Real-time Updates:** `wire:model.live`
+5. **Confirmation Dialogs:** `wire:confirm`
+
+### Volt Components (31 total)
+
+**Auth (6):** login, register, forgot-password, reset-password, verify-email, confirm-password
+**Profile (16):** basic_info, education, family, hobby, introduction, language, lifestyle, parmanent, partner, personal_attitude, physical_attr, present_address, residency, spiritual, upload-profile, astronomic
+**Core (5):** welcome, search, profile, connections, logout
+**Settings (4):** profile, password, appearance, delete-user-form
+
+---
+
+## Coding Standards & Patterns
+
+### 1. Model Relationships
+
+**Convention:**
+```php
+// User.php
+public function basicInfo(): HasOne {
+    return $this->hasOne(BasicInfo::class);
+}
+
+// Related model
+public function user(): BelongsTo {
+    return $this->belongsTo(User::class);
+}
+```
+
+### 2. Privacy Controls
+
+**Pattern:**
+```php
+// In migrations
+$table->boolean('is_shown')->default(true);
+
+// In views
+@if($section->is_shown || auth()->id() == $user->id)
+    <!-- Show content -->
+@endif
+```
+
+### 3. File Uploads
+
+**Pattern:**
+```php
+use Livewire\WithFileUploads;
+use Livewire\Attributes\Validate;
+
+#[Validate('image|max:2048')]
+public $photo;
+
+public function save() {
+    $path = $this->photo->store('photos', 'public');
+    // Save $path to database
+}
+```
+
+### 4. Connection Methods (User Model)
+
+**Key Methods:**
+```php
+// Send connection request
+public function sendConnectionRequest(User $user)
+
+// Check if connected (ACCEPTED)
+public function isConnected($userId): bool
+
+// Check if pending
+public function isConnectionPending($userId): bool
+
+// Check if user sent me request
+public function hasSentConnectionRequest($userId): bool
+
+// Relationships
+public function connectedUsers()   // Users I sent to
+public function rConnectedUsers()  // Users who sent to me
+```
+
+### 5. Validation Rules
+
+**Common Patterns:**
+```php
+'email' => 'required|email|unique:users'
+'password' => 'required|min:8|confirmed'
+'photo' => 'nullable|image|max:2048'
+'age' => 'nullable|integer|min:18|max:100'
+```
+
+### 6. Naming Conventions
+
+**Files:**
+- Models: `PascalCase.php` (e.g., `BasicInfo.php`)
+- Migrations: `YYYY_MM_DD_HHMMSS_create_table_name_table.php`
+- Components: `kebab-case.blade.php` (e.g., `basic-info.blade.php`)
+- Controllers: `PascalCase.php` with `Controller` suffix
+
+**Database:**
+- Tables: `snake_case` plural (e.g., `basic_infos`)
+- Columns: `snake_case` (e.g., `user_id`, `is_shown`)
+- Pivot tables: Alphabetical order (e.g., `connected`)
+
+**Variables:**
+- PHP: `$camelCase`
+- Blade: `$camelCase`
+- CSS classes: Tailwind utilities
+
+---
+
+## Frontend Architecture
+
+### Layout Structure
+
+**Main Layouts:**
+```
+components/layouts/
+├── app.blade.php        # Main app (navbar, sidebar, content)
+├── auth.blade.php       # Auth pages
+└── auth/
+    ├── card.blade.php   # Card-based auth
+    ├── simple.blade.php # Simple auth
+    └── split.blade.php  # Split-screen auth
+```
+
+### Custom Theme Colors
+
+```css
+--color-maroon: #490B22
+--color-custom-pink: #E33183
+--color-custom-red: #490b22
+```
+
+### Responsive Design
+
+- Mobile-first approach
+- Breakpoints: `md:` (768px), `lg:` (1024px)
+- Hamburger menu for mobile navigation
+
+### JavaScript Features
+
+- **Alpine.js:** Interactive components
+- **Livewire:** Wire directives (`wire:model`, `wire:click`, `wire:submit`)
+- **Axios:** HTTP requests
+- **Auto-dismiss errors:** 3-second timeout
+
+---
+
+## Configuration Files
+
+### Environment Variables
+
+**Required:**
+```env
+APP_NAME=Laravel
+APP_ENV=local|production
+APP_DEBUG=true|false
+APP_KEY=base64:...
+APP_URL=http://localhost
+
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=sail
+DB_PASSWORD=password
+
+SESSION_DRIVER=database
+CACHE_STORE=database
+QUEUE_CONNECTION=database
+
+BKASH_SANDBOX=false
+BKASH_APP_KEY=...
+BKASH_APP_SECRET=...
+BKASH_USERNAME=...
+BKASH_PASSWORD=...
+
+MAIL_MAILER=log
+MAIL_FROM_ADDRESS=hello@example.com
+```
+
+### Key Configs
+
+- `config/app.php` - Application settings
+- `config/auth.php` - Auth guards/providers
+- `config/database.php` - DB connections
+- `config/livewire.php` - Livewire settings
+- `config/bkash.php` - Payment gateway
+- `config/session.php` - Session storage (database)
+- `config/cache.php` - Cache storage (database)
+
+---
+
+## Security Considerations
+
+### Implemented
+
+- Email verification requirement
+- CSRF protection (Laravel built-in)
+- Password hashing (Bcrypt, 12 rounds)
+- Signed URLs for email verification
+- Rate limiting (6 requests/minute on verification)
+- Session storage in database
+- POST-only logout route
+
+### Best Practices
+
+- Always check authentication: `auth()->check()`, `auth()->id()`
+- Always validate input: `$this->validate()`
+- Always use signed URLs for sensitive actions
+- Always check ownership before editing: `$user->id === auth()->id()`
+- Always check connection status before showing private data
+
+### Potential Improvements
+
+- Add rate limiting on connection requests
+- Implement activity logging
+- Add two-factor authentication
+- Implement image moderation for uploads
+- Add spam detection for profiles
+
+---
+
+## Development Workflow
+
+### Common Commands
+
+```bash
+# Development
+composer dev              # Run serve + queue + pail + npm dev
+php artisan serve         # Start dev server
+php artisan queue:listen  # Process queued jobs
+php artisan pail          # Tail logs
+
+# Database
+php artisan migrate       # Run migrations
+php artisan migrate:fresh # Fresh migration (destructive)
+php artisan tinker        # Laravel REPL
+
+# Frontend
+npm run dev               # Vite dev server
+npm run build             # Production build
+
+# Code Quality
+./vendor/bin/pint         # Format code (Laravel Pint)
+./vendor/bin/pest         # Run tests
+```
+
+### Development Setup
+
+1. Clone repository
+2. `composer install`
+3. `npm install`
+4. Copy `.env.example` to `.env`
+5. `php artisan key:generate`
+6. Configure database in `.env`
+7. `php artisan migrate`
+8. `php artisan storage:link`
+9. `npm run dev` (in one terminal)
+10. `php artisan serve` (in another terminal)
+
+---
+
+## Recent Development Focus
+
+Based on recent commits:
+
+1. **Connections Management** - State handling and profile display
+2. **Notification System** - CRUD operations and UI integration
+3. **Enhanced Registration** - Added NID, student ID, university fields
+4. **Identity Verification** - NID verification system
+
+---
+
+## Common Tasks & How to Implement
+
+### Adding a New Profile Section
+
+1. **Create migration:**
+   ```bash
+   php artisan make:migration create_new_section_table
+   ```
+
+2. **Define schema:**
+   ```php
+   Schema::create('new_section', function (Blueprint $table) {
+       $table->id();
+       $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+       $table->boolean('is_shown')->default(true);
+       // Add fields
+       $table->timestamps();
+   });
+   ```
+
+3. **Create model:**
+   ```php
+   class NewSection extends Model {
+       protected $fillable = ['user_id', 'field1', 'field2'];
+       public function user() {
+           return $this->belongsTo(User::class);
+       }
+   }
+   ```
+
+4. **Add relationship to User:**
+   ```php
+   public function newSection(): HasOne {
+       return $this->hasOne(NewSection::class);
+   }
+   ```
+
+5. **Create Volt component:**
+   ```bash
+   # Create resources/views/livewire/profile/new-section.blade.php
+   ```
+
+6. **Add to profile view** - Include in profile.blade.php
+
+### Adding a New Route
+
+1. **Define route in `routes/web.php`:**
+   ```php
+   Route::get('/new-route', function () {
+       return view('livewire.new-component');
+   })->middleware(['auth', 'verified']);
+   ```
+
+2. **Create Volt component:**
+   ```bash
+   # Create resources/views/livewire/new-component.blade.php
+   ```
+
+### Modifying Connection Logic
+
+**Location:** `app/Models/User.php`
+
+**Key methods to modify:**
+- `sendConnectionRequest()`
+- `isConnected()`
+- `isConnectionPending()`
+
+### Customizing Payment Flow
+
+**Files to modify:**
+- `app/Http/Controllers/PaymentController.php` - Initiation
+- `app/Http/Controllers/BkashController.php` - Callback handling
+- `config/bkash.php` - Configuration
+
+---
+
+## Troubleshooting Guide
+
+### Common Issues
+
+**Issue:** Email verification not working
+**Solution:** Check `MAIL_MAILER` in `.env`, verify `APP_URL` is correct
+
+**Issue:** Images not displaying
+**Solution:** Run `php artisan storage:link`
+
+**Issue:** Payment failing
+**Solution:** Verify bKash credentials, check `BKASH_SANDBOX` setting
+
+**Issue:** Connection count not updating
+**Solution:** Check `connections` table, verify callback is being hit
+
+**Issue:** Livewire not updating
+**Solution:** Clear cache with `php artisan cache:clear`, check browser console
+
+---
+
+## File Locations Reference
+
+### Models
+- User: `app/Models/User.php`
+- Profile models: `app/Models/*.php`
+
+### Controllers
+- Payment: `app/Http/Controllers/PaymentController.php`
+- bKash: `app/Http/Controllers/BkashController.php`
+
+### Middleware
+- CheckConnection: `app/Http/Middleware/CheckConnection.php`
+
+### Routes
+- Main: `routes/web.php`
+- Auth: `routes/auth.php`
+
+### Views
+- Layouts: `resources/views/components/layouts/*.blade.php`
+- Auth: `resources/views/livewire/auth/*.blade.php`
+- Profile: `resources/views/livewire/profile/*.blade.php`
+- Settings: `resources/views/livewire/settings/*.blade.php`
+
+### Migrations
+- All migrations: `database/migrations/*.php`
+
+### Config
+- App: `config/app.php`
+- Database: `config/database.php`
+- bKash: `config/bkash.php`
+
+### Assets
+- CSS: `resources/css/app.css`
+- JS: `resources/js/app.js`
+- Uploaded photos: `storage/app/public/photos/`
+
+---
+
+## Summary for LLMs
+
+This is a **Laravel 12 matrimony platform** using **Livewire Volt** for the frontend. The architecture emphasizes:
+
+1. **Atomic Profile Design** - 18 separate models for profile sections
+2. **Smart Connection System** - Mutual requests auto-accept, paid profile views
+3. **Privacy Controls** - Per-section visibility settings
+4. **Payment Integration** - bKash gateway for purchasing connections
+5. **Minimal Controllers** - Volt components handle most logic
+6. **Database-driven Sessions/Cache** - Scalable architecture
+
+**When working on this project:**
+- Use Volt component pattern for new features
+- Follow atomic model design for new profile sections
+- Always check authentication and connection status
+- Maintain privacy control patterns
+- Use computed properties for heavy queries
+- Follow Laravel naming conventions
+
+**Key Integration Points:**
+- Payment flow: `PaymentController` → bKash → `BkashController`
+- Connection flow: `User` model methods → `connected` pivot → `CheckConnection` middleware
+- Profile access: Authentication → Connection check → Privacy settings
+- Notifications: Triggered in connection methods → displayed in navbar
+
+This platform is production-ready with room for enhancement in security hardening, testing coverage, and feature expansion.
