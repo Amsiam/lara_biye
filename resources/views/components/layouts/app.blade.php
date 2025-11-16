@@ -77,9 +77,9 @@
                         Guide
                         <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-custom-pink to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
                     </a>
-                    <a href="#" class="relative px-4 py-2 text-gray-700 font-medium hover:text-custom-pink transition-colors group">
+                    <a href="{{ route('contact') }}" class="relative px-4 py-2 text-gray-700 font-medium hover:text-custom-pink transition-colors group {{ Route::is('contact') ? 'text-custom-pink' : '' }}">
                         Contact
-                        <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-custom-pink to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                        <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-custom-pink to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 {{ Route::is('contact') ? 'scale-x-100' : '' }}"></span>
                     </a>
 
                     <div class="flex items-center gap-3 ml-4 pl-4 border-l border-gray-200">
@@ -136,7 +136,7 @@
             <a href="#" class="px-4 py-3 text-gray-700 font-medium hover:text-custom-pink hover:bg-custom-pink/5 rounded-lg text-center transition-all">About Us</a>
             <a href="#" class="px-4 py-3 text-gray-700 font-medium hover:text-custom-pink hover:bg-custom-pink/5 rounded-lg text-center transition-all">FAQ</a>
             <a href="#" class="px-4 py-3 text-gray-700 font-medium hover:text-custom-pink hover:bg-custom-pink/5 rounded-lg text-center transition-all">Guide</a>
-            <a href="#" class="px-4 py-3 text-gray-700 font-medium hover:text-custom-pink hover:bg-custom-pink/5 rounded-lg text-center transition-all">Contact</a>
+            <a href="{{ route('contact') }}" class="px-4 py-3 text-gray-700 font-medium hover:text-custom-pink hover:bg-custom-pink/5 rounded-lg text-center transition-all {{ Route::is('contact') ? 'text-custom-pink bg-custom-pink/10' : '' }}">Contact</a>
 
             <div class="border-t border-gray-200 my-2"></div>
 

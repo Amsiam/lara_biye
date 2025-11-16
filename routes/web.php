@@ -14,6 +14,11 @@ Volt::route('/', 'welcome')->name('home');
 
 Volt::route('search', 'search')->name('search');
 
+Volt::route('contact', 'contact')->name('contact');
+
+// CAPTCHA image route
+Route::get('captcha-image', [App\Http\Controllers\CaptchaController::class, 'generate'])->name('captcha.image');
+
 // Protected profile image route
 Route::get('profile-image/{userId}', [ProfileImageController::class, 'show'])->name('profile.image');
 

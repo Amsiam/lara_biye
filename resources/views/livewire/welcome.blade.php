@@ -853,7 +853,7 @@ $brideProfiles = computed(function () {
                             </a>
                         </li>
                         <li>
-                            <a href="#"
+                            <a href="{{ route('contact') }}"
                                 class="text-gray-300 hover:text-custom-pink text-sm transition-colors flex items-center gap-2 group">
                                 <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"
                                     fill="currentColor" viewBox="0 0 20 20">
