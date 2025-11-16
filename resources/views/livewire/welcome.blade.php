@@ -841,7 +841,7 @@ $brideProfiles = computed(function () {
                     <h5 class="text-xl font-extrabold mb-6 text-custom-pink">Resources</h5>
                     <ul class="space-y-3">
                         <li>
-                            <a href="#"
+                            <a href="{{ route('about') }}"
                                 class="text-gray-300 hover:text-custom-pink text-sm transition-colors flex items-center gap-2 group">
                                 <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"
                                     fill="currentColor" viewBox="0 0 20 20">
@@ -865,7 +865,7 @@ $brideProfiles = computed(function () {
                             </a>
                         </li>
                         <li>
-                            <a href="#"
+                            <a href="{{ route('faq') }}"
                                 class="text-gray-300 hover:text-custom-pink text-sm transition-colors flex items-center gap-2 group">
                                 <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"
                                     fill="currentColor" viewBox="0 0 20 20">
@@ -874,18 +874,6 @@ $brideProfiles = computed(function () {
                                         clip-rule="evenodd" />
                                 </svg>
                                 <span>FAQ</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#"
-                                class="text-gray-300 hover:text-custom-pink text-sm transition-colors flex items-center gap-2 group">
-                                <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"
-                                    fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd"
-                                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                                <span>Guide</span>
                             </a>
                         </li>
                     </ul>

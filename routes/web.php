@@ -16,6 +16,10 @@ Volt::route('search', 'search')->name('search');
 
 Volt::route('contact', 'contact')->name('contact');
 
+Volt::route('about', 'about')->name('about');
+
+Volt::route('faq', 'faq')->name('faq');
+
 // CAPTCHA image route
 Route::get('captcha-image', [App\Http\Controllers\CaptchaController::class, 'generate'])->name('captcha.image');
 

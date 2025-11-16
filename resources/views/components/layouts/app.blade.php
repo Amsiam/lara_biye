@@ -65,17 +65,13 @@
                         </flux:dropdown>
                     @endif
 
-                    <a href="#" class="relative px-4 py-2 text-gray-700 font-medium hover:text-custom-pink transition-colors group">
+                    <a href="{{ route('about') }}" class="relative px-4 py-2 text-gray-700 font-medium hover:text-custom-pink transition-colors group {{ Route::is('about') ? 'text-custom-pink' : '' }}">
                         About
-                        <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-custom-pink to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                        <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-custom-pink to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 {{ Route::is('about') ? 'scale-x-100' : '' }}"></span>
                     </a>
-                    <a href="#" class="relative px-4 py-2 text-gray-700 font-medium hover:text-custom-pink transition-colors group">
+                    <a href="{{ route('faq') }}" class="relative px-4 py-2 text-gray-700 font-medium hover:text-custom-pink transition-colors group {{ Route::is('faq') ? 'text-custom-pink' : '' }}">
                         FAQ
-                        <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-custom-pink to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
-                    </a>
-                    <a href="#" class="relative px-4 py-2 text-gray-700 font-medium hover:text-custom-pink transition-colors group">
-                        Guide
-                        <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-custom-pink to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                        <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-custom-pink to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 {{ Route::is('faq') ? 'scale-x-100' : '' }}"></span>
                     </a>
                     <a href="{{ route('contact') }}" class="relative px-4 py-2 text-gray-700 font-medium hover:text-custom-pink transition-colors group {{ Route::is('contact') ? 'text-custom-pink' : '' }}">
                         Contact
@@ -133,9 +129,8 @@
 
             <div class="border-t border-gray-200 my-2"></div>
 
-            <a href="#" class="px-4 py-3 text-gray-700 font-medium hover:text-custom-pink hover:bg-custom-pink/5 rounded-lg text-center transition-all">About Us</a>
-            <a href="#" class="px-4 py-3 text-gray-700 font-medium hover:text-custom-pink hover:bg-custom-pink/5 rounded-lg text-center transition-all">FAQ</a>
-            <a href="#" class="px-4 py-3 text-gray-700 font-medium hover:text-custom-pink hover:bg-custom-pink/5 rounded-lg text-center transition-all">Guide</a>
+            <a href="{{ route('about') }}" class="px-4 py-3 text-gray-700 font-medium hover:text-custom-pink hover:bg-custom-pink/5 rounded-lg text-center transition-all {{ Route::is('about') ? 'text-custom-pink bg-custom-pink/10' : '' }}">About Us</a>
+            <a href="{{ route('faq') }}" class="px-4 py-3 text-gray-700 font-medium hover:text-custom-pink hover:bg-custom-pink/5 rounded-lg text-center transition-all {{ Route::is('faq') ? 'text-custom-pink bg-custom-pink/10' : '' }}">FAQ</a>
             <a href="{{ route('contact') }}" class="px-4 py-3 text-gray-700 font-medium hover:text-custom-pink hover:bg-custom-pink/5 rounded-lg text-center transition-all {{ Route::is('contact') ? 'text-custom-pink bg-custom-pink/10' : '' }}">Contact</a>
 
             <div class="border-t border-gray-200 my-2"></div>
