@@ -119,11 +119,14 @@ new #[Layout('components.layouts.auth')] class extends Component {
 }; ?>
 
 
-<div class="w-full max-w-5xl bg-white rounded-xl shadow-2xl flex flex-col lg:flex-row overflow-hidden border border-gray-100">
+<div
+    class="w-full max-w-5xl bg-white rounded-xl shadow-2xl flex flex-col lg:flex-row overflow-hidden border border-gray-100">
     <!-- Left Section with Image -->
-    <div class="w-full lg:w-2/5 relative bg-gradient-to-br from-custom-pink/10 to-custom-red/10 p-8 flex items-center justify-center">
+    <div
+        class="w-full lg:w-2/5 relative bg-gradient-to-br from-custom-pink/10 to-custom-red/10 p-8 flex items-center justify-center">
         <div class="text-center space-y-4">
-            <img src="{{ asset('img/image 70.png') }}" alt="Login Image" class="w-full max-w-sm mx-auto rounded-xl shadow-lg">
+            <img src="{{ asset('img/image 70.png') }}" alt="Login Image"
+                class="w-full max-w-sm mx-auto rounded-xl shadow-lg">
             <h3 class="text-2xl font-bold text-custom-red">Welcome Back!</h3>
             <p class="text-gray-600">Login to continue your journey</p>
         </div>
@@ -159,7 +162,8 @@ new #[Layout('components.layouts.auth')] class extends Component {
                 <div class="flex items-center">
                     <input wire:model="remember" type="checkbox" id="remember"
                         class="w-4 h-4 text-custom-pink bg-gray-100 border-gray-300 rounded focus:ring-custom-pink focus:ring-2 cursor-pointer">
-                    <label for="remember" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer select-none">Remember me</label>
+                    <label for="remember"
+                        class="ml-2 text-sm font-medium text-gray-700 cursor-pointer select-none">Remember me</label>
                 </div>
                 <a href="{{ route('password.request') }}"
                     class="text-sm font-semibold text-custom-pink hover:text-custom-red transition-colors duration-200 hover:underline">
@@ -171,15 +175,15 @@ new #[Layout('components.layouts.auth')] class extends Component {
             <div class="space-y-3">
                 <label class="block text-sm font-semibold text-gray-700">Verification Code</label>
                 <div class="flex items-center gap-4">
-                    <img src="{{ route('captcha.image') }}?v={{ $captchaCode }}"
-                         alt="CAPTCHA Code"
-                         class="h-16 rounded-lg shadow-lg border-2 border-gray-200"
-                         wire:key="captcha-{{ $captchaCode }}"
-                         id="captcha-image">
+                    <img src="{{ route('captcha.image') }}?v={{ $captchaCode }}" alt="CAPTCHA Code"
+                        class="h-16 rounded-lg shadow-lg border-2 border-gray-200"
+                        wire:key="captcha-{{ $captchaCode }}" id="captcha-image">
                     <button type="button" wire:click="generateCaptcha"
-                            class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-medium text-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-medium text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                         </svg>
                         Reload
                     </button>
@@ -201,10 +205,17 @@ new #[Layout('components.layouts.auth')] class extends Component {
         <div class="mt-6 text-center">
             <p class="text-sm text-gray-600">
                 Don't have an account?
-                <a href="{{ route('register') }}" class="font-semibold text-custom-pink hover:text-custom-red transition-colors duration-200 hover:underline">
+                <a href="{{ route('register') }}"
+                    class="font-semibold text-custom-pink hover:text-custom-red transition-colors duration-200 hover:underline">
                     Create one now
                 </a>
             </p>
+
+        </div>
+        <div class="mt-6 text-center">
+            <a href="/" class="bg-custom-pink px-5 py-2 mt-5 text-white rounded">
+                Go Back Home
+            </a>
         </div>
     </div>
 </div>

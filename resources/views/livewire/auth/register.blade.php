@@ -313,5 +313,10 @@ new #[Layout('components.layouts.auth')] class extends Component {
                 </a>
             </p>
         </div>
+        <div class="mt-6 text-center">
+            <a href="/" class="bg-custom-pink px-5 py-2 mt-5 text-white rounded">
+                Go Back Home
+            </a>
+        </div>
     </div>
 </div>
