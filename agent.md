@@ -105,13 +105,14 @@ lara_biye/
 | **VisitedProfile** | visited_user_id, count | Profile visit tracking |
 | **Notification** | message, is_read, sender_id | Notifications |
 
-### System Models (3 models)
+### System Models (4 models)
 
 | Model | Key Fields | Purpose |
 |-------|-----------|---------|
 | **Package** | name, description, connections, price, is_popular, is_active | Connection packages for purchase |
-| **Purchase** | user_id, package_id, amount, transaction_id, payment_id, invoice_number, payment_method, status, connections_purchased, payment_response | Payment/purchase records |
+| **Purchase** | user_id, package_id, amount, transaction_id, payment_id, invoice_number, payment_method, status, payment_stage, connections_purchased, connections_applied, connections_applied_at, is_refunded, refunded_at, error_message, payment_initiated_at, payment_completed_at, payment_response | Payment/purchase records with comprehensive stage tracking |
 | **Setting** | key, value, type, group, description | Configurable application settings managed via Filament admin panel |
+| **Faq** | question, answer | Frequently asked questions managed via Filament |
 
 ### Database Schema Pattern
 
@@ -227,13 +228,23 @@ if (userB->isConnectionPending(userA->id)) {
 - Model: `app/Models/Notification.php`
 - Routes: `/markAsRead`, `/markAsRead/{notification}`
 
-### 7. Payment Integration (bKash)
+### 7. Payment Integration (bKash) with Stage Tracking
+
+**Payment Stages:**
+- `initiated` - Payment process started, purchase record created
+- `pending` - bKash payment URL generated, awaiting user action
+- `completed` - Payment successful, transaction verified
+- `failed` - Payment failed or error occurred
+- `refunded` - Payment refunded to user
+- `cancelled` - Payment cancelled by user
 
 **Flow:**
 ```
 User initiates payment
     ↓
-PaymentController creates bKash transaction
+PaymentController creates Purchase record (stage: initiated)
+    ↓
+Create bKash transaction → Update stage to pending
     ↓
 Redirect to bKash
     ↓
@@ -243,9 +254,49 @@ bKash callback to /bkash/callback
     ↓
 BkashController verifies payment
     ↓
-On success: increment connection_count by 3
+If status === 'Completed':
+  - Mark payment_stage as 'completed'
+  - Apply connections via applyConnections() method
+  - Send invoice email
+  ↓
+Else: Mark as 'failed' with error message
     ↓
 Redirect to /bkash/success or /bkash/failed
+```
+
+**Purchase Model Methods:**
+```php
+// Safe connection application
+public function applyConnections(): bool
+  - Checks if already applied (prevents duplicates)
+  - Checks if payment is completed
+  - Uses getAttribute/setAttribute to avoid DB connection conflicts
+  - Adds connections to user's account
+  - Marks connections_applied = true
+
+// Mark as completed
+public function markAsCompleted(string $transactionId): bool
+
+// Mark as failed
+public function markAsFailed(string $errorMessage): bool
+
+// Query scopes
+public function scopeCompleted($query)
+public function scopePending($query)
+public function scopeFailed($query)
+public function scopeRefunded($query)
+public function scopeConnectionsApplied($query)
+```
+
+**Important Note:**
+The `connection` field requires special handling to avoid conflicts with Laravel's Eloquent `connection` property:
+```php
+// CORRECT - Use getAttribute/setAttribute
+$currentConnections = (int) ($userConnection->getAttribute('connection') ?? 0);
+$userConnection->setAttribute('connection', $currentConnections + $newConnections);
+
+// INCORRECT - Direct access causes "Database connection [X] not configured" error
+$userConnection->connection = $currentConnections + $newConnections;
 ```
 
 **Configuration:**
@@ -259,7 +310,10 @@ BKASH_PASSWORD=...
 
 **Files:**
 - Controller: `app/Http/Controllers/PaymentController.php`
-- Controller: `app/Http/Controllers/BkashController.php`
+- Controller: `app/Http/Controllers/Vendor/Bkash/BkashController.php`
+- Model: `app/Models/Purchase.php` (with stage tracking methods)
+- Model: `app/Models/Connection.php` (with integer casting)
+- Migration: `database/migrations/YYYY_MM_DD_add_payment_tracking_fields_to_purchases_table.php`
 - Config: `config/bkash.php`
 - Routes: `/payment/{provider}`, `/bkash/callback`, `/bkash/success`, `/bkash/failed`
 
@@ -626,7 +680,7 @@ The application includes **Filament 4.0** - a modern admin panel built on top of
 - Panel ID: 'admin'
 - Path: '/admin'
 - Login: Required (uses existing User authentication)
-- Primary Color: Amber
+- Primary Color: Pink (matches brand color #ec4899)
 - Default Panel: Yes
 ```
 
@@ -635,7 +689,40 @@ The application includes **Filament 4.0** - a modern admin panel built on top of
 - Auto-discovers Pages in `app/Filament/Pages`
 - Auto-discovers Widgets in `app/Filament/Widgets`
 - Includes default Dashboard page
-- Includes AccountWidget and FilamentInfoWidget
+- Default widgets removed - using custom widgets only
+
+### Dashboard Widgets
+
+**StatsOverview Widget** (`app/Filament/Widgets/StatsOverview.php`)
+Displays 9 key metrics with trends and mini charts:
+1. **Total Users** - Total non-admin users with daily trend
+2. **Total Revenue** - Cumulative revenue from completed purchases
+3. **Completed Purchases** - Total successful transactions
+4. **Pending Payments** - Payments awaiting completion
+5. **Active Packages** - Currently available packages
+6. **Connections Distributed** - Total profile views available
+7. **Verified Profiles** - Percentage with profile_verified_at
+8. **Unverified Profiles** - Clickable link to unverified profiles list
+9. **Today's Revenue** - Sales made today
+
+**UserGrowthChart Widget** (`app/Filament/Widgets/UserGrowthChart.php`)
+- Line chart showing daily new user registrations
+- Blue gradient styling
+- Filter dropdown: 7/14/30/90 days
+- Sort order: 2 (displays alongside revenue chart)
+
+**RevenueChart Widget** (`app/Filament/Widgets/RevenueChart.php`)
+- Line chart showing daily revenue from completed purchases
+- Pink gradient styling (matches brand)
+- Filter dropdown: 7/14/30/90 days
+- Sort order: 3
+
+**LatestPurchases Widget** (`app/Filament/Widgets/LatestPurchases.php`)
+- Table showing last 10 purchases
+- Columns: Date, Customer, Package, Amount, Connections, Stage, Applied status, Transaction ID
+- Payment stage badges with color coding
+- Sort order: 4
+- Full width display
 
 ### Access
 - **URL:** `http://localhost/admin` (or your-domain.com/admin)
@@ -690,29 +777,78 @@ php artisan make:filament-page PageName
 php artisan make:filament-widget WidgetName
 ```
 
-### Recommended Resources to Create
+### Implemented Resources
 
-For this matrimony platform, consider creating Filament resources for:
+**1. UserResource** (`app/Filament/Resources/UserResource.php`)
+- Complete user management interface
+- Tabs: All, Profile Verified, Profile Not Verified, Admins
+- Filters:
+  - Email verification status (ternary filter)
+  - Profile verification status (ternary filter)
+  - Admin status (ternary filter)
+- Form fields: Name, email, password, is_admin, email_verified_at, profile_verified_at
+- Table columns: Name, email, verification status, admin status, created date
+- Actions: View, Edit, Delete
+- Bulk actions: Delete selected
 
-1. **User Management**
-   - `php artisan make:filament-resource User --generate`
-   - Manage users, verify emails, moderate profiles
+**2. PackageResource** (`app/Filament/Resources/PackageResource.php`)
+- Package management interface
+- Form fields: Name, description, connections, price, is_popular, is_active
+- Table columns: Name, connections, price, popular badge, active status
+- Filters: Active packages, popular packages
+- Actions: Create, Edit, Delete
+- Bulk toggle: Activate/deactivate packages
 
-2. **Package Management**
-   - `php artisan make:filament-resource Package --generate`
-   - Create/edit packages, set prices, mark as popular
+**3. PurchaseResource** (`app/Filament/Resources/PurchaseResource.php`)
+- Purchase monitoring and manual intervention
+- Form fields: User, package, amount, payment_method, payment_stage, transaction_id, connections_purchased, connections_applied, is_refunded
+- Table columns: Invoice number, user, package, amount, connections, payment stage, connections applied, transaction ID, date
+- Filters:
+  - Payment stage (completed, pending, failed, refunded, initiated, cancelled)
+  - Connections applied (yes/no)
+  - Refunded status (yes/no)
+- **Manual Admin Actions:**
+  - **Apply Connections** - Manually apply connections for completed payments
+    - Only visible if payment is completed and connections not yet applied
+    - Triggers `applyConnections()` method
+    - Shows confirmation dialog
+    - Sends success/warning notification
+  - **Mark as Completed** - Manually mark payment as completed
+    - Form with optional transaction ID input
+    - Updates payment_stage to 'completed'
+    - Sets payment_completed_at timestamp
+    - Does NOT auto-apply connections (use separate action)
+  - **Mark as Failed** - Manually mark payment as failed
+    - Form with required error message input
+    - Updates payment_stage to 'failed'
+    - Stores error_message
+- Use case: System failures, payment reconciliation, manual verification
 
-3. **Purchase Monitoring**
-   - `php artisan make:filament-resource Purchase --generate`
-   - View all transactions, refunds, payment status
+**4. SettingResource** (`app/Filament/Resources/SettingResource.php`)
+- Application settings management
+- Form fields: Key, value, type (text/number/textarea), group, description
+- Table columns: Key, value, type, group
+- Filters: Group (stats, contact, social)
+- Default groups: Statistics, Contact Information, Social Media
+- Auto-cache clearing on save/delete
 
-4. **Connection Moderation**
+**5. FaqResource** (`app/Filament/Resources/Faqs/FaqResource.php`)
+- FAQ management
+- Form fields: Question, answer (rich text editor)
+- Table columns: Question, answer preview
+- Actions: Create, Edit, Delete
+
+### Additional Resources to Consider
+
+1. **Connection Moderation**
    - Monitor connection requests
    - Handle reported users
+   - View connection analytics
 
-5. **Profile Verification**
+2. **Profile Verification Queue**
    - Verify NID, student ID
    - Approve/reject profiles
+   - Batch verification actions
 
 ### Integration Notes
 
@@ -959,7 +1095,7 @@ Based on recent commits and updates:
 7. **Enhanced Registration** - Added NID, student ID, university fields
 8. **Identity Verification** - NID verification system
 
-### Phase 2: Settings & Configuration (Latest)
+### Phase 2: Settings & Configuration (Completed)
 9. **Settings System** - Configurable application settings via Filament admin panel
    - Statistics (total reviews, review average, total marriages)
    - Contact information (address, phone, email, WhatsApp)
@@ -967,7 +1103,7 @@ Based on recent commits and updates:
    - Auto-cache clearing on updates
    - Integration in welcome page
 
-### Phase 3: UI/UX Modernization (Latest)
+### Phase 3: UI/UX Modernization (Completed)
 10. **Profile Components Redesign** - All 13 profile components updated with:
     - Consistent modern card design
     - Improved button styling (Edit, Save, Show/Hide)
@@ -978,7 +1114,7 @@ Based on recent commits and updates:
 11. **Authentication Pages Redesign** - Modern login and registration pages:
     - Split layout with gradient backgrounds
     - Labeled inputs with accessibility
-    - Custom select components
+    - Custom select components with CAPTCHA verification
     - Organized registration sections
     - Mobile-responsive design
 
@@ -993,13 +1129,59 @@ Based on recent commits and updates:
     - Added editable University field
     - Validation rules included
 
-### Phase 4: Admin & Security (Latest)
+### Phase 4: Admin & Security (Completed)
 14. **Admin Profile Exclusion** - Complete isolation of admin users:
     - Hidden from search results
     - Cannot view admin profiles directly (404)
     - Excluded from statistics
     - Not shown in connection history
     - Maintained admin panel access
+
+### Phase 5: Payment Tracking & Admin Controls (Latest - Completed)
+15. **Comprehensive Payment Stage Tracking:**
+    - Multi-stage payment lifecycle (initiated, pending, completed, failed, refunded, cancelled)
+    - Purchase model with stage constants and query scopes
+    - Timestamp tracking (payment_initiated_at, payment_completed_at)
+    - Error message storage for failed payments
+    - Refund tracking (is_refunded, refunded_at, refund_transaction_id, refund_amount)
+    - Connection application tracking (connections_applied, connections_applied_at)
+    - Safe applyConnections() method with duplicate prevention
+
+16. **Admin Manual Payment Controls:**
+    - PurchaseResource with comprehensive filters (stage, connections applied, refunded)
+    - Three manual intervention actions:
+      - Apply Connections (for completed payments without connections)
+      - Mark as Completed (with optional transaction ID)
+      - Mark as Failed (with required error message)
+    - Use case: System failures, payment reconciliation, manual verification
+
+17. **Dashboard Analytics Widgets:**
+    - **StatsOverview** - 9 key metrics with trends and mini charts
+      - Total Users, Total Revenue, Completed Purchases
+      - Pending Payments, Active Packages, Connections Distributed
+      - Verified/Unverified Profiles, Today's Revenue
+    - **UserGrowthChart** - Line chart with 7/14/30/90 day filters
+    - **RevenueChart** - Line chart with 7/14/30/90 day filters
+    - **LatestPurchases** - Table widget showing last 10 purchases
+    - Removed default Filament widgets (AccountWidget, FilamentInfoWidget)
+
+18. **Brand Consistency:**
+    - Admin panel primary color changed from Amber to Pink (#ec4899)
+    - Matches brand's custom-pink color
+    - Applied across all admin UI elements
+
+19. **Critical Bug Fixes:**
+    - Fixed "Database connection [X] not configured" error
+    - Root cause: `connection` field conflicting with Eloquent's reserved `connection` property
+    - Solution: Use getAttribute/setAttribute instead of direct property access
+    - Applied fix to Purchase model and CheckConnection middleware
+    - Added integer casting to Connection model
+
+### Phase 6: Content Management (Latest - In Progress)
+20. **FAQ System:**
+    - FaqResource for managing frequently asked questions
+    - Rich text editor for answers
+    - About page with Livewire component
 
 ### Files Updated in Latest Development
 - **Profile Components:** 13 files in `resources/views/livewire/profile/`
@@ -1120,6 +1302,72 @@ Based on recent commits and updates:
 **Issue:** Livewire not updating
 **Solution:** Clear cache with `php artisan cache:clear`, check browser console
 
+**Issue:** "Database connection [X] not configured" error
+**Solution:** This occurs when using `$model->connection` where `connection` is both a field name and Eloquent's reserved property for database connection. Use `getAttribute('connection')` and `setAttribute('connection', $value)` instead of direct property access. Also add integer casting in model: `protected $casts = ['connection' => 'integer'];`
+
+**Issue:** Payment stage not updating correctly
+**Solution:** Ensure payment flow follows the correct sequence: initiated → pending → completed. Check BkashController callback is receiving transactionStatus. Verify applyConnections() is only called for completed payments.
+
+**Issue:** Dashboard widgets not displaying
+**Solution:** Run `php artisan optimize:clear` to clear all caches. Verify widget sort orders are set correctly. Check that default widgets are removed from AdminPanelProvider.
+
+---
+
+## Key Learnings & Best Practices
+
+### Payment Processing
+1. **Always use stage tracking** - Multi-stage payment lifecycle prevents race conditions and allows recovery from failures
+2. **Prevent duplicate connection application** - Check `connections_applied` flag before adding connections to user account
+3. **Provide admin manual controls** - System failures happen; admins need ability to manually reconcile payments
+4. **Track timestamps** - payment_initiated_at, payment_completed_at help with debugging and reconciliation
+5. **Store error messages** - Failed payments should record error_message for troubleshooting
+
+### Database Reserved Properties
+1. **Avoid field names that conflict with Eloquent properties:**
+   - `connection` → conflicts with database connection property
+   - `attributes` → conflicts with model attributes array
+   - `relations` → conflicts with loaded relationships
+2. **When conflicts unavoidable:**
+   - Use `getAttribute('field_name')` for reading
+   - Use `setAttribute('field_name', $value)` for writing
+   - Add explicit type casting in model's `$casts` array
+3. **Example from Connection model:**
+   ```php
+   // In model
+   protected $casts = ['connection' => 'integer'];
+
+   // In usage
+   $currentCount = (int) $userConnection->getAttribute('connection');
+   $userConnection->setAttribute('connection', $currentCount + 1);
+   ```
+
+### Filament Admin Panel
+1. **Custom widgets over default widgets** - Remove default widgets to reduce clutter
+2. **Use widget sort orders** - Control layout with `protected static ?int $sort`
+3. **Provide manual actions for critical operations** - Apply Connections, Mark Completed, Mark Failed
+4. **Use confirmation modals** - Prevent accidental actions with `->requiresConfirmation()`
+5. **Show relevant actions only** - Use `->visible(fn () => ...)` to hide actions when not applicable
+6. **Brand consistency** - Match admin panel color to brand identity
+7. **Filter by status** - Allow admins to quickly find records by stage, applied status, etc.
+
+### Dashboard Analytics
+1. **Show trends, not just numbers** - Daily comparison helps identify growth/decline
+2. **Provide time range filters** - 7/14/30/90 days allows different perspectives
+3. **Make metrics actionable** - Clickable stats that link to filtered lists
+4. **Exclude admin data** - Statistics should only count real users
+5. **Use appropriate chart types** - Line charts for trends, tables for recent activity
+
+### Cache Management
+1. **Auto-clear caches on updates** - Use model events (saved, deleted) to invalidate cache
+2. **Clear all caches after major changes** - `php artisan optimize:clear`
+3. **Cache expensive queries** - Use `Cache::remember()` for settings and statistics
+
+### Security & Privacy
+1. **Admin profile isolation** - Always exclude is_admin=true from user-facing queries
+2. **404 instead of 403** - Don't reveal existence of admin profiles
+3. **Validate payment status** - Only apply connections for transactionStatus === 'Completed'
+4. **Use transactions for critical operations** - Wrap connection application in DB transactions
+
 ---
 
 ## File Locations Reference
@@ -1136,6 +1384,10 @@ Based on recent commits and updates:
 
 ### Middleware
 - CheckConnection: `app/Http/Middleware/CheckConnection.php`
+  - Tracks profile visits in VisitedProfile model
+  - Decrements connection count when viewing profiles
+  - Uses getAttribute/setAttribute to avoid DB connection conflicts
+  - Redirects to packages page when connections exhausted
 
 ### Routes
 - Main: `routes/web.php`
@@ -1163,9 +1415,18 @@ Based on recent commits and updates:
 
 ### Filament (Admin Panel)
 - Admin Provider: `app/Providers/Filament/AdminPanelProvider.php`
-- Resources: `app/Filament/Resources/` (to be created)
-- Pages: `app/Filament/Pages/` (to be created)
-- Widgets: `app/Filament/Widgets/` (to be created)
+- Resources: `app/Filament/Resources/`
+  - UserResource.php (with profile verification tabs)
+  - PackageResource.php (with popular/active filters)
+  - PurchaseResource.php (with manual admin actions)
+  - SettingResource.php (with auto-cache clearing)
+  - Faqs/FaqResource.php (with rich text editor)
+- Pages: `app/Filament/Pages/` (auto-generated by resources)
+- Widgets: `app/Filament/Widgets/`
+  - StatsOverview.php (9 key metrics with trends)
+  - UserGrowthChart.php (with 7/14/30/90 day filters)
+  - RevenueChart.php (with 7/14/30/90 day filters)
+  - LatestPurchases.php (table widget, last 10 purchases)
 
 ### Config
 - App: `config/app.php`
@@ -1211,17 +1472,23 @@ This is a **Laravel 12 matrimony platform** using **Livewire Volt** for the fron
 - Admin panel: `/admin` → Filament resources → Model CRUD
 
 **Recent Additions (Latest Updates):**
+- **Payment Stage Tracking:** Comprehensive multi-stage payment lifecycle with timestamps
+- **Admin Manual Controls:** Three manual actions for payment intervention (Apply Connections, Mark Completed, Mark Failed)
+- **Dashboard Analytics:** 4 custom widgets (StatsOverview, UserGrowthChart, RevenueChart, LatestPurchases)
+- **Brand Consistency:** Admin panel primary color changed to Pink (#ec4899)
+- **Critical Bug Fix:** Resolved "Database connection [X] not configured" error using getAttribute/setAttribute
 - **Settings System:** Configurable app settings via Filament with auto-cache clearing
-- **UI/UX Overhaul:** All 13 profile components + auth pages modernized
-- **Custom Components:** Reusable select-input component with consistent styling
+- **UI/UX Overhaul:** All 13 profile components + auth pages modernized with CAPTCHA
+- **Custom Components:** Reusable select-input component with icon support
 - **Admin Exclusion:** Complete isolation of admin profiles from regular users
 - **Enhanced Profile Management:** NID, Student ID, University now editable
+- **Filament Resources:** 5 fully configured resources (User, Package, Purchase, Setting, FAQ)
 - **Package system:** 4 default tiers (Starter, Popular, Premium, Ultimate)
-- **Purchase tracking:** Transaction IDs and invoice numbers
-- **Payment history:** Statistics and detailed records
+- **Purchase tracking:** Transaction IDs, invoice numbers, and stage tracking
+- **Payment history:** Statistics and detailed records with stage filtering
 - **Connection history:** Profile cards and status tracking
 - **Invoice automation:** Email invoices after successful payment
-- **Filament 4 admin panel:** With Settings resource configured
+- **FAQ System:** FaqResource and about page
 
 **Design System Standards:**
 - Consistent card design with rounded-xl borders and shadow effects
