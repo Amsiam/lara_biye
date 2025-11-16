@@ -19,6 +19,7 @@ This is a comprehensive matrimony platform with profile management, connection s
 - **Database:** MySQL (production), SQLite (development)
 - **Session/Cache/Queue:** Database driver
 - **Payment Gateway:** bKash (via `theihasan/laravel-bkash`)
+- **Admin Panel:** Filament 4.0
 
 ### Frontend
 - **CSS Framework:** Tailwind CSS v4 with Vite
@@ -41,17 +42,24 @@ This is a comprehensive matrimony platform with profile management, connection s
 ```
 lara_biye/
 ├── app/
-│   ├── Models/                  # 19 models (User + 18 profile models)
+│   ├── Models/                  # 20 models (User + 19 profile/system models)
 │   ├── Http/
 │   │   ├── Controllers/         # 4 controllers (minimal, Volt handles most logic)
 │   │   └── Middleware/          # CheckConnection middleware
 │   ├── Livewire/                # Livewire components
+│   ├── Mail/                    # InvoiceMail mailable
+│   ├── Providers/
+│   │   └── Filament/           # Filament admin panel provider
+│   │       └── AdminPanelProvider.php
 │   └── View/Components/         # Blade components
 ├── database/
-│   ├── migrations/              # 27 migrations
-│   └── seeders/
+│   ├── migrations/              # 30 migrations (includes packages, purchases)
+│   └── seeders/                 # PackageSeeder
 ├── resources/
-│   ├── views/                   # 60+ Blade templates (31 Volt components)
+│   ├── views/
+│   │   ├── livewire/           # 34 Volt components (includes payment/connection history)
+│   │   ├── emails/             # Invoice email template
+│   │   └── components/         # Blade components
 │   ├── css/                     # Tailwind + custom styles
 │   └── js/
 ├── routes/
@@ -96,6 +104,13 @@ lara_biye/
 | **Connection** | connection_count | Available connections |
 | **VisitedProfile** | visited_user_id, count | Profile visit tracking |
 | **Notification** | message, is_read, sender_id | Notifications |
+
+### System Models (2 models)
+
+| Model | Key Fields | Purpose |
+|-------|-----------|---------|
+| **Package** | name, description, connections, price, is_popular, is_active | Connection packages for purchase |
+| **Purchase** | user_id, package_id, amount, transaction_id, payment_id, invoice_number, payment_method, status, connections_purchased, payment_response | Payment/purchase records |
 
 ### Database Schema Pattern
 
@@ -588,14 +603,133 @@ npm run build             # Production build
 
 ---
 
+## Filament 4 Admin Panel
+
+### Overview
+The application includes **Filament 4.0** - a modern admin panel built on top of Laravel and Livewire. This provides a powerful, customizable interface for managing the application's data and users.
+
+### Configuration
+
+**Panel Provider:** `app/Providers/Filament/AdminPanelProvider.php`
+
+```php
+- Panel ID: 'admin'
+- Path: '/admin'
+- Login: Required (uses existing User authentication)
+- Primary Color: Amber
+- Default Panel: Yes
+```
+
+**Features:**
+- Auto-discovers Resources in `app/Filament/Resources`
+- Auto-discovers Pages in `app/Filament/Pages`
+- Auto-discovers Widgets in `app/Filament/Widgets`
+- Includes default Dashboard page
+- Includes AccountWidget and FilamentInfoWidget
+
+### Access
+- **URL:** `http://localhost/admin` (or your-domain.com/admin)
+- **Authentication:** Uses the same User model as the main application
+- **Middleware:** Full Laravel middleware stack including authentication
+
+### Creating Resources
+
+To create a Filament resource for managing data:
+
+```bash
+# Create a resource for a model
+php artisan make:filament-resource ModelName
+
+# Create with pages
+php artisan make:filament-resource ModelName --generate
+
+# Create with soft deletes support
+php artisan make:filament-resource ModelName --soft-deletes
+```
+
+**Example - Creating a Package resource:**
+```bash
+php artisan make:filament-resource Package --generate
+```
+
+This will create:
+- `app/Filament/Resources/PackageResource.php` - Main resource class
+- `app/Filament/Resources/PackageResource/Pages/` - CRUD pages
+  - `ListPackages.php`
+  - `CreatePackage.php`
+  - `EditPackage.php`
+
+### Customization
+
+**Colors:**
+Currently set to Amber. To change:
+```php
+// In AdminPanelProvider.php
+->colors([
+    'primary' => Color::Rose, // Or any other color
+])
+```
+
+**Adding Custom Pages:**
+```bash
+php artisan make:filament-page PageName
+```
+
+**Adding Widgets:**
+```bash
+php artisan make:filament-widget WidgetName
+```
+
+### Recommended Resources to Create
+
+For this matrimony platform, consider creating Filament resources for:
+
+1. **User Management**
+   - `php artisan make:filament-resource User --generate`
+   - Manage users, verify emails, moderate profiles
+
+2. **Package Management**
+   - `php artisan make:filament-resource Package --generate`
+   - Create/edit packages, set prices, mark as popular
+
+3. **Purchase Monitoring**
+   - `php artisan make:filament-resource Purchase --generate`
+   - View all transactions, refunds, payment status
+
+4. **Connection Moderation**
+   - Monitor connection requests
+   - Handle reported users
+
+5. **Profile Verification**
+   - Verify NID, student ID
+   - Approve/reject profiles
+
+### Integration Notes
+
+- Filament uses the same authentication system as the main app
+- Admin users are regular Users with potential role/permission checks
+- No separate admin table needed
+- Can add policies and authorization via Laravel's built-in Gate system
+
+### Documentation
+- **Official Docs:** https://filamentphp.com/docs/4.x
+- **Version:** 4.0 (Latest stable)
+- **Built on:** Laravel 12 + Livewire 3
+
+---
+
 ## Recent Development Focus
 
 Based on recent commits:
 
-1. **Connections Management** - State handling and profile display
-2. **Notification System** - CRUD operations and UI integration
-3. **Enhanced Registration** - Added NID, student ID, university fields
-4. **Identity Verification** - NID verification system
+1. **Package System** - Connection packages with pricing tiers
+2. **Payment History** - Track all purchases and transactions
+3. **Connection History** - View all accepted connections
+4. **Invoice Emails** - Automated email invoices after purchase
+5. **Connections Management** - State handling and profile display
+6. **Notification System** - CRUD operations and UI integration
+7. **Enhanced Registration** - Added NID, student ID, university fields
+8. **Identity Verification** - NID verification system
 
 ---
 
@@ -701,6 +835,8 @@ Based on recent commits:
 ### Models
 - User: `app/Models/User.php`
 - Profile models: `app/Models/*.php`
+- Package: `app/Models/Package.php`
+- Purchase: `app/Models/Purchase.php`
 
 ### Controllers
 - Payment: `app/Http/Controllers/PaymentController.php`
@@ -712,20 +848,38 @@ Based on recent commits:
 ### Routes
 - Main: `routes/web.php`
 - Auth: `routes/auth.php`
+- Admin: `/admin` (Filament auto-generated)
 
 ### Views
 - Layouts: `resources/views/components/layouts/*.blade.php`
 - Auth: `resources/views/livewire/auth/*.blade.php`
 - Profile: `resources/views/livewire/profile/*.blade.php`
 - Settings: `resources/views/livewire/settings/*.blade.php`
+- Packages: `resources/views/livewire/packages.blade.php`
+- Payment History: `resources/views/livewire/payment-history.blade.php`
+- Connection History: `resources/views/livewire/connection-history.blade.php`
+- Emails: `resources/views/emails/invoice.blade.php`
+
+### Mail
+- InvoiceMail: `app/Mail/InvoiceMail.php`
 
 ### Migrations
 - All migrations: `database/migrations/*.php`
+
+### Seeders
+- PackageSeeder: `database/seeders/PackageSeeder.php`
+
+### Filament (Admin Panel)
+- Admin Provider: `app/Providers/Filament/AdminPanelProvider.php`
+- Resources: `app/Filament/Resources/` (to be created)
+- Pages: `app/Filament/Pages/` (to be created)
+- Widgets: `app/Filament/Widgets/` (to be created)
 
 ### Config
 - App: `config/app.php`
 - Database: `config/database.php`
 - bKash: `config/bkash.php`
+- Filament: Auto-configured via AdminPanelProvider
 
 ### Assets
 - CSS: `resources/css/app.css`
@@ -736,27 +890,45 @@ Based on recent commits:
 
 ## Summary for LLMs
 
-This is a **Laravel 12 matrimony platform** using **Livewire Volt** for the frontend. The architecture emphasizes:
+This is a **Laravel 12 matrimony platform** using **Livewire Volt** for the frontend and **Filament 4** for the admin panel. The architecture emphasizes:
 
 1. **Atomic Profile Design** - 18 separate models for profile sections
 2. **Smart Connection System** - Mutual requests auto-accept, paid profile views
-3. **Privacy Controls** - Per-section visibility settings
-4. **Payment Integration** - bKash gateway for purchasing connections
-5. **Minimal Controllers** - Volt components handle most logic
-6. **Database-driven Sessions/Cache** - Scalable architecture
+3. **Package-based Monetization** - Tiered connection packages with bKash payment
+4. **Transaction Tracking** - Complete payment and connection history
+5. **Privacy Controls** - Per-section visibility settings
+6. **Minimal Controllers** - Volt components handle most logic
+7. **Admin Panel** - Filament 4 for data management
+8. **Database-driven Sessions/Cache** - Scalable architecture
 
 **When working on this project:**
-- Use Volt component pattern for new features
+- Use Volt component pattern for new frontend features
+- Use Filament resources for admin CRUD operations
 - Follow atomic model design for new profile sections
 - Always check authentication and connection status
 - Maintain privacy control patterns
 - Use computed properties for heavy queries
 - Follow Laravel naming conventions
+- Create Filament resources for managing system data
 
 **Key Integration Points:**
-- Payment flow: `PaymentController` → bKash → `BkashController`
+- Payment flow: Package selection → `PaymentController` → bKash → `BkashController` → Purchase record → Invoice email
 - Connection flow: `User` model methods → `connected` pivot → `CheckConnection` middleware
 - Profile access: Authentication → Connection check → Privacy settings
 - Notifications: Triggered in connection methods → displayed in navbar
+- Admin panel: `/admin` → Filament resources → Model CRUD
 
-This platform is production-ready with room for enhancement in security hardening, testing coverage, and feature expansion.
+**Recent Additions:**
+- Package system with 4 default tiers (Starter, Popular, Premium, Ultimate)
+- Purchase tracking with transaction IDs and invoice numbers
+- Payment history page with statistics
+- Connection history page with profile cards
+- Invoice email automation after successful payment
+- Filament 4 admin panel (ready for resource creation)
+
+This platform is production-ready with room for enhancement in:
+- Creating Filament resources for admin management
+- Adding role-based access control
+- Implementing profile moderation
+- Adding more payment gateways
+- Enhanced security features
