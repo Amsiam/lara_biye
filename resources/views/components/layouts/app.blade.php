@@ -15,33 +15,46 @@
 <body class="font-['Poppins']">
 
     <!-- Navbar -->
-    <nav class="static top-0 w-full bg-white shadow-md z-50">
+    <nav class="sticky top-0 w-full bg-white/95 backdrop-blur-md shadow-lg z-50 border-b border-gray-100">
         <div class="container mx-auto px-4">
-            <div class="flex justify-between items-center h-16">
-                <a href="{{ route('home') }}" wire:navigate class="font-bold">
-                    Engineer's Matrimony
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <a href="{{ route('home') }}" wire:navigate class="group flex items-center gap-2">
+                    <div class="bg-gradient-to-br from-custom-pink to-pink-600 p-2 rounded-lg shadow-md group-hover:shadow-lg group-hover:scale-105 transition-all duration-300">
+                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <span class="font-extrabold text-xl bg-gradient-to-r from-maroon to-custom-pink bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-300">
+                        Engineer's Matrimony
+                    </span>
                 </a>
 
                 <!-- Mobile menu button -->
-                <button id="hamburger" class="md:hidden focus:outline-none mr-2">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button id="hamburger" class="md:hidden focus:outline-none p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                    <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                 </button>
 
                 <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center space-x-8">
+                <div class="hidden md:flex items-center space-x-1 lg:space-x-2">
                     <a href="{{ route('home') }}"
-                        class="text-gray-900 hover:text-custom-pink {{ Route::is('home') ? 'text-custom-pink font-bold' : '' }}">Home</a>
+                        class="relative px-4 py-2 text-gray-700 font-semibold hover:text-custom-pink transition-colors group {{ Route::is('home') ? 'text-custom-pink' : '' }}">
+                        Home
+                        <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-custom-pink to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 {{ Route::is('home') ? 'scale-x-100' : '' }}"></span>
+                    </a>
                     <a href="{{ route('your.connections') }}"
-                        class="text-gray-900 hover:text-custom-pink {{ Route::is('your.connections') ? 'text-custom-pink font-bold' : '' }}">Your
-                        Connections</a>
+                        class="relative px-4 py-2 text-gray-700 font-semibold hover:text-custom-pink transition-colors group {{ Route::is('your.connections') ? 'text-custom-pink' : '' }}">
+                        Connections
+                        <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-custom-pink to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 {{ Route::is('your.connections') ? 'scale-x-100' : '' }}"></span>
+                    </a>
 
                     @if (auth()->check())
                         <flux:dropdown>
                             <flux:button variant="ghost"
-                                class="{{ Route::is('payment.history') || Route::is('connection.history') ? 'text-custom-pink font-bold' : '' }}"
+                                class="relative px-4 py-2 text-gray-700 font-semibold hover:text-custom-pink transition-colors {{ Route::is('payment.history') || Route::is('connection.history') ? 'text-custom-pink' : '' }}"
                                 icon:trailing="chevron-down">History</flux:button>
                             <flux:menu>
                                 <flux:menu.item href="{{ route('payment.history') }}" icon="credit-card">Payment
@@ -50,28 +63,44 @@
                                 </flux:menu.item>
                             </flux:menu>
                         </flux:dropdown>
-                        <!-- History Dropdown -->
                     @endif
 
-                    <a href="#" class="text-gray-600 hover:text-custom-pink">About Us</a>
-                    <a href="#" class="text-gray-600 hover:text-custom-pink">FAQ</a>
-                    <a href="#" class="text-gray-600 hover:text-custom-pink">Guide</a>
-                    <a href="#" class="text-gray-600 hover:text-custom-pink">Contact</a>
+                    <a href="#" class="relative px-4 py-2 text-gray-700 font-medium hover:text-custom-pink transition-colors group">
+                        About
+                        <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-custom-pink to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                    </a>
+                    <a href="#" class="relative px-4 py-2 text-gray-700 font-medium hover:text-custom-pink transition-colors group">
+                        FAQ
+                        <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-custom-pink to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                    </a>
+                    <a href="#" class="relative px-4 py-2 text-gray-700 font-medium hover:text-custom-pink transition-colors group">
+                        Guide
+                        <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-custom-pink to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                    </a>
+                    <a href="#" class="relative px-4 py-2 text-gray-700 font-medium hover:text-custom-pink transition-colors group">
+                        Contact
+                        <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-custom-pink to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                    </a>
 
-
-
-                    @if (auth()->check())
-                        <x-notification />
-                        <a href="{{ route('profile', auth()->user()->id) }}"
-                            class="bg-custom-pink text-white rounded-full px-6 py-2 hover:bg-opacity-90">My Profile</a>
-                        @livewire('logout')
-                    @else
-                        <a href="{{ route('register') }}"
-                            class="bg-custom-pink text-white rounded-full px-6 py-2 hover:bg-opacity-90">Registration</a>
-                        <a href="{{ route('login') }}"
-                            class="border border-custom-pink text-custom-pink rounded-full px-6 py-2 hover:bg-custom-pink hover:text-white">Sign
-                            In</a>
-                    @endif
+                    <div class="flex items-center gap-3 ml-4 pl-4 border-l border-gray-200">
+                        @if (auth()->check())
+                            <x-notification />
+                            <a href="{{ route('profile', auth()->user()->id) }}"
+                                class="bg-gradient-to-r from-custom-pink to-pink-600 text-white rounded-full px-6 py-2.5 font-semibold shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300">
+                                My Profile
+                            </a>
+                            @livewire('logout')
+                        @else
+                            <a href="{{ route('register') }}"
+                                class="bg-gradient-to-r from-custom-pink to-pink-600 text-white rounded-full px-6 py-2.5 font-semibold shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300">
+                                Registration
+                            </a>
+                            <a href="{{ route('login') }}"
+                                class="border-2 border-custom-pink text-custom-pink rounded-full px-6 py-2.5 font-semibold hover:bg-custom-pink hover:text-white transition-all duration-300 hover:scale-105">
+                                Sign In
+                            </a>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
@@ -79,37 +108,53 @@
 
     <!-- Mobile Menu (Initially Hidden) -->
     <div id="mobile-menu"
-        class="md:hidden hidden absolute top-16 left-0 w-full bg-white shadow-md z-[100] transition-transform transform duration-500 ease-in-out">
-        <div class="flex flex-col space-y-4 py-4 px-6">
-            <a href="{{ route('home') }}" class="text-gray-900 hover:text-custom-pink text-center">Home</a>
+        class="md:hidden hidden absolute top-20 left-0 w-full bg-white/95 backdrop-blur-md shadow-2xl z-[100] border-b border-gray-200">
+        <div class="flex flex-col space-y-2 py-6 px-6">
+            <a href="{{ route('home') }}"
+                class="px-4 py-3 text-gray-700 font-semibold hover:text-custom-pink hover:bg-custom-pink/5 rounded-lg text-center transition-all {{ Route::is('home') ? 'text-custom-pink bg-custom-pink/10' : '' }}">
+                Home
+            </a>
             @if (auth()->check())
-                <a href="{{ route('your.connections') }}" class="text-gray-600 hover:text-custom-pink text-center">Your
-                    Connections</a>
+                <a href="{{ route('your.connections') }}"
+                    class="px-4 py-3 text-gray-700 font-medium hover:text-custom-pink hover:bg-custom-pink/5 rounded-lg text-center transition-all {{ Route::is('your.connections') ? 'text-custom-pink bg-custom-pink/10' : '' }}">
+                    Your Connections
+                </a>
                 <a href="{{ route('payment.history') }}"
-                    class="text-gray-600 hover:text-custom-pink text-center flex justify-center items-center gap-1">
-                    <flux:icon.credit-card />
-                    Payment History</a>
+                    class="px-4 py-3 text-gray-700 font-medium hover:text-custom-pink hover:bg-custom-pink/5 rounded-lg text-center flex justify-center items-center gap-2 transition-all {{ Route::is('payment.history') ? 'text-custom-pink bg-custom-pink/10' : '' }}">
+                    <flux:icon.credit-card class="w-5 h-5" />
+                    Payment History
+                </a>
                 <a href="{{ route('connection.history') }}"
-                    class="text-gray-600 hover:text-custom-pink text-center flex justify-center items-center gap-1">
-                    <flux:icon.users />
+                    class="px-4 py-3 text-gray-700 font-medium hover:text-custom-pink hover:bg-custom-pink/5 rounded-lg text-center flex justify-center items-center gap-2 transition-all {{ Route::is('connection.history') ? 'text-custom-pink bg-custom-pink/10' : '' }}">
+                    <flux:icon.users class="w-5 h-5" />
                     Connection History
                 </a>
             @endif
-            <a href="#" class="text-gray-600 hover:text-custom-pink text-center">About Us</a>
-            <a href="#" class="text-gray-600 hover:text-custom-pink text-center">FAQ</a>
-            <a href="#" class="text-gray-600 hover:text-custom-pink text-center">Guide</a>
-            <a href="#" class="text-gray-600 hover:text-custom-pink text-center">Contact</a>
+
+            <div class="border-t border-gray-200 my-2"></div>
+
+            <a href="#" class="px-4 py-3 text-gray-700 font-medium hover:text-custom-pink hover:bg-custom-pink/5 rounded-lg text-center transition-all">About Us</a>
+            <a href="#" class="px-4 py-3 text-gray-700 font-medium hover:text-custom-pink hover:bg-custom-pink/5 rounded-lg text-center transition-all">FAQ</a>
+            <a href="#" class="px-4 py-3 text-gray-700 font-medium hover:text-custom-pink hover:bg-custom-pink/5 rounded-lg text-center transition-all">Guide</a>
+            <a href="#" class="px-4 py-3 text-gray-700 font-medium hover:text-custom-pink hover:bg-custom-pink/5 rounded-lg text-center transition-all">Contact</a>
+
+            <div class="border-t border-gray-200 my-2"></div>
 
             @if (auth()->check())
                 <a href="{{ route('profile', auth()->user()->id) }}"
-                    class="bg-custom-pink text-white rounded-full px-6 py-2 hover:bg-opacity-90">My Profile</a>
+                    class="bg-gradient-to-r from-custom-pink to-pink-600 text-white rounded-full px-6 py-3 font-semibold shadow-md hover:shadow-lg text-center transition-all">
+                    My Profile
+                </a>
                 @livewire('logout')
             @else
                 <a href="{{ route('register') }}"
-                    class="bg-custom-pink text-white rounded-full px-6 py-2 hover:bg-opacity-90 text-center">Registration</a>
+                    class="bg-gradient-to-r from-custom-pink to-pink-600 text-white rounded-full px-6 py-3 font-semibold shadow-md hover:shadow-lg text-center transition-all">
+                    Registration
+                </a>
                 <a href="{{ route('login') }}"
-                    class="border border-custom-pink text-custom-pink rounded-full px-6 py-2 hover:bg-custom-pink hover:text-white text-center">Sign
-                    In</a>
+                    class="border-2 border-custom-pink text-custom-pink rounded-full px-6 py-3 font-semibold hover:bg-custom-pink hover:text-white text-center transition-all">
+                    Sign In
+                </a>
             @endif
         </div>
     </div>

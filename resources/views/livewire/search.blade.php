@@ -122,6 +122,7 @@ $profiles = computed(function () {
                 $q->where('city', 'LIKE', '%' . $this->city . '%');
             });
         })
+        ->inRandomOrder()
         ->paginate(30);
 });
 
