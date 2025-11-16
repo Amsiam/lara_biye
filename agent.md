@@ -105,12 +105,13 @@ lara_biye/
 | **VisitedProfile** | visited_user_id, count | Profile visit tracking |
 | **Notification** | message, is_read, sender_id | Notifications |
 
-### System Models (2 models)
+### System Models (3 models)
 
 | Model | Key Fields | Purpose |
 |-------|-----------|---------|
 | **Package** | name, description, connections, price, is_popular, is_active | Connection packages for purchase |
 | **Purchase** | user_id, package_id, amount, transaction_id, payment_id, invoice_number, payment_method, status, connections_purchased, payment_response | Payment/purchase records |
+| **Setting** | key, value, type, group, description | Configurable application settings managed via Filament admin panel |
 
 ### Database Schema Pattern
 
@@ -350,6 +351,15 @@ $save = function () {
 **Profile (16):** basic_info, education, family, hobby, introduction, language, lifestyle, parmanent, partner, personal_attitude, physical_attr, present_address, residency, spiritual, upload-profile, astronomic
 **Core (5):** welcome, search, profile, connections, logout
 **Settings (4):** profile, password, appearance, delete-user-form
+
+### Blade Components (Custom)
+
+**select-input.blade.php** - Reusable dropdown component with:
+- Icon support
+- Consistent styling
+- Hover/focus states
+- Wire model binding
+- Custom pink theme
 
 ---
 
@@ -718,10 +728,228 @@ For this matrimony platform, consider creating Filament resources for:
 
 ---
 
+## Settings System
+
+### Overview
+A configurable settings system that allows administrators to manage application-wide settings through the Filament admin panel. Settings are cached for performance and automatically clear when updated.
+
+### Model Structure
+
+**Setting Model (`app/Models/Setting.php`):**
+```php
+protected $fillable = ['key', 'value', 'type', 'group', 'description'];
+
+// Static methods for easy access
+Setting::get('key', 'default_value')
+Setting::set('key', 'value', 'type', 'group', 'description')
+```
+
+### Auto-Cache Clearing
+
+The Setting model includes automatic cache invalidation when settings are updated:
+```php
+protected static function booted(): void {
+    static::saved(function (Setting $setting) {
+        Cache::forget("setting.{$setting->key}");
+    });
+    static::deleted(function (Setting $setting) {
+        Cache::forget("setting.{$setting->key}");
+    });
+}
+```
+
+### Filament Resource
+
+**Location:** `app/Filament/Resources/SettingResource.php`
+
+**Features:**
+- Text, number, textarea input types
+- Group organization (stats, contact, social)
+- Description field for admin reference
+- Navigation group: "System Settings"
+
+### Default Settings (SettingsSeeder)
+
+**Statistics:**
+- `stats.total_reviews` - Total number of reviews (1200)
+- `stats.review_average` - Average rating (4.7)
+- `stats.total_marriages` - Total successful marriages (1600)
+
+**Contact Information:**
+- `contact.address` - Physical address
+- `contact.phone` - Contact phone number
+- `contact.email` - Contact email
+- `contact.whatsapp` - WhatsApp number
+
+**Social Media:**
+- `social.facebook` - Facebook page URL
+- `social.instagram` - Instagram profile URL
+
+### Usage in Views
+
+Settings are used throughout the application with caching:
+```php
+// In welcome.blade.php
+Setting::get('stats.total_marriages', '1600')
+Setting::get('contact.phone', '+8809611489040')
+Setting::get('social.facebook', 'https://www.facebook.com/...')
+```
+
+### Files
+- Model: `app/Models/Setting.php`
+- Migration: `database/migrations/YYYY_MM_DD_create_settings_table.php`
+- Seeder: `database/seeders/SettingsSeeder.php`
+- Filament Resource: `app/Filament/Resources/SettingResource.php`
+
+---
+
+## UI/UX Design System
+
+### Custom Components
+
+**Select Input Component (`resources/views/components/select-input.blade.php`):**
+- Reusable dropdown with icon support
+- Consistent styling across the application
+- Hover and focus states
+- Custom pink theme integration
+
+**Usage:**
+```php
+<x-select-input
+    wireModel="field_name"
+    placeholder="Select Option"
+    :options="['value' => 'Label', ...]"
+    :icon="'<svg>...</svg>'"
+/>
+```
+
+### Profile Components Design Pattern
+
+All profile components follow a consistent modern design:
+
+**Card Structure:**
+```php
+- Border: border-gray-200 rounded-xl
+- Shadow: shadow-md hover:shadow-lg
+- Header: bg-custom-red p-4
+- Title: font-bold text-white text-lg
+- Content: p-6 bg-white grid md:grid-cols-2 gap-6
+```
+
+**Button Styles:**
+- Edit: `bg-custom-pink hover:bg-pink-600`
+- Save: `bg-green-500 hover:bg-green-600`
+- Show/Hide: `bg-custom-pink` with eye emojis (👁️ Hide / 👁️‍🗨️ Show)
+- All buttons: `px-4 py-2 rounded-lg font-semibold transform hover:scale-105`
+
+**Input Styling:**
+```css
+- Default: border-2 border-gray-200 rounded-lg
+- Focus: focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20
+- Padding: p-3
+- Transitions: transition-all duration-300
+```
+
+**Label/Value Pattern:**
+```php
+- Labels: text-gray-600 text-xs font-semibold uppercase mb-2
+- Values: text-gray-900 font-medium
+- Empty state: "-"
+```
+
+### Authentication Pages Design
+
+**Login Page (`resources/views/livewire/auth/login.blade.php`):**
+- Split layout: Image (2/5) + Form (3/5)
+- Gradient background on image side
+- Modern card design with shadow-2xl
+- Labeled inputs with proper accessibility
+- Enhanced button with hover scale effect
+- Responsive: Stack vertically on mobile
+
+**Registration Page (`resources/views/livewire/auth/register.blade.php`):**
+- Three organized sections:
+  1. Personal Information
+  2. Verification Details (NID, Student ID, University)
+  3. Account Credentials
+- Custom select components for Gender and Religion
+- Scrollable form with max-height
+- Section headers with border dividers
+- 2-column grid on desktop, single column on mobile
+
+### Responsive Design
+
+**Breakpoints:**
+- Mobile: Base styles (1 column)
+- Tablet (md: 768px): 2 columns
+- Desktop (lg: 1024px): 3-4 columns
+
+**Search Page:**
+- Filters: 1 → 2 → 4 columns
+- Profile cards: 1 → 2 → 3 columns
+- Advanced filters: Collapsible with smooth animation
+
+**Profile Components:**
+- All use `md:grid-cols-2` pattern
+- Show/Hide toggles for privacy
+- Edit mode with inline validation
+
+---
+
+## Admin User System
+
+### Admin Access Control
+
+**Admin Identification:**
+- Field: `is_admin` (boolean) in `users` table
+- Method: `canAccessPanel(Panel $panel): bool`
+- Returns: `$this->is_admin`
+
+### Admin Profile Exclusion
+
+Admin users are completely hidden from regular users across the entire application:
+
+**Search Results (`search.blade.php`):**
+```php
+User::query()->where('is_admin', false)
+```
+
+**Profile Pages (`profile.blade.php`):**
+```php
+User::where('is_admin', false)->findOrFail($profileId)
+// Returns 404 if trying to view admin profile
+```
+
+**Welcome Page Statistics (`welcome.blade.php`):**
+```php
+// All three statistics exclude admins
+User::where('is_admin', false)->whereHas('basicInfo')->count()
+```
+
+**Connection History (`connection-history.blade.php`):**
+```php
+User::where('is_admin', false)->with('basicInfo')->find($userId)
+```
+
+### Benefits
+
+1. **Privacy:** Admins don't appear as matchmaking candidates
+2. **Security:** Admin profiles cannot be viewed via direct URLs
+3. **Accuracy:** Statistics only count real users
+4. **Clean UX:** Users only see relevant profiles
+
+### Files
+- User Model: `app/Models/User.php` (canAccessPanel method)
+- Migration: Includes `is_admin` boolean field
+- Applied in: search.blade.php, profile.blade.php, welcome.blade.php, connection-history.blade.php
+
+---
+
 ## Recent Development Focus
 
-Based on recent commits:
+Based on recent commits and updates:
 
+### Phase 1: Core Systems (Completed)
 1. **Package System** - Connection packages with pricing tiers
 2. **Payment History** - Track all purchases and transactions
 3. **Connection History** - View all accepted connections
@@ -730,6 +958,70 @@ Based on recent commits:
 6. **Notification System** - CRUD operations and UI integration
 7. **Enhanced Registration** - Added NID, student ID, university fields
 8. **Identity Verification** - NID verification system
+
+### Phase 2: Settings & Configuration (Latest)
+9. **Settings System** - Configurable application settings via Filament admin panel
+   - Statistics (total reviews, review average, total marriages)
+   - Contact information (address, phone, email, WhatsApp)
+   - Social media links (Facebook, Instagram)
+   - Auto-cache clearing on updates
+   - Integration in welcome page
+
+### Phase 3: UI/UX Modernization (Latest)
+10. **Profile Components Redesign** - All 13 profile components updated with:
+    - Consistent modern card design
+    - Improved button styling (Edit, Save, Show/Hide)
+    - Better input focus states
+    - Responsive grid layouts
+    - Enhanced visual hierarchy
+
+11. **Authentication Pages Redesign** - Modern login and registration pages:
+    - Split layout with gradient backgrounds
+    - Labeled inputs with accessibility
+    - Custom select components
+    - Organized registration sections
+    - Mobile-responsive design
+
+12. **Custom Components** - Created reusable UI components:
+    - Select input component with icon support
+    - Consistent styling system
+    - Hover and focus states
+
+13. **Profile Data Management** - Enhanced basic info component:
+    - Added editable NID field
+    - Added editable Student ID field
+    - Added editable University field
+    - Validation rules included
+
+### Phase 4: Admin & Security (Latest)
+14. **Admin Profile Exclusion** - Complete isolation of admin users:
+    - Hidden from search results
+    - Cannot view admin profiles directly (404)
+    - Excluded from statistics
+    - Not shown in connection history
+    - Maintained admin panel access
+
+### Files Updated in Latest Development
+- **Profile Components:** 13 files in `resources/views/livewire/profile/`
+  - family.blade.php, parmanent.blade.php, lifestyle.blade.php
+  - personal_attitude.blade.php, hobby.blade.php, language.blade.php
+  - education.blade.php, present_address.blade.php
+  - introduction.blade.php, basic_info.blade.php
+  - physical_attr.blade.php, spiritual.blade.php, partner.blade.php
+
+- **Authentication:** 2 files
+  - login.blade.php
+  - register.blade.php
+
+- **System Files:** 5 files
+  - search.blade.php (admin exclusion)
+  - profile.blade.php (admin exclusion)
+  - welcome.blade.php (admin exclusion, settings integration)
+  - connection-history.blade.php (admin exclusion)
+  - Setting.php model (auto-cache clearing)
+
+- **Components:** 1 file
+  - select-input.blade.php (custom dropdown component)
 
 ---
 
@@ -918,17 +1210,33 @@ This is a **Laravel 12 matrimony platform** using **Livewire Volt** for the fron
 - Notifications: Triggered in connection methods → displayed in navbar
 - Admin panel: `/admin` → Filament resources → Model CRUD
 
-**Recent Additions:**
-- Package system with 4 default tiers (Starter, Popular, Premium, Ultimate)
-- Purchase tracking with transaction IDs and invoice numbers
-- Payment history page with statistics
-- Connection history page with profile cards
-- Invoice email automation after successful payment
-- Filament 4 admin panel (ready for resource creation)
+**Recent Additions (Latest Updates):**
+- **Settings System:** Configurable app settings via Filament with auto-cache clearing
+- **UI/UX Overhaul:** All 13 profile components + auth pages modernized
+- **Custom Components:** Reusable select-input component with consistent styling
+- **Admin Exclusion:** Complete isolation of admin profiles from regular users
+- **Enhanced Profile Management:** NID, Student ID, University now editable
+- **Package system:** 4 default tiers (Starter, Popular, Premium, Ultimate)
+- **Purchase tracking:** Transaction IDs and invoice numbers
+- **Payment history:** Statistics and detailed records
+- **Connection history:** Profile cards and status tracking
+- **Invoice automation:** Email invoices after successful payment
+- **Filament 4 admin panel:** With Settings resource configured
+
+**Design System Standards:**
+- Consistent card design with rounded-xl borders and shadow effects
+- Custom color scheme (custom-pink, custom-red, maroon)
+- Responsive grid layouts (1 → 2 → 3/4 columns)
+- Modern button styles with hover effects
+- Focus states with custom-pink ring
+- Privacy controls per profile section
+- Mobile-first responsive approach
 
 This platform is production-ready with room for enhancement in:
-- Creating Filament resources for admin management
-- Adding role-based access control
-- Implementing profile moderation
-- Adding more payment gateways
-- Enhanced security features
+- Creating additional Filament resources (Users, Purchases, Packages)
+- Implementing advanced role-based access control
+- Adding automated profile moderation
+- Integrating additional payment gateways
+- Implementing real-time chat functionality
+- Adding advanced matching algorithms
+- Enhanced security features (2FA, activity logs)
