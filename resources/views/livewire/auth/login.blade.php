@@ -20,17 +20,62 @@ new #[Layout('components.layouts.auth')] class extends Component {
 
     public bool $remember = false;
 
+    public string $captcha = '';
+    public string $captchaCode = '';
+
+    /**
+     * Mount the component and generate initial CAPTCHA
+     */
+    public function mount(): void
+    {
+        $this->generateCaptcha();
+    }
+
+    /**
+     * Generate a new CAPTCHA code
+     */
+    public function generateCaptcha(): void
+    {
+        $code = strtoupper(Str::random(6));
+        session(['captcha_code' => $code]);
+        $this->captchaCode = uniqid();
+    }
+
+    /**
+     * Validate the CAPTCHA code
+     */
+    protected function validateCaptcha(): bool
+    {
+        $sessionCode = session('captcha_code');
+        if (!$sessionCode || strtoupper($this->captcha) !== $sessionCode) {
+            $this->addError('captcha', 'The verification code is incorrect.');
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Handle an incoming authentication request.
      */
     public function login(): void
     {
-        $this->validate();
+        $this->validate([
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+            'captcha' => 'required|string|size:6',
+        ]);
+
+        // Validate CAPTCHA
+        if (!$this->validateCaptcha()) {
+            $this->generateCaptcha();
+            return;
+        }
 
         $this->ensureIsNotRateLimited();
 
         if (!Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
             RateLimiter::hit($this->throttleKey());
+            $this->generateCaptcha();
 
             throw ValidationException::withMessages([
                 'email' => __('auth.failed'),
@@ -120,6 +165,31 @@ new #[Layout('components.layouts.auth')] class extends Component {
                     class="text-sm font-semibold text-custom-pink hover:text-custom-red transition-colors duration-200 hover:underline">
                     Forgot password?
                 </a>
+            </div>
+
+            <!-- CAPTCHA Verification -->
+            <div class="space-y-3">
+                <label class="block text-sm font-semibold text-gray-700">Verification Code</label>
+                <div class="flex items-center gap-4">
+                    <img src="{{ route('captcha.image') }}?v={{ $captchaCode }}"
+                         alt="CAPTCHA Code"
+                         class="h-16 rounded-lg shadow-lg border-2 border-gray-200"
+                         wire:key="captcha-{{ $captchaCode }}"
+                         id="captcha-image">
+                    <button type="button" wire:click="generateCaptcha"
+                            class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-medium text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Reload
+                    </button>
+                </div>
+                <input wire:model="captcha" type="text" id="captcha" placeholder="Enter the code shown above"
+                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all duration-300"
+                    autocomplete="off" />
+                @error('captcha')
+                    <span class="text-sm text-red-500 mt-1 block">{{ $message }}</span>
+                @enderror
             </div>
 
             <button type="submit"
