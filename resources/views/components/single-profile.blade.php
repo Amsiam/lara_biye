@@ -4,8 +4,8 @@
 
 <div
     class="bg-white p-5 rounded-lg shadow-lg text-black hover:shadow-2xl  hover:bg-gray-100 transform transition-all duration-300 hover:scale-105 flex flex-col items-center text-center">
-    <img src="{{ asset($profile->basicInfo?->image) }}" class="w-full h-60 object-contain rounded-lg"
-        alt="Profile Picture" />
+    <img src="{{ route('profile.image', $profile->id) }}" class="w-full h-60 object-cover rounded-lg"
+        alt="Profile Picture" onerror="this.src='{{ asset('default.png') }}'" />
     <div class="mt-3 flex items-center justify-center gap-2">
         @if (auth()->user()->isConnected($profile->id))
             <h3 class="text-lg font-bold text-center">{{ $profile->name }}</h3>

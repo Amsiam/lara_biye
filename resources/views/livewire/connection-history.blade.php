@@ -78,19 +78,10 @@ $connections = computed(function () {
                             class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
                             <a href="{{ route('profile', ['profileId' => $item->user->id]) }}" class="block">
                                 <!-- Profile Image -->
-                                <div class="aspect-w-1 aspect-h-1 w-full bg-gray-200">
-                                    @if ($item->user->basicInfo?->profile_image)
-                                        <img src="{{ asset('storage/' . $item->user->basicInfo->profile_image) }}"
-                                            alt="{{ $item->user->name }}" class="w-full h-48 object-cover">
-                                    @else
-                                        <div class="w-full h-48 bg-gray-300 flex items-center justify-center">
-                                            <svg class="h-20 w-20 text-gray-400" fill="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path
-                                                    d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                                            </svg>
-                                        </div>
-                                    @endif
+                                <div class="aspect-w-1 aspect-h-1 w-full">
+                                    <img src="{{ route('profile.image', $item->user->id) }}"
+                                        alt="{{ $item->user->name }}" class="w-full h-48 object-cover"
+                                        onerror="this.src='{{ asset('default.png') }}'">
                                 </div>
 
                                 <!-- Profile Info -->

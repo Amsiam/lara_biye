@@ -60,25 +60,33 @@ $createProfile = function () {
             <form action="{{ route('search') }}">
                 <div class="max-w-4xl mx-auto mt-8 p-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <select name="gender" class="w-full p-3 border rounded-lg">
-                            <option value="">I'm looking for</option>
-                            <option>Male</option>
-                            <option>Female</option>
-                        </select>
-                        <select name="marital_status" class="w-full p-3 border rounded-lg">
-                            <option value="">Marital Status</option>
-                            @foreach (['UNMARRIED', 'MARRIED', 'DIVORCED', 'WIDOWED'] as $maritalStatus)
-                                <option>{{ $maritalStatus }}</option>
-                            @endforeach
-                        </select>
-                        <select name="age" class="w-full p-3 border rounded-lg">
-                            <option value="">Select Age</option>
-                            <option>18-25</option>
-                            <option>26-35</option>
-                            <option>36-45</option>
-                        </select>
-                        <button class="w-full bg-custom-pink text-white p-3 rounded-lg hover:bg-opacity-90">
-                            Search
+                        <!-- Gender -->
+                        <x-select-input
+                            name="gender"
+                            placeholder="I'm looking for"
+                            :options="['Male' => 'Male', 'Female' => 'Female']"
+                            :icon="'<svg class=\'h-5 w-5 text-custom-pink\' fill=\'none\' stroke=\'currentColor\' viewBox=\'0 0 24 24\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z\' /></svg>'"
+                        />
+
+                        <!-- Marital Status -->
+                        <x-select-input
+                            name="marital_status"
+                            placeholder="Marital Status"
+                            :options="['UNMARRIED' => 'Unmarried', 'MARRIED' => 'Married', 'DIVORCED' => 'Divorced', 'WIDOWED' => 'Widowed']"
+                            :icon="'<svg class=\'h-5 w-5 text-custom-pink\' fill=\'none\' stroke=\'currentColor\' viewBox=\'0 0 24 24\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z\' /></svg>'"
+                        />
+
+                        <!-- Age -->
+                        <x-select-input
+                            name="age"
+                            placeholder="Select Age"
+                            :options="['18-25' => '18-25 years', '26-35' => '26-35 years', '36-45' => '36-45 years', '46-55' => '46-55 years', '56-65' => '56-65 years']"
+                            :icon="'<svg class=\'h-5 w-5 text-custom-pink\' fill=\'none\' stroke=\'currentColor\' viewBox=\'0 0 24 24\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z\' /></svg>'"
+                        />
+
+                        <!-- Search Button -->
+                        <button type="submit" class="w-full bg-custom-pink text-white py-3 px-4 rounded-lg hover:bg-opacity-90 font-semibold shadow-md hover:shadow-lg transition-all duration-200">
+                            <i class="fas fa-search mr-2"></i>Search
                         </button>
                     </div>
                 </div>

@@ -7,5 +7,9 @@
     --color-maroon: #490B22;
     --color-custom-pink: #E33183;
     --color-custom-red: #490b22;
-    --font-sans: 'Inter', 'sans-serif';
+    --font-sans: 'Poppins', 'sans-serif';
+  }
+
+  * {
+    font-family: 'Poppins', sans-serif;
   }

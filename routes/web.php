@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ProfileImageController;
 use App\Http\Controllers\Vendor\Bkash\BkashController;
 use App\Http\Middleware\CheckConnection;
 use App\Models\Notification;
@@ -12,6 +13,9 @@ use Livewire\Volt\Volt;
 Volt::route('/', 'welcome')->name('home');
 
 Volt::route('search', 'search')->name('search');
+
+// Protected profile image route
+Route::get('profile-image/{userId}', [ProfileImageController::class, 'show'])->name('profile.image');
 
 Route::get('dashboard', function () {
     return redirect()->route('profile', ['profileId' => auth()->user()->id]);
