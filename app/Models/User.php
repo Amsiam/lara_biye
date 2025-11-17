@@ -241,6 +241,48 @@ class User extends Authenticatable implements \Illuminate\Contracts\Auth\MustVer
     }
 
     /**
+     * Calculate field completion percentage for a model
+     *
+     * @param mixed $model
+     * @return float (0.0 to 1.0)
+     */
+    private function calculateFieldCompletion($model): float
+    {
+        if (!$model) {
+            return 0.0;
+        }
+
+        // Get all attributes
+        $attributes = $model->getAttributes();
+
+        // Fields to exclude from calculation
+        $excludedFields = ['id', 'user_id', 'created_at', 'updated_at', 'is_shown', 'image_privacy', 'is_nid_verified', 'is_student_verified'];
+
+        $totalFields = 0;
+        $filledFields = 0;
+
+        foreach ($attributes as $key => $value) {
+            // Skip excluded fields
+            if (in_array($key, $excludedFields)) {
+                continue;
+            }
+
+            $totalFields++;
+
+            // Check if field is filled (not null and not empty string)
+            if ($value !== null && $value !== '') {
+                $filledFields++;
+            }
+        }
+
+        if ($totalFields === 0) {
+            return 0.0;
+        }
+
+        return $filledFields / $totalFields;
+    }
+
+    /**
      * Calculate profile completion percentage
      *
      * @return float
@@ -274,10 +316,9 @@ class User extends Authenticatable implements \Illuminate\Contracts\Auth\MustVer
                     $completedPercentage += $weight;
                 }
             } else {
-                // For hasOne relationships, check if record exists
-                if ($data) {
-                    $completedPercentage += $weight;
-                }
+                // For hasOne relationships, calculate field completion
+                $fieldCompletion = $this->calculateFieldCompletion($data);
+                $completedPercentage += ($weight * $fieldCompletion);
             }
         }
 

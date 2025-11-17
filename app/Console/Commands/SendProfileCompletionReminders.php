@@ -6,6 +6,7 @@ use App\Mail\ProfileCompletionReminder;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class SendProfileCompletionReminders extends Command
 {
@@ -31,6 +32,7 @@ class SendProfileCompletionReminders extends Command
         $threshold = (float) $this->option('threshold');
 
         $this->info("Searching for users with profile completion below {$threshold}%...");
+        Log::info("Profile Completion Reminders: Starting to search for users below {$threshold}%");
 
         // Get all non-admin users with verified email
         $users = User::where('is_admin', false)
@@ -67,9 +69,11 @@ class SendProfileCompletionReminders extends Command
                     $sentCount++;
                     $this->newLine();
                     $this->line("✓ Email sent to {$user->name} ({$user->email}) - {$completionPercentage}% complete");
+                    Log::info("Profile Reminder: Email sent to {$user->name} ({$user->email}) - {$completionPercentage}% complete");
                 } catch (\Exception $e) {
                     $this->newLine();
                     $this->error("✗ Failed to send email to {$user->email}: {$e->getMessage()}");
+                    Log::error("Profile Reminder: Failed to send email to {$user->email}: {$e->getMessage()}");
                 }
             } else {
                 $skippedCount++;
@@ -89,6 +93,14 @@ class SendProfileCompletionReminders extends Command
         $this->line("Emails sent: {$sentCount}");
         $this->line("Users skipped (>{$threshold}%): {$skippedCount}");
         $this->info("═══════════════════════════════════════");
+
+        // Log summary
+        Log::info("Profile Completion Reminders Summary", [
+            'total_users_checked' => $users->count(),
+            'emails_sent' => $sentCount,
+            'users_skipped' => $skippedCount,
+            'threshold' => $threshold
+        ]);
 
         return Command::SUCCESS;
     }
