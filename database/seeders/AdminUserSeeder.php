@@ -57,7 +57,7 @@ class AdminUserSeeder extends Seeder
         $admin->spiritualSocial()->create();
 
         $this->command->info('Admin user created successfully!');
-        $this->command->info('Email: admin@engineersmatrimony.com');
+        $this->command->info('Email: admin@engineersdiarybd.com');
         $this->command->info('Password: Admin@123');
         $this->command->warn('⚠️  Please change the password after first login!');
     }

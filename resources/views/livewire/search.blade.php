@@ -55,14 +55,24 @@ $profiles = computed(function () {
             });
 
             $query->when($this->age, function ($query) {
-                //get age from birthday
+                // Get age range from filter (e.g., "18-25")
                 $ex = explode('-', $this->age);
 
                 if (count($ex) != 2) {
                     return $query;
                 }
 
-                $query->whereBetween('dob', [now()->subYears($ex[1] - 1), now()->subYears($ex[0] + 1)]);
+                $minAge = (int) $ex[0]; // e.g., 18
+                $maxAge = (int) $ex[1]; // e.g., 25
+
+                // Calculate birth years based on age range
+                $currentYear = now()->year;
+                $maxBirthYear = $currentYear - $minAge; // For 18 years old: 2025 - 18 = 2007
+                $minBirthYear = $currentYear - $maxAge; // For 25 years old: 2025 - 25 = 2000
+
+                // Find people born between these years (inclusive)
+                $query->whereYear('dob', '>=', $minBirthYear)
+                      ->whereYear('dob', '<=', $maxBirthYear);
             });
 
             $query->when($this->marital_status, function ($query) {
