@@ -120,6 +120,44 @@ lara_biye/
 - **Soft Identity Verification:** `is_nid_verified` field for NID validation
 - **Atomic Design:** Each profile section is a separate table (allows independent CRUD)
 
+### Database Indexes for Search Performance
+
+To optimize search queries, comprehensive indexes have been added to key searchable columns:
+
+**Users Table:**
+- `idx_users_is_admin` - Filters out admin users from search results
+- `idx_users_hide_from_search` - Filters users who opted out of search visibility
+
+**Basic Infos Table:**
+- `idx_basic_infos_gender` - Gender filtering
+- `idx_basic_infos_dob` - Date of birth for age calculations
+- `idx_basic_infos_marital_status` - Marital status filtering
+- `idx_basic_infos_religion` - Religion filtering
+- `idx_basic_infos_height` - Height range filtering
+- `idx_basic_infos_gender_dob` - Composite index for combined gender + age filtering
+
+**Physical Attributes Table:**
+- `idx_physical_attributes_body_type` - Body type filtering
+- `idx_physical_attributes_complexion` - Complexion filtering
+
+**Education Careers Table:**
+- `idx_education_careers_highest_education` - Education level filtering
+- `idx_education_careers_occupation` - Profession filtering
+- `idx_education_careers_annual_income` - Income range filtering
+
+**Locations Table:**
+- `idx_locations_division` - Division filtering
+- `idx_locations_district` - District filtering
+- `idx_locations_upazilla` - Upazilla filtering
+- `idx_locations_division_district` - Composite index for location hierarchy
+
+**Implementation Notes:**
+- Migration: `database/migrations/2025_11_17_101352_add_search_indexes_to_tables.php`
+- Indexes are created with existence checks to make migration idempotent
+- Column names in indexes match actual schema (e.g., `highest_education` not `education`)
+- Income stored as annual but UI accepts monthly input (converted via * 12)
+- Hide from search feature has dedicated migration: `2025_11_17_102348_add_hide_from_search_to_users_table.php`
+
 ---
 
 ## Core Features & Business Logic
