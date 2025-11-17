@@ -28,9 +28,6 @@ return new class extends Migration
             if (!$indexExists('users', 'idx_users_is_admin')) {
                 $table->index('is_admin', 'idx_users_is_admin');
             }
-            if (!$indexExists('users', 'idx_users_hide_from_search')) {
-                $table->index('hide_from_search', 'idx_users_hide_from_search');
-            }
         });
 
         // Basic infos table indexes
@@ -171,9 +168,6 @@ return new class extends Migration
         });
 
         Schema::table('users', function (Blueprint $table) use ($indexExists) {
-            if ($indexExists('users', 'idx_users_hide_from_search')) {
-                $table->dropIndex('idx_users_hide_from_search');
-            }
             if ($indexExists('users', 'idx_users_is_admin')) {
                 $table->dropIndex('idx_users_is_admin');
             }
