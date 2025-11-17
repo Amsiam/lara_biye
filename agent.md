@@ -1013,6 +1013,52 @@ All profile components follow a consistent modern design:
 - Section headers with border dividers
 - 2-column grid on desktop, single column on mobile
 
+**Both Login and Register Pages:**
+- "Go Back Home" button at the bottom for easy navigation to home page
+- CAPTCHA verification with reload functionality
+
+### Error Pages Design
+
+Custom error pages that maintain brand consistency while providing helpful user guidance.
+
+**Design Pattern (All Error Pages):**
+```php
+- Full viewport height with centered content
+- Gradient background: from-custom-pink/10 to-custom-red/10
+- White card with rounded-2xl borders and shadow-2xl
+- Responsive padding (p-4 on mobile, p-8 to p-12 on card)
+- Large error code display (text-9xl to text-[12rem])
+- SVG icon illustrations (48x48, semi-transparent brand colors)
+- Action buttons with hover effects and transitions
+- Contact support link in footer section
+```
+
+**404 - Page Not Found (`resources/views/errors/404.blade.php`):**
+- Pink error code (text-custom-pink)
+- Exclamation circle icon
+- "Go Back Home" primary button
+- "View My Profile" secondary button (authenticated users only)
+
+**403 - Access Forbidden (`resources/views/errors/403.blade.php`):**
+- Red error code (text-custom-red)
+- Lock icon
+- Displays custom exception message if available
+- "Go Back Home" and "Login" buttons (or "View My Profile" if authenticated)
+
+**500 - Server Error (`resources/views/errors/500.blade.php`):**
+- Red error code (text-custom-red)
+- Warning triangle icon
+- User-friendly message about temporary issues
+- "Try Again" button with JavaScript reload
+- "Go Back Home" button
+
+**419 - Page Expired (`resources/views/errors/419.blade.php`):**
+- Pink error code (text-custom-pink)
+- Clock icon
+- Explains CSRF token expiration
+- "Refresh Page" primary button
+- "Go Back Home" secondary button
+
 ### Responsive Design
 
 **Breakpoints:**
@@ -1177,11 +1223,37 @@ Based on recent commits and updates:
     - Applied fix to Purchase model and CheckConnection middleware
     - Added integer casting to Connection model
 
-### Phase 6: Content Management (Latest - In Progress)
+### Phase 6: Content Management (Completed)
 20. **FAQ System:**
     - FaqResource for managing frequently asked questions
     - Rich text editor for answers
     - About page with Livewire component
+
+21. **Custom Error Pages:**
+    - Professional error pages matching brand design
+    - **404.blade.php** - Page Not Found
+      - Large pink error code, friendly message
+      - "Go Back Home" and "View My Profile" buttons
+      - Contact support link
+    - **403.blade.php** - Access Forbidden
+      - Red error code with lock icon
+      - Shows custom exception message
+      - Login button for guests, profile button for authenticated users
+    - **500.blade.php** - Server Error
+      - Red error code with warning icon
+      - User-friendly message about server issues
+      - "Try Again" button with page reload functionality
+    - **419.blade.php** - Page Expired (CSRF Token)
+      - Pink error code with clock icon
+      - Explains session expiration
+      - "Refresh Page" button
+    - All error pages feature:
+      - Gradient backgrounds (from-custom-pink/10 to-custom-red/10)
+      - Rounded cards with shadows
+      - Responsive layouts
+      - Hover effects and transitions
+      - SVG icons for visual appeal
+      - Brand-consistent pink/red color scheme
 
 ### Files Updated in Latest Development
 - **Profile Components:** 13 files in `resources/views/livewire/profile/`
@@ -1192,8 +1264,14 @@ Based on recent commits and updates:
   - physical_attr.blade.php, spiritual.blade.php, partner.blade.php
 
 - **Authentication:** 2 files
-  - login.blade.php
-  - register.blade.php
+  - login.blade.php (with "Go Back Home" button)
+  - register.blade.php (with "Go Back Home" button)
+
+- **Error Pages:** 4 files in `resources/views/errors/`
+  - 404.blade.php (Page Not Found)
+  - 403.blade.php (Access Forbidden)
+  - 500.blade.php (Server Error)
+  - 419.blade.php (Page Expired/CSRF)
 
 - **System Files:** 5 files
   - search.blade.php (admin exclusion)
@@ -1396,13 +1474,18 @@ Based on recent commits and updates:
 
 ### Views
 - Layouts: `resources/views/components/layouts/*.blade.php`
-- Auth: `resources/views/livewire/auth/*.blade.php`
+- Auth: `resources/views/livewire/auth/*.blade.php` (includes "Go Back Home" buttons)
 - Profile: `resources/views/livewire/profile/*.blade.php`
 - Settings: `resources/views/livewire/settings/*.blade.php`
 - Packages: `resources/views/livewire/packages.blade.php`
 - Payment History: `resources/views/livewire/payment-history.blade.php`
 - Connection History: `resources/views/livewire/connection-history.blade.php`
 - Emails: `resources/views/emails/invoice.blade.php`
+- Error Pages: `resources/views/errors/`
+  - 404.blade.php (Page Not Found - pink theme)
+  - 403.blade.php (Access Forbidden - red theme with lock icon)
+  - 500.blade.php (Server Error - red theme with warning icon)
+  - 419.blade.php (Page Expired - pink theme with clock icon)
 
 ### Mail
 - InvoiceMail: `app/Mail/InvoiceMail.php`
@@ -1477,6 +1560,7 @@ This is a **Laravel 12 matrimony platform** using **Livewire Volt** for the fron
 - **Dashboard Analytics:** 4 custom widgets (StatsOverview, UserGrowthChart, RevenueChart, LatestPurchases)
 - **Brand Consistency:** Admin panel primary color changed to Pink (#ec4899)
 - **Critical Bug Fix:** Resolved "Database connection [X] not configured" error using getAttribute/setAttribute
+- **Custom Error Pages:** Professional 404, 403, 500, 419 pages with brand-consistent design
 - **Settings System:** Configurable app settings via Filament with auto-cache clearing
 - **UI/UX Overhaul:** All 13 profile components + auth pages modernized with CAPTCHA
 - **Custom Components:** Reusable select-input component with icon support
@@ -1489,6 +1573,7 @@ This is a **Laravel 12 matrimony platform** using **Livewire Volt** for the fron
 - **Connection history:** Profile cards and status tracking
 - **Invoice automation:** Email invoices after successful payment
 - **FAQ System:** FaqResource and about page
+- **Navigation:** "Go Back Home" buttons on login and register pages
 
 **Design System Standards:**
 - Consistent card design with rounded-xl borders and shadow effects
