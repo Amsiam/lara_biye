@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
@@ -7,12 +7,13 @@
     <title>Engineer's Matrimony</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    @fluxAppearance
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <meta name="color-scheme" content="light only">
     @vite(['resources/css/app.css'])
 </head>
 
-<body class="font-['Poppins']">
+<body class="font-['Poppins'] bg-gray-100">
 
     <!-- Navbar -->
     <nav class="sticky top-0 w-full bg-white/95 backdrop-blur-md shadow-lg z-50 border-b border-gray-100">
@@ -20,18 +21,23 @@
             <div class="flex justify-between items-center h-20">
                 <!-- Logo -->
                 <a href="{{ route('home') }}" wire:navigate class="group flex items-center gap-2">
-                    <div class="bg-gradient-to-br from-custom-pink to-pink-600 p-2 rounded-lg shadow-md group-hover:shadow-lg group-hover:scale-105 transition-all duration-300">
+                    <div
+                        class="bg-gradient-to-br from-custom-pink to-pink-600 p-2 rounded-lg shadow-md group-hover:shadow-lg group-hover:scale-105 transition-all duration-300">
                         <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/>
+                            <path fill-rule="evenodd"
+                                d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                                clip-rule="evenodd" />
                         </svg>
                     </div>
-                    <span class="font-extrabold text-xl bg-gradient-to-r from-maroon to-custom-pink bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-300">
+                    <span
+                        class="font-extrabold text-xl bg-gradient-to-r from-maroon to-custom-pink bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-300">
                         Engineer's Matrimony
                     </span>
                 </a>
 
                 <!-- Mobile menu button -->
-                <button id="hamburger" class="md:hidden focus:outline-none p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                <button id="hamburger"
+                    class="md:hidden focus:outline-none p-2 rounded-lg hover:bg-gray-100 transition-colors">
                     <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 6h16M4 12h16M4 18h16" />
@@ -43,12 +49,14 @@
                     <a href="{{ route('home') }}"
                         class="relative px-4 py-2 text-gray-700 font-semibold hover:text-custom-pink transition-colors group {{ Route::is('home') ? 'text-custom-pink' : '' }}">
                         Home
-                        <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-custom-pink to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 {{ Route::is('home') ? 'scale-x-100' : '' }}"></span>
+                        <span
+                            class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-custom-pink to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 {{ Route::is('home') ? 'scale-x-100' : '' }}"></span>
                     </a>
                     <a href="{{ route('your.connections') }}"
                         class="relative px-4 py-2 text-gray-700 font-semibold hover:text-custom-pink transition-colors group {{ Route::is('your.connections') ? 'text-custom-pink' : '' }}">
                         Connections
-                        <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-custom-pink to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 {{ Route::is('your.connections') ? 'scale-x-100' : '' }}"></span>
+                        <span
+                            class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-custom-pink to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 {{ Route::is('your.connections') ? 'scale-x-100' : '' }}"></span>
                     </a>
 
                     @if (auth()->check())
@@ -65,17 +73,23 @@
                         </flux:dropdown>
                     @endif
 
-                    <a href="{{ route('about') }}" class="relative px-4 py-2 text-gray-700 font-medium hover:text-custom-pink transition-colors group {{ Route::is('about') ? 'text-custom-pink' : '' }}">
+                    <a href="{{ route('about') }}"
+                        class="relative px-4 py-2 text-gray-700 font-medium hover:text-custom-pink transition-colors group {{ Route::is('about') ? 'text-custom-pink' : '' }}">
                         About
-                        <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-custom-pink to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 {{ Route::is('about') ? 'scale-x-100' : '' }}"></span>
+                        <span
+                            class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-custom-pink to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 {{ Route::is('about') ? 'scale-x-100' : '' }}"></span>
                     </a>
-                    <a href="{{ route('faq') }}" class="relative px-4 py-2 text-gray-700 font-medium hover:text-custom-pink transition-colors group {{ Route::is('faq') ? 'text-custom-pink' : '' }}">
+                    <a href="{{ route('faq') }}"
+                        class="relative px-4 py-2 text-gray-700 font-medium hover:text-custom-pink transition-colors group {{ Route::is('faq') ? 'text-custom-pink' : '' }}">
                         FAQ
-                        <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-custom-pink to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 {{ Route::is('faq') ? 'scale-x-100' : '' }}"></span>
+                        <span
+                            class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-custom-pink to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 {{ Route::is('faq') ? 'scale-x-100' : '' }}"></span>
                     </a>
-                    <a href="{{ route('contact') }}" class="relative px-4 py-2 text-gray-700 font-medium hover:text-custom-pink transition-colors group {{ Route::is('contact') ? 'text-custom-pink' : '' }}">
+                    <a href="{{ route('contact') }}"
+                        class="relative px-4 py-2 text-gray-700 font-medium hover:text-custom-pink transition-colors group {{ Route::is('contact') ? 'text-custom-pink' : '' }}">
                         Contact
-                        <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-custom-pink to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 {{ Route::is('contact') ? 'scale-x-100' : '' }}"></span>
+                        <span
+                            class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-custom-pink to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 {{ Route::is('contact') ? 'scale-x-100' : '' }}"></span>
                     </a>
 
                     <div class="flex items-center gap-3 ml-4 pl-4 border-l border-gray-200">
@@ -129,9 +143,13 @@
 
             <div class="border-t border-gray-200 my-2"></div>
 
-            <a href="{{ route('about') }}" class="px-4 py-3 text-gray-700 font-medium hover:text-custom-pink hover:bg-custom-pink/5 rounded-lg text-center transition-all {{ Route::is('about') ? 'text-custom-pink bg-custom-pink/10' : '' }}">About Us</a>
-            <a href="{{ route('faq') }}" class="px-4 py-3 text-gray-700 font-medium hover:text-custom-pink hover:bg-custom-pink/5 rounded-lg text-center transition-all {{ Route::is('faq') ? 'text-custom-pink bg-custom-pink/10' : '' }}">FAQ</a>
-            <a href="{{ route('contact') }}" class="px-4 py-3 text-gray-700 font-medium hover:text-custom-pink hover:bg-custom-pink/5 rounded-lg text-center transition-all {{ Route::is('contact') ? 'text-custom-pink bg-custom-pink/10' : '' }}">Contact</a>
+            <a href="{{ route('about') }}"
+                class="px-4 py-3 text-gray-700 font-medium hover:text-custom-pink hover:bg-custom-pink/5 rounded-lg text-center transition-all {{ Route::is('about') ? 'text-custom-pink bg-custom-pink/10' : '' }}">About
+                Us</a>
+            <a href="{{ route('faq') }}"
+                class="px-4 py-3 text-gray-700 font-medium hover:text-custom-pink hover:bg-custom-pink/5 rounded-lg text-center transition-all {{ Route::is('faq') ? 'text-custom-pink bg-custom-pink/10' : '' }}">FAQ</a>
+            <a href="{{ route('contact') }}"
+                class="px-4 py-3 text-gray-700 font-medium hover:text-custom-pink hover:bg-custom-pink/5 rounded-lg text-center transition-all {{ Route::is('contact') ? 'text-custom-pink bg-custom-pink/10' : '' }}">Contact</a>
 
             <div class="border-t border-gray-200 my-2"></div>
 

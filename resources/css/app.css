@@ -1,7 +1,12 @@
 @import 'tailwindcss';
 @import '../../vendor/livewire/flux/dist/flux.css';
 
-
+/* Force light mode only - disable dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: light only;
+  }
+}
 
 @theme {
     --color-maroon: #490B22;

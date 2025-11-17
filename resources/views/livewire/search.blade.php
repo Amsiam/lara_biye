@@ -49,6 +49,10 @@ $goToPage = function ($page) {
 $profiles = computed(function () {
     return \App\Models\User::query()
         ->where('is_admin', false)
+        ->where('hide_from_search', false)
+        ->when(auth()->check(), function ($query) {
+            $query->where('id', '!=', auth()->id());
+        })
         ->whereHas('basicInfo', function ($query) {
             $query->when($this->gender, function ($query) {
                 $query->where('gender', strtoupper($this->gender));
@@ -105,21 +109,21 @@ $profiles = computed(function () {
         })
         ->when($this->education, function ($query) {
             $query->whereHas('education', function ($q) {
-                $q->where('education', 'LIKE', '%' . $this->education . '%');
+                $q->where('highest_education', 'LIKE', '%' . $this->education . '%');
             });
         })
         ->when($this->profession, function ($query) {
             $query->whereHas('education', function ($q) {
-                $q->where('profession', 'LIKE', '%' . $this->profession . '%');
+                $q->where('occupation', 'LIKE', '%' . $this->profession . '%');
             });
         })
         ->when($this->min_income || $this->max_income, function ($query) {
             $query->whereHas('education', function ($q) {
                 $q->when($this->min_income, function ($q) {
-                    $q->where('monthly_income', '>=', $this->min_income);
+                    $q->where('annual_income', '>=', $this->min_income * 12); // Convert monthly to annual
                 });
                 $q->when($this->max_income, function ($q) {
-                    $q->where('monthly_income', '<=', $this->max_income);
+                    $q->where('annual_income', '<=', $this->max_income * 12); // Convert monthly to annual
                 });
             });
         })
@@ -130,7 +134,7 @@ $profiles = computed(function () {
         })
         ->when($this->city, function ($query) {
             $query->whereHas('location', function ($q) {
-                $q->where('city', 'LIKE', '%' . $this->city . '%');
+                $q->where('upazilla', 'LIKE', '%' . $this->city . '%');
             });
         })
         ->inRandomOrder()
@@ -255,7 +259,7 @@ $profiles = computed(function () {
                                     placeholder="District (e.g., Dhaka)"
                                     class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg text-gray-700 bg-white focus:ring-2 focus:ring-custom-pink focus:border-custom-pink transition-all duration-200 hover:border-custom-pink shadow-sm hover:shadow-md font-medium">
                                 <input type="text" wire:model.live="city" name="city"
-                                    placeholder="City (e.g., Mirpur)"
+                                    placeholder="Upazilla (e.g., Mirpur)"
                                     class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg text-gray-700 bg-white focus:ring-2 focus:ring-custom-pink focus:border-custom-pink transition-all duration-200 hover:border-custom-pink shadow-sm hover:shadow-md font-medium">
                             </div>
                         </div>

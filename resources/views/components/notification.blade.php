@@ -3,7 +3,7 @@
 @endphp
 
 <button id="dropdownNotificationButton" data-dropdown-toggle="dropdownNotification"
-    class="relative inline-flex items-center text-sm font-medium text-center text-gray-500 hover:text-gray-900 focus:outline-none dark:hover:text-white dark:text-gray-400"
+    class="relative inline-flex items-center text-sm font-medium text-center text-gray-500 hover:text-gray-900 focus:outline-none"
     type="button">
 
 
@@ -15,27 +15,27 @@
 
     @if ($notifications->count() > 0)
         <div
-            class="absolute block w-3 h-3 bg-red-500 border-2 border-white rounded-full -top-0.5 start-2.5 dark:border-gray-900">
+            class="absolute block w-3 h-3 bg-red-500 border-2 border-white rounded-full -top-0.5 start-2.5">
         </div>
     @endif
 </button>
 <div id="dropdownNotification"
-    class="z-20 hidden w-full max-w-sm bg-white divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-800 dark:divide-gray-700"
+    class="z-20 hidden w-full max-w-sm bg-white divide-y divide-gray-100 rounded-lg shadow-sm"
     aria-labelledby="dropdownNotificationButton">
     <div
-        class="block px-4 py-2 font-medium text-center text-gray-700 rounded-t-lg bg-gray-50 dark:bg-gray-800 dark:text-white">
+        class="block px-4 py-2 font-medium text-center text-gray-700 rounded-t-lg bg-gray-50">
         Notifications
     </div>
-    <div class="divide-y divide-gray-100 dark:divide-gray-700">
+    <div class="divide-y divide-gray-100">
         @foreach ($notifications as $notification)
             <a href="{{ route('notifications.show', $notification->id) }}"
-                class="flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">
+                class="flex px-4 py-3 hover:bg-gray-100">
 
                 <div class="w-full ps-3">
-                    <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">
+                    <div class="text-gray-500 text-sm mb-1.5">
                         {{ $notification->message }}
                     </div>
-                    <div class="text-xs text-blue-600 dark:text-blue-500">
+                    <div class="text-xs text-blue-600">
                         {{ $notification->created_at->diffForHumans() }}
                     </div>
                 </div>
@@ -43,9 +43,9 @@
         @endforeach
     </div>
     <a href="{{ route('notifications.markAllAsRead') }}"
-        class="block py-2 text-sm font-medium text-center text-gray-900 rounded-b-lg bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white">
+        class="block py-2 text-sm font-medium text-center text-gray-900 rounded-b-lg bg-gray-50 hover:bg-gray-100">
         <div class="inline-flex items-center ">
-            <svg class="w-4 h-4 me-2 text-gray-500 dark:text-gray-400" aria-hidden="true"
+            <svg class="w-4 h-4 me-2 text-gray-500" aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 14">
                 <path
                     d="M10 0C4.612 0 0 5.336 0 7c0 1.742 3.546 7 10 7 6.454 0 10-5.258 10-7 0-1.664-4.612-7-10-7Zm0 10a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z" />

@@ -27,6 +27,7 @@ class User extends Authenticatable implements \Illuminate\Contracts\Auth\MustVer
         'is_admin',
         'profile_verified_at',
         'verification_notes',
+        'hide_from_search',
     ];
 
     /**
@@ -51,6 +52,7 @@ class User extends Authenticatable implements \Illuminate\Contracts\Auth\MustVer
             'password' => 'hashed',
             'is_admin' => 'boolean',
             'profile_verified_at' => 'datetime',
+            'hide_from_search' => 'boolean',
         ];
     }
 
