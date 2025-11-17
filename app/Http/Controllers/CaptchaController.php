@@ -45,13 +45,15 @@ class CaptchaController extends Controller
             $angle = rand(-15, 15);
             $fontSize = rand(20, 28);
 
-            // Use imagestring if imagettftext is not available
-            if (function_exists('imagettftext')) {
-                // Try to use a built-in font - using PHP's default font
-                imagettftext($image, $fontSize, $angle, $x, $y, $textColor, $this->getFont(), $char);
+            // Check if TrueType font is available
+            $font = $this->getFont();
+
+            if (function_exists('imagettftext') && $font !== null) {
+                // Use TrueType font if available
+                imagettftext($image, $fontSize, $angle, $x, $y, $textColor, $font, $char);
             } else {
-                // Fallback to imagestring
-                $fontId = rand(3, 5); // Use built-in fonts 3, 4, or 5
+                // Fallback to built-in bitmap font
+                $fontId = 5; // Use largest built-in font (5)
                 imagestring($image, $fontId, $x, $y - 20, $char, $textColor);
             }
         }
@@ -67,12 +69,28 @@ class CaptchaController extends Controller
 
     private function getFont()
     {
-        // Try to find a system font
+        // Try to find a system font (common paths on various servers)
         $possibleFonts = [
+            // Linux/cPanel common paths
             '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',
+            '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
+            '/usr/share/fonts/dejavu/DejaVuSans-Bold.ttf',
+            '/usr/share/fonts/dejavu/DejaVuSans.ttf',
             '/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf',
+            '/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf',
+            '/usr/share/fonts/liberation/LiberationSans-Bold.ttf',
+            '/usr/share/fonts/liberation/LiberationSans-Regular.ttf',
+            '/usr/share/fonts/truetype/freefont/FreeSansBold.ttf',
+            '/usr/share/fonts/truetype/freefont/FreeSans.ttf',
+            // Alternative Linux paths
+            '/usr/share/fonts/TTF/DejaVuSans-Bold.ttf',
+            '/usr/share/fonts/TTF/DejaVuSans.ttf',
+            // macOS paths
             '/System/Library/Fonts/Helvetica.ttc',
+            '/Library/Fonts/Arial.ttf',
+            // Windows paths
             'C:\Windows\Fonts\Arial.ttf',
+            'C:\Windows\Fonts\arialbd.ttf',
         ];
 
         foreach ($possibleFonts as $font) {
