@@ -1,6 +1,9 @@
 @import 'tailwindcss';
 @import '../../vendor/livewire/flux/dist/flux.css';
 
+/* Configure Tailwind CSS for Flux UI dark mode */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Force light mode only - disable dark mode */
 @media (prefers-color-scheme: dark) {
   :root {

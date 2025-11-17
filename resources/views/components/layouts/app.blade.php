@@ -10,7 +10,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <meta name="color-scheme" content="light only">
+    <script>
+        // Force light mode BEFORE Flux initializes
+        localStorage.setItem('flux-appearance', 'light');
+    </script>
     @vite(['resources/css/app.css'])
+    @fluxAppearance
 </head>
 
 <body class="font-['Poppins'] bg-gray-100">
@@ -232,6 +237,16 @@
     <!-- Main Wrapper -->
     {{ $slot }}
     @fluxScripts
+    <script>
+        // Force Flux UI to always use light mode using global Flux object
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set appearance to light using global Flux object
+            Flux.appearance = 'light';
+
+            // Also explicitly set dark to false
+            Flux.dark = false;
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
 
 </body>
