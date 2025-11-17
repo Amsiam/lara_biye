@@ -239,4 +239,48 @@ class User extends Authenticatable implements \Illuminate\Contracts\Auth\MustVer
     {
         return $this->hasMany(Notification::class);
     }
+
+    /**
+     * Calculate profile completion percentage
+     *
+     * @return float
+     */
+    public function profileCompletionPercentage(): float
+    {
+        $sections = [
+            'basicInfo' => 15,        // Most important - 15%
+            'education' => 10,        // Education and career - 10%
+            'physical_attr' => 8,     // Physical attributes - 8%
+            'location' => 8,          // Location - 8%
+            'family' => 8,            // Family information - 8%
+            'partnerExpectation' => 10, // Partner expectations - 10%
+            'personal' => 7,          // Personal attitude - 7%
+            'lifestyle' => 7,         // Lifestyle - 7%
+            'hobby' => 6,             // Hobbies and interests - 6%
+            'language' => 6,          // Language - 6%
+            'spiritualSocial' => 6,   // Spiritual and social - 6%
+            'parmanent' => 6,         // Permanent address - 6%
+            'siblingInfo' => 3,       // Sibling info - 3%
+        ];
+
+        $completedPercentage = 0;
+
+        foreach ($sections as $relation => $weight) {
+            $data = $this->$relation;
+
+            if ($relation === 'siblingInfo') {
+                // For hasMany relationship, check if at least one record exists
+                if ($data && $data->count() > 0) {
+                    $completedPercentage += $weight;
+                }
+            } else {
+                // For hasOne relationships, check if record exists
+                if ($data) {
+                    $completedPercentage += $weight;
+                }
+            }
+        }
+
+        return round($completedPercentage, 2);
+    }
 }
