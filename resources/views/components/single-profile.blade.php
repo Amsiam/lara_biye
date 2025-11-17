@@ -7,7 +7,7 @@
     <img src="{{ route('profile.image', $profile->id) }}" class="w-full h-60 object-cover rounded-lg"
         alt="Profile Picture" onerror="this.src='{{ asset('default.png') }}'" />
     <div class="mt-3 flex items-center justify-center gap-2">
-        @if (auth()->user()->isConnected($profile->id))
+        @if (auth()->check() && auth()->user()->isConnected($profile->id))
             <h3 class="text-lg font-bold text-center">{{ $profile->name }}</h3>
         @else
             <h3 class="text-lg font-bold text-center h-8"></h3>
