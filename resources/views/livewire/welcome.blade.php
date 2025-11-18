@@ -71,7 +71,7 @@ $supportPages = computed(function () {
             <div class="w-full lg:w-1/2 text-center lg:text-left px-4 animate-fade-in">
                 <div class="inline-block mb-4">
                     <span
-                        class="bg-custom-pink/20 text-custom-pink px-4 py-2 rounded-full text-sm font-semibold border border-custom-pink/30 backdrop-blur-sm">
+                        class="bg-custom-pink/20 text-custom-pink px-3 py-2 rounded-full text-xs sm:text-sm font-semibold border border-custom-pink/30 backdrop-blur-sm whitespace-nowrap">
                         ✨ #1 Matrimony Platform for Engineers
                     </span>
                 </div>
