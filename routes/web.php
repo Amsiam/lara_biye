@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ProfileExportController;
 use App\Http\Controllers\ProfileImageController;
 use App\Http\Controllers\Vendor\Bkash\BkashController;
 use App\Http\Middleware\CheckConnection;
@@ -68,6 +69,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         return redirect()->route('profile', ['profileId' => $notification->sender_id]);
     })->name('notifications.show');
+
+    // Profile PDF Export
+    Route::get('profile/{profileId}/export-pdf', [ProfileExportController::class, 'exportPdf'])->name('profile.export.pdf');
+    Route::get('profile/{profileId}/preview-pdf', [ProfileExportController::class, 'previewPdf'])->name('profile.preview.pdf');
 });
 
 Route::get('migrate', function () {

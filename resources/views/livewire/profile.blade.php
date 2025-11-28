@@ -92,6 +92,17 @@ $sendConnection = function () {
         <!-- Package Information -->
 
         <div class="mt-4 p-4 bg-white rounded-xl shadow-lg flex flex-col space-y-3">
+            <!-- Export PDF Button - Only show for own profile or connected users -->
+            @if(auth()->user()?->id == $this->user->id || auth()->user()->isConnected($this->user->id))
+                <a href="{{ route('profile.export.pdf', ['profileId' => $this->user->id]) }}"
+                    class="w-full bg-blue-500 hover:bg-blue-600 py-3 rounded-lg shadow-md hover:shadow-xl text-white font-semibold transition-all duration-300 transform hover:scale-105 text-center flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Export Profile PDF
+                </a>
+            @endif
+
             <button wire:click="buyConnection" wire:confirm="Are you sure you want to buy a connection?"
                 class="w-full bg-custom-pink hover:bg-pink-600 py-3 rounded-lg shadow-md hover:shadow-xl text-white font-semibold transition-all duration-300 transform hover:scale-105">
                 🎟️ Buy Connection ({{ auth()->user()?->connection()?->first()?->connection ?? 0 }})
