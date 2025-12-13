@@ -44,7 +44,7 @@
         <div class="mt-8 pt-6 border-t border-gray-200">
             <p class="text-gray-600 text-sm">
                 Error persists?
-                <a href="{{ url('/') }}" class="text-custom-pink hover:text-custom-red font-semibold hover:underline">
+                <a href="https://www.facebook.com/Matrimony.ED/" class="text-custom-pink hover:text-custom-red font-semibold hover:underline">
                     Contact Support
                 </a>
             </p>

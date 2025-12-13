@@ -23,6 +23,7 @@ class User extends Authenticatable implements \Illuminate\Contracts\Auth\MustVer
     protected $fillable = [
         'name',
         'email',
+	    'mobile',
         'password',
         'is_admin',
         'profile_verified_at',
