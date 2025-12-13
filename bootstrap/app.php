@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $schedule->command('profile:send-completion-reminders')
             ->dailyAt('09:00')
             ->when(function () {
+                return false;
                 $lastRun = cache('profile_reminder_last_run');
                 if (!$lastRun) {
                     cache(['profile_reminder_last_run' => now()], now()->addDays(45));

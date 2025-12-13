@@ -18,6 +18,8 @@ rules([
     'bio.nid' => 'nullable|string|max:20',
     'bio.student_id' => 'nullable|string|max:20',
     'bio.university' => 'nullable|string|max:100',
+    'bio.area' => 'nullable|string|max:100',
+    'user.mobile' => 'nullable|string|max:11'
 ]);
 
 $enableEditing = fn() => ($this->isEditing = !$this->isEditing);
@@ -102,7 +104,7 @@ $save = function () {
                 <input wire:model="user.mobile" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all" />
             @else
                 <p class="text-gray-900 font-medium">
-                    {{ $bio->mobile }}
+                    {{ $user->mobile }}
                 </p>
             @endif
             @else
