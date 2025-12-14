@@ -19,6 +19,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $schedule->command('profile:send-completion-reminders')
             ->dailyAt('09:00')
             ->appendOutputTo(storage_path('logs/cron-reminders.log'));
+
+        // Cancel pending payments older than 2 days
+        $schedule->command('payments:cancel-pending')
+            ->dailyAt('00:00')
+            ->appendOutputTo(storage_path('logs/cron-payments.log'));
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
