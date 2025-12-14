@@ -40,6 +40,7 @@ class AdminUserSeeder extends Seeder
             'height' => 0,
             'weight' => 0,
             'nid' => 'N/A',
+            'blood_group' => 'N/A',
             'student_id' => 'N/A',
             'university' => 'N/A',
         ]);

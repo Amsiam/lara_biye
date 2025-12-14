@@ -13,6 +13,9 @@ return new class extends Migration
     {
         // Helper function to check if index exists
         $indexExists = function ($table, $indexName) {
+            if (DB::getDriverName() !== 'mysql') {
+                return false;
+            }
             $connection = Schema::getConnection();
             $database = $connection->getDatabaseName();
             $result = $connection->select(
@@ -99,6 +102,9 @@ return new class extends Migration
     {
         // Helper function to check if index exists
         $indexExists = function ($table, $indexName) {
+            if (DB::getDriverName() !== 'mysql') {
+                return false;
+            }
             $connection = Schema::getConnection();
             $database = $connection->getDatabaseName();
             $result = $connection->select(
