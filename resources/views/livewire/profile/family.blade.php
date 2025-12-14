@@ -1,6 +1,6 @@
 <?php
 
-use function Livewire\Volt\{state, rules};
+use function Livewire\Volt\{state, rules, computed};
 
 state(['family', 'user', 'isEditing' => false, 'siblingInfo' => []]);
 
@@ -52,6 +52,13 @@ $toggle = function () {
     $this->family->save();
 };
 
+$canViewContact = computed(function () {
+    if (!auth()->check()) {
+        return false;
+    }
+    return auth()->id() === $this->family?->user_id || auth()->user()->isConnected($this->family?->user_id);
+});
+
 ?>
 
 <div class="mt-6 border border-gray-200 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
@@ -75,14 +82,18 @@ $toggle = function () {
     <div class="p-6 bg-white grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
             <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Father Name</p>
-            @if ($isEditing)
-                <input type="text" wire:model="family.father" placeholder="e.g., Md. Rahim Uddin"
-                    class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all">
-                @error('family.father')
-                    <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
-                @enderror
+            @if ($this->canViewContact)
+                @if ($isEditing)
+                    <input type="text" wire:model="family.father" placeholder="e.g., Md. Rahim Uddin"
+                        class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all">
+                    @error('family.father')
+                        <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                    @enderror
+                @else
+                    <p class="text-gray-900 font-medium">{{ $family->father ?? '-' }}</p>
+                @endif
             @else
-                <p class="text-gray-900 font-medium">{{ $family->father ?? '-' }}</p>
+                <p class="text-gray-500 italic">Send connection to see father name</p>
             @endif
         </div>
         <div>
@@ -99,14 +110,18 @@ $toggle = function () {
         </div>
         <div>
             <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Mother Name</p>
-            @if ($isEditing)
-                <input type="text" wire:model="family.mother" placeholder="e.g., Jahanara Begum"
-                    class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all">
-                @error('family.mother')
-                    <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
-                @enderror
+            @if ($this->canViewContact)
+                @if ($isEditing)
+                    <input type="text" wire:model="family.mother" placeholder="e.g., Jahanara Begum"
+                        class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all">
+                    @error('family.mother')
+                        <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                    @enderror
+                @else
+                    <p class="text-gray-900 font-medium">{{ $family->mother ?? '-' }}</p>
+                @endif
             @else
-                <p class="text-gray-900 font-medium">{{ $family->mother ?? '-' }}</p>
+                <p class="text-gray-500 italic">Send connection to see mother name</p>
             @endif
         </div>
         <div>

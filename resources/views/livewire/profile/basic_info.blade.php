@@ -1,12 +1,12 @@
 <?php
 
-use function Livewire\Volt\{state, rules};
+use function Livewire\Volt\{state, rules, computed};
 
 state(['bio', 'user', 'isEditing' => false]);
 
 rules([
     'user.name' => 'required|string',
-    'bio.dob' => 'required|date',
+    'bio.dob' => 'required|date|before:17 years ago',
     'bio.gender' => 'required|string',
     'bio.marital_status' => 'required|string',
     'bio.noc' => 'required|integer',
@@ -33,6 +33,13 @@ $save = function () {
     $this->isEditing = false;
 };
 
+$canViewContact = computed(function () {
+    if (!auth()->check()) {
+        return false;
+    }
+    return auth()->id() === $this->bio?->user_id || auth()->user()->isConnected($this->bio?->user_id);
+});
+
 ?>
 
 <div class="mt-6 border border-gray-200 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
@@ -54,17 +61,18 @@ $save = function () {
 
         <div>
             <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Name</p>
-            @if (auth()->user()?->id == $bio?->user_id || auth()->user()?->isConnected($bio?->user_id))
-            @if ($isEditing)
-                <input wire:model="user.name" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all" />
-                @error('user.name')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            @else
-                <p class="text-gray-900 font-medium">
-                    {{ $user->name }}
-                </p>
-            @endif
+            @if ($this->canViewContact)
+                @if ($isEditing)
+                    <input wire:model="user.name"
+                        class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all" />
+                    @error('user.name')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                @else
+                    <p class="text-gray-900 font-medium">
+                        {{ $user->name }}
+                    </p>
+                @endif
             @else
                 <p class="text-gray-500 italic">Send connection to see name</p>
             @endif
@@ -89,17 +97,17 @@ $save = function () {
         </div>
 
         @if (auth()->user()?->id == $bio?->user_id)
-        <div>
-            <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Email</p>
-            <p class="text-gray-900 font-medium">
-                {{ $user->email }}
-            </p>
-        </div>
+            <div>
+                <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Email</p>
+                <p class="text-gray-900 font-medium">
+                    {{ $user->email }}
+                </p>
+            </div>
         @endif
 
         <div>
             <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Mobile</p>
-            @if(auth()->user()?->id == $bio?->user_id || auth()->user()?->isConnected($bio?->user_id))
+            @if($this->canViewContact)
             @if ($isEditing)
                 <input wire:model="user.mobile" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all" />
             @else
