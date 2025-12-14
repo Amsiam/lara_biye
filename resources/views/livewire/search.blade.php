@@ -88,7 +88,7 @@ $profiles = computed(function () {
             });
         })
         ->when($this->min_height || $this->max_height, function ($query) {
-            $query->whereHas('physical_attr', function ($q) {
+            $query->whereHas('basicInfo', function ($q) {
                 $q->when($this->min_height, function ($q) {
                     $q->where('height', '>=', $this->min_height);
                 });
