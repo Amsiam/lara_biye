@@ -48,38 +48,38 @@ $toggle = function () {
     </div>
     <div class="p-6 bg-white grid grid-cols-1 md:grid-cols-2 gap-6">
         @foreach ([
-        'EYE COLOR' => ['field' => 'eye_color', 'placeholder' => 'e.g., Brown'],
-        'HAIR COLOR' => ['field' => 'hair_color', 'placeholder' => 'e.g., Black'],
-        'COMPLEXION' => ['field' => 'complexion', 'placeholder' => 'e.g., Fair'],
-        'BODY TYPE' => ['field' => 'body_type', 'placeholder' => 'e.g., Athletic'],
-        'BODY ART' => ['field' => 'body_art', 'placeholder' => 'e.g., Tattoo on arm'],
-        'ANY DISABILITY' => ['field' => 'any_disability', 'placeholder' => 'Select Yes or No'],
-    ] as $label => $data)
-            <div>
-                <p class="text-gray-600 text-xs font-semibold uppercase mb-2">{{ $label }}</p>
-                @if ($isEditing)
-                    @if ($data['field'] == 'any_disability')
-                        <x-select-input
-                            wireModel="physical.{{ $data['field'] }}"
-                            placeholder="Select Yes or No"
-                            :options="[1 => 'Yes', 0 => 'No']"
-                        />
-                    @else
-                        <input type="text" wire:model="physical.{{ $data['field'] }}"
-                            class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all"
-                            placeholder="{{ $data['placeholder'] }}">
-                    @endif
-                    @error('physical.' . $data['field'])
-                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-                @else
-                    @if ($data['field'] == 'any_disability' && !is_null($physical->any_disability))
-                        <p class="text-gray-900 font-medium">{{ $physical->any_disability ? 'Yes' : 'No' }}</p>
-                    @else
-                        <p class="text-gray-900 font-medium">{{ $physical->{$data['field']} ?? '-' }}</p>
-                    @endif
-                @endif
-            </div>
+                'EYE COLOR' => ['field' => 'eye_color', 'placeholder' => 'e.g., Brown'],
+                'HAIR COLOR' => ['field' => 'hair_color', 'placeholder' => 'e.g., Black'],
+                'COMPLEXION' => ['field' => 'complexion', 'placeholder' => 'e.g., Fair'],
+                'BODY TYPE' => ['field' => 'body_type', 'placeholder' => 'e.g., Athletic'],
+                'BODY ART' => ['field' => 'body_art', 'placeholder' => 'e.g., Tattoo on arm'],
+                'ANY DISABILITY' => ['field' => 'any_disability', 'placeholder' => 'Select Yes or No'],
+            ] as $label => $data)
+                        <div>
+                            <p class="text-gray-600 text-xs font-semibold uppercase mb-2">{{ $label }}</p>
+                            @if ($isEditing)
+                                @if ($data['field'] == 'any_disability')
+                                    <x-select-input
+                                        wireModel="physical.{{ $data['field'] }}"
+                                        placeholder="Select Yes or No"
+                                        :options="[1 => 'Yes', 0 => 'No']"
+                                    />
+                                @else
+                                    <input type="text" wire:model="physical.{{ $data['field'] }}"
+                                        class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all text-gray-900 bg-white"
+                                        placeholder="{{ $data['placeholder'] }}">
+                                @endif
+                                @error('physical.' . $data['field'])
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            @else
+                                @if ($data['field'] == 'any_disability' && !is_null($physical->any_disability))
+                                    <p class="text-gray-900 font-medium">{{ $physical->any_disability ? 'Yes' : 'No' }}</p>
+                                @else
+                                    <p class="text-gray-900 font-medium">{{ $physical->{$data['field']} ?? '-' }}</p>
+                                @endif
+                            @endif
+                        </div>
         @endforeach
     </div>
 </div>

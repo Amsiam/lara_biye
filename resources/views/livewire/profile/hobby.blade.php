@@ -52,29 +52,29 @@ $toggle = function () {
     </div>
     <div class="p-6 bg-white grid grid-cols-1 md:grid-cols-2 gap-6">
         @foreach ([
-        'HOBBY' => ['field' => 'hobby', 'placeholder' => 'e.g., Painting, Gardening'],
-        'INTEREST' => ['field' => 'interest', 'placeholder' => 'e.g., Philosophy, History'],
-        'MUSIC' => ['field' => 'music', 'placeholder' => 'e.g., Classical, Rock'],
-        'BOOKS' => ['field' => 'books', 'placeholder' => 'e.g., Fiction, Biographies'],
-        'MOVIE' => ['field' => 'movie', 'placeholder' => 'e.g., Sci-Fi, Drama'],
-        'TV SHOW' => ['field' => 'tv_show', 'placeholder' => 'e.g., Breaking Bad'],
-        'SPORTS SHOW' => ['field' => 'sports_show', 'placeholder' => 'e.g., Football, Cricket'],
-        'FITNESS ACTIVITY' => ['field' => 'fitness_activity', 'placeholder' => 'e.g., Yoga, Gym'],
-        'CUISINE' => ['field' => 'cuisine', 'placeholder' => 'e.g., Italian, Bengali'],
-        'DRESS STYLE' => ['field' => 'dress_style', 'placeholder' => 'e.g., Casual, Traditional'],
-    ] as $label => $data)
-            <div>
-                <p class="text-gray-600 text-xs font-semibold uppercase mb-2">{{ $label }}</p>
-                @if ($isEditing)
-                    <input type="text" placeholder="{{ $data['placeholder'] }}"
-                        wire:model="hobby.{{ $data['field'] }}" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all">
-                    @error('hobby.' . $data['field'])
-                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-                @else
-                    <p class="text-gray-900 font-medium">{{ $hobby->{$data['field']} ?? '-' }}</p>
-                @endif
-            </div>
+                'HOBBY' => ['field' => 'hobby', 'placeholder' => 'e.g., Painting, Gardening'],
+                'INTEREST' => ['field' => 'interest', 'placeholder' => 'e.g., Philosophy, History'],
+                'MUSIC' => ['field' => 'music', 'placeholder' => 'e.g., Classical, Rock'],
+                'BOOKS' => ['field' => 'books', 'placeholder' => 'e.g., Fiction, Biographies'],
+                'MOVIE' => ['field' => 'movie', 'placeholder' => 'e.g., Sci-Fi, Drama'],
+                'TV SHOW' => ['field' => 'tv_show', 'placeholder' => 'e.g., Breaking Bad'],
+                'SPORTS SHOW' => ['field' => 'sports_show', 'placeholder' => 'e.g., Football, Cricket'],
+                'FITNESS ACTIVITY' => ['field' => 'fitness_activity', 'placeholder' => 'e.g., Yoga, Gym'],
+                'CUISINE' => ['field' => 'cuisine', 'placeholder' => 'e.g., Italian, Bengali'],
+                'DRESS STYLE' => ['field' => 'dress_style', 'placeholder' => 'e.g., Casual, Traditional'],
+            ] as $label => $data)
+                        <div>
+                            <p class="text-gray-600 text-xs font-semibold uppercase mb-2">{{ $label }}</p>
+                            @if ($isEditing)
+                                <input type="text" placeholder="{{ $data['placeholder'] }}"
+                                    wire:model="hobby.{{ $data['field'] }}" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all text-gray-900 bg-white">
+                                @error('hobby.' . $data['field'])
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            @else
+                                <p class="text-gray-900 font-medium">{{ $hobby->{$data['field']} ?? '-' }}</p>
+                            @endif
+                        </div>
         @endforeach
     </div>
 </div>

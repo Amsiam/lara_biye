@@ -53,7 +53,8 @@ $toggle = function () {
         <div>
             <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Country</p>
             @if ($isEditing)
-                <input wire:model="address.country" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all"
+                <input wire:model="address.country"
+                    class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all text-gray-900 bg-white"
                     placeholder="e.g., Bangladesh" />
                 @error('address.country')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -65,7 +66,8 @@ $toggle = function () {
         <div>
             <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Division</p>
             @if ($isEditing)
-                <input wire:model="address.division" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all"
+                <input wire:model="address.division"
+                    class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all text-gray-900 bg-white"
                     placeholder="e.g., Dhaka" />
                 @error('address.division')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -77,7 +79,8 @@ $toggle = function () {
         <div>
             <p class="text-gray-600 text-xs font-semibold uppercase mb-2">District</p>
             @if ($isEditing)
-                <input wire:model="address.district" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all"
+                <input wire:model="address.district"
+                    class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all text-gray-900 bg-white"
                     placeholder="e.g., Gazipur" />
                 @error('address.district')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -89,7 +92,8 @@ $toggle = function () {
         <div>
             <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Upazilla</p>
             @if ($isEditing)
-                <input wire:model="address.upazilla" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all"
+                <input wire:model="address.upazilla"
+                    class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all text-gray-900 bg-white"
                     placeholder="e.g., Kaliakair" />
                 @error('address.upazilla')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -101,7 +105,8 @@ $toggle = function () {
         <div>
             <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Union</p>
             @if ($isEditing)
-                <input wire:model="address.union" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all"
+                <input wire:model="address.union"
+                    class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all text-gray-900 bg-white"
                     placeholder="e.g., Kanchanpur" />
                 @error('address.union')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>

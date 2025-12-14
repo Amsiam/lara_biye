@@ -64,7 +64,7 @@ $canViewContact = computed(function () {
             @if ($this->canViewContact)
                 @if ($isEditing)
                     <input wire:model="user.name"
-                        class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all" />
+                        class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all text-gray-900 bg-white" />
                     @error('user.name')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
@@ -108,13 +108,14 @@ $canViewContact = computed(function () {
         <div>
             <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Mobile</p>
             @if($this->canViewContact)
-            @if ($isEditing)
-                <input wire:model="user.mobile" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all" />
-            @else
-                <p class="text-gray-900 font-medium">
-                    {{ $user->mobile }}
-                </p>
-            @endif
+                @if ($isEditing)
+                    <input wire:model="user.mobile"
+                        class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all text-gray-900 bg-white" />
+                @else
+                    <p class="text-gray-900 font-medium">
+                        {{ $user->mobile }}
+                    </p>
+                @endif
             @else
                 <p class="text-gray-500 italic">Send connection to see mobile</p>
             @endif
@@ -148,7 +149,9 @@ $canViewContact = computed(function () {
         <div>
             <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Height</p>
             @if ($isEditing)
-                <input wire:model="bio.height" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all" placeholder="e.g., 170" />
+                <input wire:model="bio.height"
+                    class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all text-gray-900 bg-white"
+                    placeholder="e.g., 170" />
             @else
                 <p class="text-gray-900 font-medium">
                     {{ $bio->height }} cm
@@ -159,7 +162,9 @@ $canViewContact = computed(function () {
         <div>
             <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Weight</p>
             @if ($isEditing)
-                <input wire:model="bio.weight" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all" placeholder="e.g., 70" />
+                <input wire:model="bio.weight"
+                    class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all text-gray-900 bg-white"
+                    placeholder="e.g., 70" />
             @else
                 <p class="text-gray-900 font-medium">
                     {{ $bio->weight }} kg
@@ -207,7 +212,7 @@ $canViewContact = computed(function () {
             <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Number of Children</p>
             @if ($isEditing)
                 <input type="number" min="0" wire:model="bio.noc"
-                    class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all" placeholder="e.g., 0" />
+                    class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all text-gray-900 bg-white" placeholder="e.g., 0" />
                 @error('bio.noc')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
@@ -221,7 +226,9 @@ $canViewContact = computed(function () {
         <div>
             <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Area</p>
             @if ($isEditing)
-                <input wire:model="bio.area" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all" placeholder="e.g., Dhanmondi" />
+                <input wire:model="bio.area"
+                    class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all text-gray-900 bg-white"
+                    placeholder="e.g., Dhanmondi" />
                 @error('bio.area')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
@@ -251,61 +258,68 @@ $canViewContact = computed(function () {
         </div>
 
         @if (auth()->user()?->id == $bio->user_id)
-        <div>
-            <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Date of Birth</p>
-            @if ($isEditing)
-                <input wire:model="bio.dob" type="date" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all" />
-                @error('bio.dob')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            @else
-                <p class="text-gray-900 font-medium">
-                    {{ $bio->dob }}
-                </p>
-            @endif
-        </div>
+            <div>
+                <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Date of Birth</p>
+                @if ($isEditing)
+                    <input wire:model="bio.dob" type="date"
+                        class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all text-gray-900 bg-white" />
+                    @error('bio.dob')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                @else
+                        <p class="text-gray-900 font-medium">
+                            {{ $bio->dob }}
+                        </p>
+                    @endif
+                    </div>
 
-        <div>
-            <p class="text-gray-600 text-xs font-semibold uppercase mb-2">NID Number</p>
-            @if ($isEditing)
-                <input wire:model="bio.nid" type="text" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all" placeholder="Enter NID number" />
-                @error('bio.nid')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            @else
-                <p class="text-gray-900 font-medium">
-                    {{ $bio->nid ?? '-' }}
-                </p>
-            @endif
-        </div>
+                    <div>
+                        <p class="text-gray-600 text-xs font-semibold uppercase mb-2">NID Number</p>
+                        @if ($isEditing)
+                            <input wire:model="bio.nid" type="text"
+                                class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all text-gray-900 bg-white"
+                                placeholder="Enter NID number" />
+                            @error('bio.nid')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        @else
+                            <p class="text-gray-900 font-medium">
+                                {{ $bio->nid ?? '-' }}
+                            </p>
+                        @endif
+                    </div>
 
-        <div>
-            <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Student ID</p>
-            @if ($isEditing)
-                <input wire:model="bio.student_id" type="text" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all" placeholder="Enter student ID" />
-                @error('bio.student_id')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            @else
-                <p class="text-gray-900 font-medium">
-                    {{ $bio->student_id ?? '-' }}
-                </p>
-            @endif
-        </div>
+                    <div>
+                        <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Student ID</p>
+                        @if ($isEditing)
+                            <input wire:model="bio.student_id" type="text"
+                                class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all text-gray-900 bg-white"
+                                placeholder="Enter student ID" />
+                            @error('bio.student_id')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        @else
+                            <p class="text-gray-900 font-medium">
+                                {{ $bio->student_id ?? '-' }}
+                            </p>
+                        @endif
+                    </div>
 
-        <div>
-            <p class="text-gray-600 text-xs font-semibold uppercase mb-2">University</p>
-            @if ($isEditing)
-                <input wire:model="bio.university" type="text" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all" placeholder="Enter university name" />
-                @error('bio.university')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            @else
-                <p class="text-gray-900 font-medium">
-                    {{ $bio->university ?? '-' }}
-                </p>
-            @endif
-        </div>
+                    <div>
+                        <p class="text-gray-600 text-xs font-semibold uppercase mb-2">University</p>
+                        @if ($isEditing)
+                                <input wire:model="bio.university" type="text"
+                                    class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all text-gray-900 bg-white"
+                                    placeholder="Enter university name" />
+                            @error('bio.university')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        @else
+                    <p class="text-gray-900 font-medium">
+                        {{ $bio->university ?? '-' }}
+                    </p>
+                @endif
+            </div>
         @endif
     </div>
 </div>

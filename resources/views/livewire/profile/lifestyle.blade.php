@@ -46,23 +46,23 @@ $toggle = function () {
     </div>
     <div class="p-6 bg-white grid grid-cols-1 md:grid-cols-2 gap-6">
         @foreach ([
-        'DIET' => ['field' => 'diet', 'placeholder' => 'e.g., Vegetarian, Non-Veg'],
-        'DRINK' => ['field' => 'drinking', 'placeholder' => 'e.g., Occasionally, Never'],
-        'SMOKE' => ['field' => 'smoking', 'placeholder' => 'e.g., No, Occasionally'],
-        'LIVING WITH' => ['field' => 'living_with', 'placeholder' => 'e.g., Parents, Alone'],
-    ] as $label => $data)
-            <div>
-                <p class="text-gray-600 text-xs font-semibold uppercase mb-2">{{ $label }}</p>
-                @if ($isEditing)
-                    <input type="text" wire:model="lifestyle.{{ $data['field'] }}"
-                        placeholder="{{ $data['placeholder'] }}" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all">
-                    @error('lifestyle.' . $data['field'])
-                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-                @else
-                    <p class="text-gray-900 font-medium">{{ $lifestyle->{$data['field']} ?? '-' }}</p>
-                @endif
-            </div>
+                'DIET' => ['field' => 'diet', 'placeholder' => 'e.g., Vegetarian, Non-Veg'],
+                'DRINK' => ['field' => 'drinking', 'placeholder' => 'e.g., Occasionally, Never'],
+                'SMOKE' => ['field' => 'smoking', 'placeholder' => 'e.g., No, Occasionally'],
+                'LIVING WITH' => ['field' => 'living_with', 'placeholder' => 'e.g., Parents, Alone'],
+            ] as $label => $data)
+                        <div>
+                            <p class="text-gray-600 text-xs font-semibold uppercase mb-2">{{ $label }}</p>
+                            @if ($isEditing)
+                                <input type="text" wire:model="lifestyle.{{ $data['field'] }}"
+                                    placeholder="{{ $data['placeholder'] }}" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all text-gray-900 bg-white">
+                                @error('lifestyle.' . $data['field'])
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            @else
+                                <p class="text-gray-900 font-medium">{{ $lifestyle->{$data['field']} ?? '-' }}</p>
+                            @endif
+                        </div>
         @endforeach
     </div>
 </div>

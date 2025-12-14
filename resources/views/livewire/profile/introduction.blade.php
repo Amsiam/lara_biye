@@ -39,7 +39,9 @@ $save = function () {
     </div>
     <div class="p-6 bg-white">
         @if ($isEditing)
-            <textarea wire:model="bio.bio" rows="5" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all" placeholder="Write a brief introduction about yourself...">{{ $bio?->bio }}</textarea>
+            <textarea wire:model="bio.bio" rows="5"
+                class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all text-gray-900 bg-white"
+                placeholder="Write a brief introduction about yourself...">{{ $bio?->bio }}</textarea>
             @error('bio.bio')
                 <p class="text-red-500 text-sm mt-2 flex items-center gap-1">
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>

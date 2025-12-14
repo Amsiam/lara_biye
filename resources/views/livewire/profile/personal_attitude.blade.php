@@ -46,23 +46,23 @@ $toggle = function () {
     </div>
     <div class="p-6 bg-white grid grid-cols-1 md:grid-cols-2 gap-6">
         @foreach ([
-        'AFFECTION' => ['field' => 'affection', 'placeholder' => 'e.g., Loving and caring'],
-        'HUMOR' => ['field' => 'humor', 'placeholder' => 'e.g., Good sense of humor'],
-        'POLITICAL VIEW' => ['field' => 'political_view', 'placeholder' => 'e.g., Moderate'],
-        'RELIGIOUS SERVICE' => ['field' => 'religious_service', 'placeholder' => 'e.g., Attends weekly'],
-    ] as $label => $data)
-            <div>
-                <p class="text-gray-600 text-xs font-semibold uppercase mb-2">{{ $label }}</p>
-                @if ($isEditing)
-                    <input type="text" wire:model="personal.{{ $data['field'] }}"
-                        class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all" placeholder="{{ $data['placeholder'] }}">
-                    @error('personal.' . $data['field'])
-                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-                @else
-                    <p class="text-gray-900 font-medium">{{ $personal->{$data['field']} ?? '-' }}</p>
-                @endif
-            </div>
+                'AFFECTION' => ['field' => 'affection', 'placeholder' => 'e.g., Loving and caring'],
+                'HUMOR' => ['field' => 'humor', 'placeholder' => 'e.g., Good sense of humor'],
+                'POLITICAL VIEW' => ['field' => 'political_view', 'placeholder' => 'e.g., Moderate'],
+                'RELIGIOUS SERVICE' => ['field' => 'religious_service', 'placeholder' => 'e.g., Attends weekly'],
+            ] as $label => $data)
+                        <div>
+                            <p class="text-gray-600 text-xs font-semibold uppercase mb-2">{{ $label }}</p>
+                            @if ($isEditing)
+                                <input type="text" wire:model="personal.{{ $data['field'] }}"
+                                    class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all text-gray-900 bg-white" placeholder="{{ $data['placeholder'] }}">
+                                @error('personal.' . $data['field'])
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            @else
+                                <p class="text-gray-900 font-medium">{{ $personal->{$data['field']} ?? '-' }}</p>
+                            @endif
+                        </div>
         @endforeach
     </div>
 </div>

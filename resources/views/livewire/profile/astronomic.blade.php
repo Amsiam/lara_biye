@@ -46,24 +46,24 @@ $toggle = function () {
     </div>
     <div class="p-4 grid grid-cols-2 gap-4">
         @foreach ([
-        'SUN SIGN' => ['field' => 'sun_sign', 'placeholder' => 'e.g., Aries'],
-        'MOON SIGN' => ['field' => 'moon_sign', 'placeholder' => 'e.g., Cancer'],
-        'CITY OF BIRTH' => ['field' => 'city_of_birth', 'placeholder' => 'e.g., Dhaka'],
-        'TIME OF BIRTH' => ['field' => 'time_of_birth', 'placeholder' => 'e.g., 03:45 AM'],
-    ] as $label => $data)
-            <div>
-                <p class="text-gray-600 text-sm">{{ $label }}</p>
-                @if ($isEditing)
-                    <input type="text" placeholder="{{ $data['placeholder'] }}"
-                        wire:model="astronomicInfo.{{ $data['field'] }}"
-                        class="w-full p-2 border border-gray-200 rounded-lg">
-                    @error('astronomicInfo.' . $data['field'])
-                        <p class="text-red-500 text-sm">{{ $message }}</p>
-                    @enderror
-                @else
-                    <p>{{ $astronomicInfo->{$data['field']} ?? '-' }}</p>
-                @endif
-            </div>
+                'SUN SIGN' => ['field' => 'sun_sign', 'placeholder' => 'e.g., Aries'],
+                'MOON SIGN' => ['field' => 'moon_sign', 'placeholder' => 'e.g., Cancer'],
+                'CITY OF BIRTH' => ['field' => 'city_of_birth', 'placeholder' => 'e.g., Dhaka'],
+                'TIME OF BIRTH' => ['field' => 'time_of_birth', 'placeholder' => 'e.g., 03:45 AM'],
+            ] as $label => $data)
+                        <div>
+                            <p class="text-gray-600 text-sm">{{ $label }}</p>
+                            @if ($isEditing)
+                                <input type="text" placeholder="{{ $data['placeholder'] }}"
+                                    wire:model="astronomicInfo.{{ $data['field'] }}"
+                                    class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all text-gray-900 bg-white dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:focus:border-custom-pink">
+                                @error('astronomicInfo.' . $data['field'])
+                                    <p class="text-red-500 text-sm">{{ $message }}</p>
+                                @enderror
+                            @else
+                                <p>{{ $astronomicInfo->{$data['field']} ?? '-' }}</p>
+                            @endif
+                        </div>
         @endforeach
     </div>
 </div>

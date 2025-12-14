@@ -85,7 +85,7 @@ $canViewContact = computed(function () {
             @if ($this->canViewContact)
                 @if ($isEditing)
                     <input type="text" wire:model="family.father" placeholder="e.g., Md. Rahim Uddin"
-                        class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all">
+                        class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all text-gray-900 bg-white">
                     @error('family.father')
                         <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
                     @enderror
@@ -100,7 +100,7 @@ $canViewContact = computed(function () {
             <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Father Occupation</p>
             @if ($isEditing)
                 <input type="text" wire:model="family.father_occupation" placeholder="e.g., Retired Govt. Officer"
-                    class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all">
+                    class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all text-gray-900 bg-white">
                 @error('family.father_occupation')
                     <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
                 @enderror
@@ -113,7 +113,7 @@ $canViewContact = computed(function () {
             @if ($this->canViewContact)
                 @if ($isEditing)
                     <input type="text" wire:model="family.mother" placeholder="e.g., Jahanara Begum"
-                        class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all">
+                        class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all text-gray-900 bg-white">
                     @error('family.mother')
                         <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
                     @enderror
@@ -128,7 +128,7 @@ $canViewContact = computed(function () {
             <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Mother Occupation</p>
             @if ($isEditing)
                 <input type="text" wire:model="family.mother_occupation" placeholder="e.g., Homemaker"
-                    class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all">
+                    class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all text-gray-900 bg-white">
                 @error('family.mother_occupation')
                     <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
                 @enderror
@@ -140,7 +140,7 @@ $canViewContact = computed(function () {
             <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Brother</p>
             @if ($isEditing)
                 <input type="text" wire:model="family.brother" placeholder="e.g., 2 (1 married)"
-                    class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all">
+                    class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all text-gray-900 bg-white">
                 @error('family.brother')
                     <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
                 @enderror
@@ -152,7 +152,7 @@ $canViewContact = computed(function () {
             <p class="text-gray-600 text-xs font-semibold uppercase mb-2">Sister</p>
             @if ($isEditing)
                 <input type="text" wire:model="family.sister" placeholder="e.g., 1 (unmarried)"
-                    class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all">
+                    class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all text-gray-900 bg-white">
                 @error('family.sister')
                     <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
                 @enderror

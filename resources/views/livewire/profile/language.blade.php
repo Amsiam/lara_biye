@@ -46,23 +46,23 @@ $toggle = function () {
     </div>
     <div class="p-6 bg-white grid grid-cols-1 md:grid-cols-2 gap-6">
         @foreach ([
-        'MOTHER TONGUE' => ['field' => 'mother_tongue', 'placeholder' => 'e.g., Bengali'],
-        'LANGUAGE' => ['field' => 'language', 'placeholder' => 'e.g., English, Hindi'],
-        'SPEAK' => ['field' => 'speak', 'placeholder' => 'e.g., Fluent'],
-        'READ' => ['field' => 'read', 'placeholder' => 'e.g., Moderate'],
-    ] as $label => $data)
-            <div>
-                <p class="text-gray-600 text-xs font-semibold uppercase mb-2">{{ $label }}</p>
-                @if ($isEditing)
-                    <input type="text" wire:model="lang.{{ $data['field'] }}"
-                        placeholder="{{ $data['placeholder'] }}" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all">
-                    @error('lang.' . $data['field'])
-                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-                @else
-                    <p class="text-gray-900 font-medium">{{ $lang->{$data['field']} ?? '-' }}</p>
-                @endif
-            </div>
+                'MOTHER TONGUE' => ['field' => 'mother_tongue', 'placeholder' => 'e.g., Bengali'],
+                'LANGUAGE' => ['field' => 'language', 'placeholder' => 'e.g., English, Hindi'],
+                'SPEAK' => ['field' => 'speak', 'placeholder' => 'e.g., Fluent'],
+                'READ' => ['field' => 'read', 'placeholder' => 'e.g., Moderate'],
+            ] as $label => $data)
+                        <div>
+                            <p class="text-gray-600 text-xs font-semibold uppercase mb-2">{{ $label }}</p>
+                            @if ($isEditing)
+                                <input type="text" wire:model="lang.{{ $data['field'] }}"
+                                    placeholder="{{ $data['placeholder'] }}" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all text-gray-900 bg-white">
+                                @error('lang.' . $data['field'])
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            @else
+                                <p class="text-gray-900 font-medium">{{ $lang->{$data['field']} ?? '-' }}</p>
+                            @endif
+                        </div>
         @endforeach
     </div>
 </div>
