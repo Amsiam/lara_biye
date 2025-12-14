@@ -15,25 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withSchedule(function (Schedule $schedule) {
-        // Send profile completion reminders every 45 days at 9:00 AM
-        // Runs daily at 9 AM, but only executes if 45 days have passed since last run
+        // Send profile completion reminders to users based on registration date (Day 2, 3, 60, 120, 180)
         $schedule->command('profile:send-completion-reminders')
             ->dailyAt('09:00')
-            ->when(function () {
-                return false;
-                $lastRun = cache('profile_reminder_last_run');
-                if (!$lastRun) {
-                    cache(['profile_reminder_last_run' => now()], now()->addDays(45));
-                    return true;
-                }
-
-                if (now()->diffInDays($lastRun) >= 45) {
-                    cache(['profile_reminder_last_run' => now()], now()->addDays(45));
-                    return true;
-                }
-
-                return false;
-            })
             ->appendOutputTo(storage_path('logs/cron-reminders.log'));
     })
     ->withExceptions(function (Exceptions $exceptions) {

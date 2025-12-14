@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ProfileImageReminderMail;
 use App\Mail\WelcomeCommunityMail;
+use App\Mail\ProfileCompletionMail;
 
 class SendOnboardingEmails extends Command
 {
@@ -15,22 +16,25 @@ class SendOnboardingEmails extends Command
      *
      * @var string
      */
-    protected $signature = 'app:send-onboarding-emails';
+    protected $signature = 'profile:send-completion-reminders';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Send onboarding emails based on user registration date';
+    protected $description = 'Send profile completion reminders to users based on registration date';
 
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
-        // 1. Profile Image Reminder (1 day after registration)
-        $reminderUsers = User::whereDate('created_at', now()->subDay()->toDateString())
+        $today = now();
+
+        // 1. Profile Image Reminder (Day 2)
+        // If registered 1 day ago (so today is the 2nd day)
+        $usersDay2 = User::whereDate('created_at', $today->copy()->subDays(1))
             ->whereHas('basicInfo', function ($query) {
                 // Check if image is default or null (adjust based on your default logic)
                 $query->where('image', 'default.jpg')
@@ -39,17 +43,46 @@ class SendOnboardingEmails extends Command
             })
             ->get();
 
-        foreach ($reminderUsers as $user) {
+        foreach ($usersDay2 as $user) {
+            // Check if profile image is missing (assuming default image logic)
+            // Ideally check filtering logic here. For now, sending to all as per original logic,
+            // but normally we check $user->image or similar.
+            // The original code didn't check for image existence in the query, so keeping it simple.
             Mail::to($user->email)->send(new ProfileImageReminderMail($user));
-            $this->info("Sent Profile Image Reminder to: {$user->email}");
         }
 
-        // 2. Community Welcome (3 days after registration)
-        $welcomeUsers = User::whereDate('created_at', now()->subDays(3)->toDateString())->get();
+        // 2. Welcome Community (Day 3)
+        $usersDay3 = User::whereDate('created_at', $today->copy()->subDays(3))->get();
 
-        foreach ($welcomeUsers as $user) {
+        foreach ($usersDay3 as $user) {
             Mail::to($user->email)->send(new WelcomeCommunityMail($user));
-            $this->info("Sent Community Welcome to: {$user->email}");
+        }
+
+        // 3. Profile Completion Reminders (2, 4, 6 Months)
+        $intervals = [
+            60 => 'profile_completion_2month',
+            120 => 'profile_completion_4month',
+            180 => 'profile_completion_6month',
+        ];
+
+        foreach ($intervals as $days => $templateKey) {
+            // Find users registered exactly $days ago
+            $users = User::whereDate('created_at', $today->copy()->subDays($days))
+                ->with(['basicInfo', 'education', 'family', 'partnerExpectation']) // Eager load for score calculation
+                ->get();
+
+            foreach ($users as $user) {
+                // Ensure the User model has a profileCompletionPercentage method
+                // and that related models (basicInfo, education, family, partnerExpectation) are properly defined.
+                $score = $user->profileCompletionPercentage();
+
+                // If profile is incomplete (< 80% for 2/4 months, < 90% for 6 months)
+                $threshold = ($days === 180) ? 90 : 80;
+
+                if ($score < $threshold) {
+                    Mail::to($user->email)->send(new ProfileCompletionMail($user, $templateKey));
+                }
+            }
         }
     }
 }
