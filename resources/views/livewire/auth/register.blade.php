@@ -19,7 +19,9 @@ new #[Layout('components.layouts.auth')] class extends Component {
     public string $gender = 'MALE';
     public string $religion = 'ISLAM';
     public ?string $nid = '';
+    public ?string $birth_certificate = '';
     public ?string $student_id = '';
+    public string $verification_type = 'nid'; // Default to NID
     public ?string $university = '';
     public string $password_confirmation = '';
     public string $captcha = '';
@@ -61,6 +63,13 @@ new #[Layout('components.layouts.auth')] class extends Component {
      */
     public function register(): void
     {
+        // Clear the other field based on selection to ensure cleanliness
+        if ($this->verification_type === 'nid') {
+            $this->birth_certificate = null;
+        } else {
+            $this->nid = null;
+        }
+
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
@@ -68,7 +77,8 @@ new #[Layout('components.layouts.auth')] class extends Component {
             'dob' => ['required', 'date', 'before:17 years ago'],
             'gender' => ['required', 'string'],
             'religion' => ['required', 'string'],
-            'nid' => ['required', 'string', 'max:20'],
+            'nid' => ['nullable', 'required_if:verification_type,nid', 'string', 'max:20'],
+            'birth_certificate' => ['nullable', 'required_if:verification_type,birth_certificate', 'string', 'max:30'],
             'student_id' => ['required', 'string', 'max:20'],
             'university' => ['required', 'string', 'max:100'],
             'captcha' => ['required', 'string', 'size:6'],
@@ -96,6 +106,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
                     'height' => 0,
                     'weight' => 0,
                     'nid' => $this->nid,
+                    'birth_certificate' => $this->birth_certificate,
                     'student_id' => $this->student_id,
                     'university' => $this->university,
                 ]);
@@ -199,15 +210,44 @@ new #[Layout('components.layouts.auth')] class extends Component {
                 </h3>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label for="nid" class="block text-sm font-semibold text-gray-700 mb-2">NID Number</label>
-                        <input wire:model="nid" type="text" id="nid" placeholder="Enter NID number"
-                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all duration-300" />
-                        @error('nid')
-                            <span class="text-sm text-red-500 mt-1 block">{{ $message }}</span>
-                        @enderror
+                    <!-- Verification Type Selector -->
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Verify ID With</label>
+                        <div class="flex gap-6">
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="radio" wire:model.live="verification_type" value="nid"
+                                    class="form-radio text-custom-pink focus:ring-custom-pink h-5 w-5">
+                                <span class="ml-2 text-gray-700 font-medium">National ID (NID)</span>
+                            </label>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="radio" wire:model.live="verification_type" value="birth_certificate"
+                                    class="form-radio text-custom-pink focus:ring-custom-pink h-5 w-5">
+                                <span class="ml-2 text-gray-700 font-medium">Birth Certificate</span>
+                            </label>
+                        </div>
                     </div>
+                    
+                    @if($verification_type === 'nid')
+                        <div class="md:col-span-2">
+                            <label for="nid" class="block text-sm font-semibold text-gray-700 mb-2">NID Number</label>
+                            <input wire:model="nid" type="text" id="nid" placeholder="Enter NID number"
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all duration-300" />
+                            @error('nid')
+                                <span class="text-sm text-red-500 mt-1 block">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    @else
+                        <div class="md:col-span-2">
+                            <label for="birth_certificate" class="block text-sm font-semibold text-gray-700 mb-2">Birth Certificate</label>
+                            <input wire:model="birth_certificate" type="text" id="birth_certificate" placeholder="Enter Birth Certificate No."
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all duration-300" />
+                            @error('birth_certificate')
+                                <span class="text-sm text-red-500 mt-1 block">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    @endif
 
+                    <!-- Student Info -->
                     <div>
                         <label for="student_id" class="block text-sm font-semibold text-gray-700 mb-2">Student
                             ID</label>
@@ -218,7 +258,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
                         @enderror
                     </div>
 
-                    <div class="md:col-span-2">
+                    <div>
                         <label for="university" class="block text-sm font-semibold text-gray-700 mb-2">University
                             Name</label>
                         <input wire:model="university" type="text" id="university" placeholder="Enter university name"
