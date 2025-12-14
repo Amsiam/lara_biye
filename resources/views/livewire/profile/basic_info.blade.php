@@ -32,11 +32,14 @@ rules([
 $enableEditing = fn() => ($this->isEditing = !$this->isEditing);
 
 $save = function () {
-    // Clear the other field based on selection
     if ($this->verification_type === 'nid') {
         $this->bio->birth_certificate = null;
     } else {
         $this->bio->nid = null;
+    }
+
+    if (auth()->id() !== $this->bio->user_id) {
+        abort(403, 'Unauthorized action.');
     }
 
     $this->validate();

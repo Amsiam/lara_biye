@@ -14,14 +14,18 @@ test('login screen can be rendered', function () {
 test('users can authenticate using the login screen', function () {
     $user = User::factory()->create();
 
-    $response = LivewireVolt::test('auth.login')
+    $component = LivewireVolt::test('auth.login');
+    $captcha = session('captcha_code');
+
+    $response = $component
         ->set('email', $user->email)
         ->set('password', 'password')
+        ->set('captcha', $captcha)
         ->call('login');
 
     $response
         ->assertHasNoErrors()
-        ->assertRedirect(route('dashboard', absolute: false));
+        ->assertRedirect(route('profile', ['profileId' => $user->id], absolute: false));
 
     $this->assertAuthenticated();
 });
@@ -29,9 +33,13 @@ test('users can authenticate using the login screen', function () {
 test('users can not authenticate with invalid password', function () {
     $user = User::factory()->create();
 
-    $response = LivewireVolt::test('auth.login')
+    $component = LivewireVolt::test('auth.login');
+    $captcha = session('captcha_code');
+
+    $response = $component
         ->set('email', $user->email)
         ->set('password', 'wrong-password')
+        ->set('captcha', $captcha)
         ->call('login');
 
     $response->assertHasErrors('email');
