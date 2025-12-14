@@ -68,46 +68,54 @@ new #[Layout('components.layouts.auth')] class extends Component {
     }
 }; ?>
 
-<div class="flex flex-col gap-6">
-    <x-auth-header :title="__('Reset password')" :description="__('Please enter your new password below')" />
+<div class="w-full max-w-md bg-white rounded-xl shadow-2xl overflow-hidden border border-gray-100 p-8">
+    <div class="mb-6 text-center">
+        <h2 class="text-2xl font-bold text-custom-red mb-2">{{ __('Reset password') }}</h2>
+        <p class="text-gray-600 text-sm">
+            {{ __('Please enter your new password below') }}
+        </p>
+    </div>
 
     <!-- Session Status -->
-    <x-auth-session-status class="text-center" :status="session('status')" />
+    <x-auth-session-status class="mb-4 text-center" :status="session('status')" />
 
-    <form wire:submit="resetPassword" class="flex flex-col gap-6">
+    <form wire:submit="resetPassword" class="space-y-6">
         <!-- Email Address -->
-        <flux:input
-            wire:model="email"
-            :label="__('Email')"
-            type="email"
-            required
-            autocomplete="email"
-        />
+        <div>
+            <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">{{ __('Email Address') }}</label>
+            <input wire:model="email" type="email" id="email" required autocomplete="email"
+                class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all duration-300" />
+            @error('email')
+                <span class="text-sm text-red-500 mt-1 block">{{ $message }}</span>
+            @enderror
+        </div>
 
         <!-- Password -->
-        <flux:input
-            wire:model="password"
-            :label="__('Password')"
-            type="password"
-            required
-            autocomplete="new-password"
-            :placeholder="__('Password')"
-        />
+        <div>
+            <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">{{ __('Password') }}</label>
+            <input wire:model="password" type="password" id="password" required autocomplete="new-password"
+                placeholder="{{ __('Password') }}"
+                class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all duration-300" />
+            @error('password')
+                <span class="text-sm text-red-500 mt-1 block">{{ $message }}</span>
+            @enderror
+        </div>
 
         <!-- Confirm Password -->
-        <flux:input
-            wire:model="password_confirmation"
-            :label="__('Confirm password')"
-            type="password"
-            required
-            autocomplete="new-password"
-            :placeholder="__('Confirm password')"
-        />
-
-        <div class="flex items-center justify-end">
-            <flux:button type="submit" variant="primary" class="w-full">
-                {{ __('Reset password') }}
-            </flux:button>
+        <div>
+            <label for="password_confirmation"
+                class="block text-sm font-semibold text-gray-700 mb-2">{{ __('Confirm password') }}</label>
+            <input wire:model="password_confirmation" type="password" id="password_confirmation" required
+                autocomplete="new-password" placeholder="{{ __('Confirm password') }}"
+                class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all duration-300" />
+            @error('password_confirmation')
+                <span class="text-sm text-red-500 mt-1 block">{{ $message }}</span>
+            @enderror
         </div>
+
+        <button type="submit"
+            class="w-full bg-custom-pink text-white py-3.5 rounded-lg font-semibold hover:bg-custom-red shadow-md hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300">
+            {{ __('Reset password') }}
+        </button>
     </form>
 </div>
