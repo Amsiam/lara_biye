@@ -89,6 +89,28 @@ $sendConnection = function () {
             <hr class="my-4 border-white/30">
         </div>
 
+        @if (auth()->user()?->id == $this->user->id)
+            @php
+                $completion = $this->user->profileCompletionPercentage();
+                $color = $completion < 50 ? 'bg-red-500' : ($completion < 80 ? 'bg-yellow-500' : 'bg-green-500');
+            @endphp
+            <div class="mt-4 p-4 bg-white rounded-xl shadow-lg border border-gray-100">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-semibold text-gray-700">Profile Completion</span>
+                    <span class="text-sm font-bold text-custom-pink">{{ $completion }}%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div class="{{ $color }} h-2.5 rounded-full transition-all duration-500" style="width: {{ $completion }}%">
+                    </div>
+                </div>
+                @if($completion < 100)
+                    <p class="text-xs text-gray-500 mt-2 text-center">Complete your profile to get more matches!</p>
+                @else
+                    <p class="text-xs text-green-600 mt-2 text-center font-semibold">Great job! Your profile is complete.</p>
+                @endif
+            </div>
+        @endif
+
         <!-- Package Information -->
 
         <div class="mt-4 p-4 bg-white rounded-xl shadow-lg flex flex-col space-y-3">
