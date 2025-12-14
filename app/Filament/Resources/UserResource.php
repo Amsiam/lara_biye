@@ -22,7 +22,7 @@ class UserResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
-    public static function getNavigationIcon(): string | BackedEnum | Htmlable | null
+    public static function getNavigationIcon(): string|BackedEnum|Htmlable|null
     {
         return 'heroicon-o-users';
     }
@@ -63,7 +63,7 @@ class UserResource extends Resource
                             ->label('Verification Notes')
                             ->placeholder('No notes')
                             ->columnSpanFull()
-                            ->visible(fn (User $record): bool => $record->isProfileVerified()),
+                            ->visible(fn(User $record): bool => $record->isProfileVerified()),
                     ])
                     ->columns(2),
 
@@ -93,7 +93,7 @@ class UserResource extends Resource
                     ->components([
                         Infolists\Components\TextEntry::make('basicInfo.gender')
                             ->badge()
-                            ->color(fn (string $state): string => match ($state) {
+                            ->color(fn(string $state): string => match ($state) {
                                 'male' => 'info',
                                 'female' => 'warning',
                                 default => 'gray',
@@ -203,9 +203,9 @@ class UserResource extends Resource
 
                         Forms\Components\TextInput::make('password')
                             ->password()
-                            ->dehydrateStateUsing(fn ($state) => bcrypt($state))
-                            ->dehydrated(fn ($state) => filled($state))
-                            ->required(fn (string $operation): bool => $operation === 'create')
+                            ->dehydrateStateUsing(fn($state) => bcrypt($state))
+                            ->dehydrated(fn($state) => filled($state))
+                            ->required(fn(string $operation): bool => $operation === 'create')
                             ->maxLength(255),
 
                         Forms\Components\Toggle::make('is_admin')
@@ -219,22 +219,22 @@ class UserResource extends Resource
                     ->components([
                         Infolists\Components\TextEntry::make('connections_count')
                             ->label('Available Connections')
-                            ->formatStateUsing(fn (User $record): string => $record->connection?->connection ?? '0'),
+                            ->formatStateUsing(fn(User $record): string => $record->connection?->connection ?? '0'),
 
                         Infolists\Components\TextEntry::make('total_purchases')
                             ->label('Total Purchases')
-                            ->formatStateUsing(fn (User $record): string => '৳' . number_format($record->purchases()->sum('amount'), 2)),
+                            ->formatStateUsing(fn(User $record): string => '৳' . number_format($record->purchases()->sum('amount'), 2)),
 
                         Infolists\Components\TextEntry::make('created_at')
                             ->label('Joined')
-                            ->formatStateUsing(fn (User $record): string => $record->created_at->diffForHumans()),
+                            ->formatStateUsing(fn(User $record): string => $record->created_at->diffForHumans()),
 
                         Infolists\Components\TextEntry::make('updated_at')
                             ->label('Last Updated')
-                            ->formatStateUsing(fn (User $record): string => $record->updated_at->diffForHumans()),
+                            ->formatStateUsing(fn(User $record): string => $record->updated_at->diffForHumans()),
                     ])
                     ->columns(2)
-                    ->hidden(fn (string $operation): bool => $operation === 'create'),
+                    ->hidden(fn(string $operation): bool => $operation === 'create'),
             ]);
     }
 
@@ -242,6 +242,9 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->label('#')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->sortable()
@@ -273,12 +276,12 @@ class UserResource extends Resource
                     ->falseIcon('heroicon-o-shield-exclamation')
                     ->trueColor('info')
                     ->falseColor('gray')
-                    ->tooltip(fn (User $record): ?string => $record->verification_notes),
+                    ->tooltip(fn(User $record): ?string => $record->verification_notes),
 
                 Tables\Columns\TextColumn::make('basicInfo.gender')
                     ->label('Gender')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
+                    ->color(fn(string $state): string => match ($state) {
                         'male' => 'info',
                         'female' => 'warning',
                         default => 'gray',
@@ -363,8 +366,8 @@ class UserResource extends Resource
                     ])
                     ->query(function ($query, array $data) {
                         return $query
-                            ->when($data['created_from'], fn ($query, $date) => $query->whereDate('created_at', '>=', $date))
-                            ->when($data['created_until'], fn ($query, $date) => $query->whereDate('created_at', '<=', $date));
+                            ->when($data['created_from'], fn($query, $date) => $query->whereDate('created_at', '>=', $date))
+                            ->when($data['created_until'], fn($query, $date) => $query->whereDate('created_at', '<=', $date));
                     }),
             ])
             ->recordActions([
@@ -374,7 +377,7 @@ class UserResource extends Resource
                     ->label('Verify Profile')
                     ->icon('heroicon-o-check-badge')
                     ->color('success')
-                    ->hidden(fn (User $record): bool => $record->isProfileVerified())
+                    ->hidden(fn(User $record): bool => $record->isProfileVerified())
                     ->requiresConfirmation()
                     ->modalHeading('Verify User Profile')
                     ->modalDescription('Are you sure you want to verify this user\'s profile? This will show a verified badge on their profile.')
@@ -401,7 +404,7 @@ class UserResource extends Resource
                     ->label('Remove Verification')
                     ->icon('heroicon-o-x-circle')
                     ->color('danger')
-                    ->visible(fn (User $record): bool => $record->isProfileVerified())
+                    ->visible(fn(User $record): bool => $record->isProfileVerified())
                     ->requiresConfirmation()
                     ->modalHeading('Remove Profile Verification')
                     ->modalDescription('Are you sure you want to remove the verification from this user\'s profile?')
@@ -420,7 +423,7 @@ class UserResource extends Resource
                 Actions\Action::make('view_profile')
                     ->label('View Profile')
                     ->icon('heroicon-o-arrow-top-right-on-square')
-                    ->url(fn (User $record): string => route('profile', ['profileId' => $record->id]))
+                    ->url(fn(User $record): string => route('profile', ['profileId' => $record->id]))
                     ->openUrlInNewTab(),
             ])
             ->toolbarActions([
@@ -428,7 +431,8 @@ class UserResource extends Resource
                     Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->defaultSort('created_at', 'desc');
+            ->defaultSort('created_at', 'desc')
+            ->recordUrl(null);
     }
 
     public static function getRelations(): array
