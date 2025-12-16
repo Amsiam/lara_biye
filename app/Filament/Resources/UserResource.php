@@ -45,6 +45,10 @@ class UserResource extends Resource
                         Infolists\Components\TextEntry::make('email')
                             ->copyable()
                             ->icon('heroicon-m-envelope'),
+                        Infolists\Components\TextEntry::make('mobile')
+                            ->label('Mobile Number')
+                            ->copyable()
+                            ->icon('heroicon-m-phone'),
                         Infolists\Components\IconEntry::make('email_verified_at')
                             ->label('Email Verified')
                             ->boolean()
@@ -75,6 +79,11 @@ class UserResource extends Resource
                             ->copyable()
                             ->placeholder('Not provided')
                             ->icon('heroicon-o-identification'),
+                        Infolists\Components\TextEntry::make('basicInfo.birth_certificate')
+                            ->label('Birth Certificate No')
+                            ->copyable()
+                            ->placeholder('Not provided')
+                            ->icon('heroicon-o-document-text'),
                         Infolists\Components\TextEntry::make('basicInfo.student_id')
                             ->label('Student ID')
                             ->copyable()
@@ -256,6 +265,15 @@ class UserResource extends Resource
                     ->copyable()
                     ->icon('heroicon-m-envelope'),
 
+                Tables\Columns\TextColumn::make('mobile')
+                    ->label('Mobile')
+                    ->searchable()
+                    ->copyable()
+                    ->sortable()
+                    ->toggleable()
+                    ->icon('heroicon-m-phone'),
+
+
                 Tables\Columns\IconColumn::make('email_verified_at')
                     ->label('Email Verified')
                     ->boolean()
@@ -294,6 +312,14 @@ class UserResource extends Resource
                     ->copyable()
                     ->toggleable()
                     ->placeholder('Not provided'),
+
+                Tables\Columns\TextColumn::make('basicInfo.birth_certificate')
+                    ->label('Birth Certificate')
+                    ->searchable()
+                    ->copyable()
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->placeholder('Not provided'),
+
 
                 Tables\Columns\TextColumn::make('basicInfo.student_id')
                     ->label('Student ID')
