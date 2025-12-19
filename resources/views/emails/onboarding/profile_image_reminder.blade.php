@@ -9,7 +9,9 @@
         <p>We noticed you haven't uploaded a profile picture yet. Did you know that profiles with photos get 10x more visibility?</p>
         <p>Upload your photo now to find your perfect match faster!</p>
         <div style="text-align: center; margin: 30px 0;">
-            <a href="{{ route('profile') }}" style="background-color: #e11d48; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Upload Photo</a>
+            <a href="{{ route('profile', $user->id) }}"
+                style="background-color: #e11d48; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Upload
+                Photo</a>
         </div>
         <p>Best regards,<br>The Lara Biye Team</p>
     </div>

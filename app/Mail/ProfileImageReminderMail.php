@@ -43,7 +43,7 @@ class ProfileImageReminderMail extends Mailable
         // Replace placeholders
         $placeholders = [
             '{{ name }}' => $this->user->name,
-            '{{ profile_link }}' => route('profile'),
+            '{{ profile_link }}' => route('profile', $this->user->id),
         ];
 
         $content = str_replace(array_keys($placeholders), array_values($placeholders), $content);
