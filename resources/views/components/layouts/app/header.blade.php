@@ -15,6 +15,9 @@
                 <flux:navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                     {{ __('Dashboard') }}
                 </flux:navbar.item>
+                <flux:navbar.item icon="users" :href="route('referrals')" :current="request()->routeIs('referrals')" wire:navigate>
+                    {{ __('Referrals') }}
+                </flux:navbar.item>
             </flux:navbar>
 
             <flux:spacer />
@@ -74,6 +77,7 @@
 
                     <flux:menu.radio.group>
                         <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>{{ __('Settings') }}</flux:menu.item>
+                        <flux:menu.item :href="route('referrals')" icon="users" wire:navigate>{{ __('Referrals') }}</flux:menu.item>
                     </flux:menu.radio.group>
 
                     <flux:menu.separator />
@@ -100,6 +104,9 @@
                 <flux:navlist.group :heading="__('Platform')">
                     <flux:navlist.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                     {{ __('Dashboard') }}
+                    </flux:navlist.item>
+                    <flux:navlist.item icon="users" :href="route('referrals')" :current="request()->routeIs('referrals')" wire:navigate>
+                        {{ __('Referrals') }}
                     </flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>

@@ -9,12 +9,25 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class User extends Authenticatable implements \Illuminate\Contracts\Auth\MustVerifyEmail, FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::creating(function ($user) {
+            if (empty($user->referral_code)) {
+                $user->referral_code = strtoupper(Str::random(10));
+            }
+        });
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -24,12 +37,14 @@ class User extends Authenticatable implements \Illuminate\Contracts\Auth\MustVer
     protected $fillable = [
         'name',
         'email',
-	    'mobile',
+        'mobile',
         'password',
         'is_admin',
         'profile_verified_at',
         'verification_notes',
         'hide_from_search',
+        'referral_code',
+        'referrer_id',
     ];
 
     /**
@@ -204,45 +219,98 @@ class User extends Authenticatable implements \Illuminate\Contracts\Auth\MustVer
 
     public function rConnectedUsers()
     {
-        return $this->belongsToMany(User::class, 'connected',  'connected_user_id', 'user_id')
+        return $this->belongsToMany(User::class, 'connected', 'connected_user_id', 'user_id')
             ->withPivot('status');
+    }
+
+    public function connectionHistory()
+    {
+        return $this->hasMany(ConnectionHistory::class);
+    }
+
+    public function referrer()
+    {
+        return $this->belongsTo(User::class, 'referrer_id');
+    }
+
+    public function referrals()
+    {
+        return $this->hasMany(User::class, 'referrer_id');
     }
 
     public function sendConnectionRequest(User $user)
     {
-        if ($this->isConnected($user->id) || $this->isConnectionPending($user->id)) {
-            return false; // Already connected or request is pending
+        if ($this->isConnected($user->id)) {
+            return false; // Already connected
         }
         if ($this->id === $user->id) {
             return false; // Cannot send a connection request to oneself
         }
 
-        //check if that this user has already sent a request to the user
-        if ($user->isConnectionPending($this->id)) {
+        // Check balance
+        $currentConnection = $this->connection()->first();
+        // Use getAttribute because 'connection' column conflicts with Model::$connection property
+        $balance = $currentConnection ? (int) $currentConnection->getAttribute('connection') : 0;
 
-            $this->connectedUsers()->attach($user->id, ['status' => 'ACCEPTED']);
-            $user->connectedUsers()->updateExistingPivot($this->id, ['status' => 'ACCEPTED']);
+        if ($balance < 1) {
+            throw new \Exception('Insufficient connections balance.');
+        }
 
-            // Send connection accepted email to the original requester ($user)
+        return DB::transaction(function () use ($user) {
+            // Check if ANY request is pending between these two (regardless of direction)
+            // But specifically, we check if the OTHER user sent ME a request first (Acceptance Scenario)
+            if ($user->connectedUsers()->where('connected_user_id', $this->id)->where('status', 'PENDING')->exists()) {
+
+                // Acceptance Logic
+                $this->connectedUsers()->attach($user->id, ['status' => 'ACCEPTED']);
+                $user->connectedUsers()->updateExistingPivot($this->id, ['status' => 'ACCEPTED']);
+
+                // Deduct connection from Accepter (Current User)
+                $this->connection()->decrement('connection', 1);
+
+                // Log history
+                $this->connectionHistory()->create([
+                    'amount' => -1,
+                    'type' => 'connection_request_accepted',
+                    'description' => 'Accepted connection request from ' . $user->name,
+                ]);
+
+                // Send email
+                try {
+                    Mail::to($user->email)->send(new \App\Mail\ConnectionAcceptedMail($this, $user));
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error('Failed to send connection accepted email: ' . $e->getMessage());
+                }
+
+                return true;
+            }
+
+            // Sending Logic (New Request)
+            if ($this->hasSentConnectionRequest($user)) {
+                return true; // Already sent
+            }
+
+            $this->connectedUsers()->attach($user->id, ['status' => 'PENDING']);
+
+            // Deduct connection from Sender (Current User)
+            $this->connection()->decrement('connection', 1);
+
+            // Log history
+            $this->connectionHistory()->create([
+                'amount' => -1,
+                'type' => 'connection_request_sent',
+                'description' => 'Sent connection request to ' . $user->name,
+            ]);
+
+            // Send email
             try {
-                Mail::to($user->email)->send(new \App\Mail\ConnectionAcceptedMail($this, $user));
+                Mail::to($user->email)->send(new \App\Mail\ConnectionRequestMail($this, $user));
             } catch (\Exception $e) {
-                // Log error but don't fail the request
-                \Illuminate\Support\Facades\Log::error('Failed to send connection accepted email: ' . $e->getMessage());
+                \Illuminate\Support\Facades\Log::error('Failed to send connection request email: ' . $e->getMessage());
             }
 
             return true;
-        }
-        $this->connectedUsers()->attach($user->id, ['status' => 'PENDING']);
-
-        // Send connection request email to the target user ($user)
-        try {
-            Mail::to($user->email)->send(new \App\Mail\ConnectionRequestMail($this, $user));
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Failed to send connection request email: ' . $e->getMessage());
-        }
-
-        return true;
+        });
     }
 
     public function hasSentConnectionRequest(User $user)

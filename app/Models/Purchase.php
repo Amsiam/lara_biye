@@ -158,6 +158,13 @@ class Purchase extends Model
         $userConnection->setAttribute('connection', $currentConnections + $newConnections);
         $userConnection->save();
 
+        ConnectionHistory::create([
+            'user_id' => $this->user_id,
+            'amount' => $newConnections,
+            'type' => 'purchase',
+            'description' => 'Purchased package id: ' . $this->package_id,
+        ]);
+
         $this->update([
             'connections_applied' => true,
             'connections_applied_at' => now(),

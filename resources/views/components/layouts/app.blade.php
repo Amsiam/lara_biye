@@ -63,20 +63,14 @@
                         <span
                             class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-custom-pink to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 {{ Route::is('your.connections') ? 'scale-x-100' : '' }}"></span>
                     </a>
+                    
+                    <a href="{{ route('referrals') }}"
+                        class="relative px-4 py-2 text-gray-700 font-semibold hover:text-custom-pink transition-colors group {{ Route::is('referrals') ? 'text-custom-pink' : '' }}">
+                        Referrals
+                        <span
+                            class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-custom-pink to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 {{ Route::is('referrals') ? 'scale-x-100' : '' }}"></span>
+                    </a>
 
-                    @if (auth()->check())
-                        <flux:dropdown>
-                            <flux:button variant="ghost"
-                                class="relative px-4 py-2 text-gray-700 font-semibold hover:text-custom-pink transition-colors {{ Route::is('payment.history') || Route::is('connection.history') ? 'text-custom-pink' : '' }}"
-                                icon:trailing="chevron-down">History</flux:button>
-                            <flux:menu>
-                                <flux:menu.item href="{{ route('payment.history') }}" icon="credit-card">Payment
-                                </flux:menu.item>
-                                <flux:menu.item icon="users" href="{{ route('connection.history') }}">Connection
-                                </flux:menu.item>
-                            </flux:menu>
-                        </flux:dropdown>
-                    @endif
 
                     <a href="{{ route('about') }}"
                         class="relative px-4 py-2 text-gray-700 font-medium hover:text-custom-pink transition-colors group {{ Route::is('about') ? 'text-custom-pink' : '' }}">
@@ -100,11 +94,57 @@
                     <div class="flex items-center gap-3 ml-4 pl-4 border-l border-gray-200">
                         @if (auth()->check())
                             <x-notification />
-                            <a href="{{ route('profile', auth()->user()->id) }}"
-                                class="bg-gradient-to-r from-custom-pink to-pink-600 text-white rounded-full px-6 py-2.5 font-semibold shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300">
-                                My Profile
-                            </a>
-                            @livewire('logout')
+                            <flux:dropdown position="bottom" align="end">
+                                <button class="flex items-center gap-2 group focus:outline-none ml-2">
+                                    <span
+                                        class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full ring-2 ring-gray-100 group-hover:ring-custom-pink transition-all">
+                                        <span
+                                            class="flex h-full w-full items-center justify-center bg-gradient-to-br from-custom-pink to-pink-600 text-white font-bold text-sm">
+                                            {{ auth()->user()->initials() }}
+                                        </span>
+                                    </span>
+                                    <div class="hidden lg:block text-left">
+                                        <p class="text-sm font-semibold text-gray-700 group-hover:text-custom-pink transition-colors">
+                                            {{ auth()->user()->name }}</p>
+                                    </div>
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                        class="h-4 w-4 text-gray-400 group-hover:text-custom-pink transition-colors" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+
+                                <flux:menu class="min-w-[220px]">
+                                    <div class="px-2 py-2 border-b border-gray-100 mb-1">
+                                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Signed in as</p>
+                                        <p class="text-sm font-bold text-gray-800 truncate">{{ auth()->user()->email }}</p>
+                                    </div>
+
+                                    <flux:menu.item :href="route('profile', auth()->user()->id)" icon="user-circle">
+                                        My Profile
+                                    </flux:menu.item>
+
+                                    <flux:menu.separator />
+
+                                    <flux:menu.item :href="route('payment.history')" icon="credit-card">
+                                        Payment History
+                                    </flux:menu.item>
+
+                                    <flux:menu.item :href="route('connection.history')" icon="users">
+                                        Connection History
+                                    </flux:menu.item>
+
+                                    <flux:menu.separator />
+
+                                    <form method="POST" action="{{ route('logout') }}" class="w-full">
+                                        @csrf
+                                        <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle"
+                                            class="w-full text-left text-red-600 hover:text-red-700 hover:bg-red-50">
+                                            {{ __('Log Out') }}
+                                        </flux:menu.item>
+                                    </form>
+                                </flux:menu>
+                            </flux:dropdown>
                         @else
                             <a href="{{ route('register') }}"
                                 class="bg-gradient-to-r from-custom-pink to-pink-600 text-white rounded-full px-6 py-2.5 font-semibold shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300">
@@ -133,6 +173,10 @@
                 <a href="{{ route('your.connections') }}"
                     class="px-4 py-3 text-gray-700 font-medium hover:text-custom-pink hover:bg-custom-pink/5 rounded-lg text-center transition-all {{ Route::is('your.connections') ? 'text-custom-pink bg-custom-pink/10' : '' }}">
                     Your Connections
+                </a>
+                <a href="{{ route('referrals') }}"
+                    class="px-4 py-3 text-gray-700 font-medium hover:text-custom-pink hover:bg-custom-pink/5 rounded-lg text-center transition-all {{ Route::is('referrals') ? 'text-custom-pink bg-custom-pink/10' : '' }}">
+                    Referrals
                 </a>
                 <a href="{{ route('payment.history') }}"
                     class="px-4 py-3 text-gray-700 font-medium hover:text-custom-pink hover:bg-custom-pink/5 rounded-lg text-center flex justify-center items-center gap-2 transition-all {{ Route::is('payment.history') ? 'text-custom-pink bg-custom-pink/10' : '' }}">

@@ -10,6 +10,8 @@ use Livewire\Volt\Component;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use App\Models\Setting;
+use App\Models\ConnectionHistory;
 
 new #[Layout('components.layouts.auth')] class extends Component {
     public string $name = '';
@@ -25,6 +27,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
     public string $verification_type = 'nid'; // Default to NID
     public ?string $university = '';
     public string $password_confirmation = '';
+    public string $referral_code = '';
     public string $captcha = '';
     public string $captchaCode = '';
 
@@ -83,6 +86,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
             'birth_certificate' => ['nullable', 'required_if:verification_type,birth_certificate', 'string', 'max:30'],
             'student_id' => ['required', 'string', 'max:20'],
             'university' => ['required', 'string', 'max:100'],
+            'referral_code' => ['nullable', 'string', 'exists:users,referral_code'],
             'captcha' => ['required', 'string', 'size:6'],
         ]);
 
@@ -96,7 +100,57 @@ new #[Layout('components.layouts.auth')] class extends Component {
 
         try {
             DB::transaction(function () use ($validated) {
+                // Handle referral logic
+                $referrer = null;
+                if (!empty($this->referral_code)) {
+                    $referrer = User::where('referral_code', $this->referral_code)->first();
+                    if ($referrer) {
+                        $validated['referrer_id'] = $referrer->id;
+                    }
+                }
+                // Remove referral_code from validated as it's not a column in users table
+                unset($validated['referral_code']);
+
                 event(new Registered(($user = User::create($validated))));
+
+                // Reward connections
+                $initialConnections = 3; // Every new user gets 3 free connections
+                if ($referrer) {
+                    $initialConnections += 2; // Bonus 2 connections if referred (Total 5)
+                    // Referrer gets 2 connections
+                    $referrerConnection = $referrer->connection;
+                    $reward = (int) Setting::get('referral_reward', 2);
+                    if (!$referrerConnection) {
+                        $referrer->connection()->create(['connection' => $reward]);
+                    } else {
+                        $referrer->connection()->increment('connection', $reward);
+                    }
+                    // Log for referrer
+                    ConnectionHistory::create([
+                        'user_id' => $referrer->id,
+                        'amount' => $reward,
+                        'type' => 'referral_bonus',
+                        'description' => 'Bonus for referring ' . $user->name,
+                    ]);
+                }
+                $user->connection()->create(['connection' => $initialConnections]);
+
+                // Log for new user
+                ConnectionHistory::create([
+                    'user_id' => $user->id,
+                    'amount' => 3,
+                    'type' => 'signup_bonus',
+                    'description' => 'Welcome bonus for joining',
+                ]);
+
+                if ($referrer) {
+                    ConnectionHistory::create([
+                        'user_id' => $user->id,
+                        'amount' => 2,
+                        'type' => 'referral_bonus',
+                        'description' => 'Bonus for using referral code',
+                    ]);
+                }
 
                 //create all other options also
 
@@ -369,6 +423,21 @@ new #[Layout('components.layouts.auth')] class extends Component {
                             @enderror
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- Referral Code Section -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold text-custom-red border-b-2 border-custom-pink/30 pb-2">Referral (Optional)
+                </h3>
+                <div>
+                    <label for="referral_code" class="block text-sm font-semibold text-gray-700 mb-2">Referral
+                        Code</label>
+                    <input wire:model="referral_code" type="text" id="referral_code" placeholder="Enter referral code if any"
+                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all duration-300" />
+                    @error('referral_code')
+                        <span class="text-sm text-red-500 mt-1 block">{{ $message }}</span>
+                    @enderror
                 </div>
             </div>
 

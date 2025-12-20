@@ -49,6 +49,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Volt::route('your-connections', 'connections')->name('your.connections');
     Volt::route('payment-history', 'payment-history')->name('payment.history');
     Volt::route('connection-history', 'connection-history')->name('connection.history');
+    Volt::route('referrals', 'referrals')->name('referrals');
 
 
     Route::get('bkash/callback', [BkashController::class, 'callback'])->name('bkash.callback');
