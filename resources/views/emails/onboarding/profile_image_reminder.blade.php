@@ -13,7 +13,7 @@
                 style="background-color: #e11d48; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Upload
                 Photo</a>
         </div>
-        <p>Best regards,<br>The Lara Biye Team</p>
+        <p>Best regards,<br>The Engineers Matrimony Team</p>
     </div>
 </body>
 </html>

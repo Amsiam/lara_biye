@@ -12,7 +12,7 @@
             <li>Join our <a href="#" style="color: #e11d48;">Community Group</a></li>
         </ul>
         <p>Connect with other members and stay updated!</p>
-        <p>Best regards,<br>The Lara Biye Team</p>
+        <p>Best regards,<br>The Engineers Matrimony Team</p>
     </div>
 </body>
 </html>
