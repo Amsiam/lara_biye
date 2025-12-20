@@ -254,6 +254,18 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('id')
                     ->label('#')
                     ->sortable(),
+
+                Tables\Columns\TextColumn::make('profile_completion')
+                    ->label('Completion')
+                    ->badge()
+                    ->color(fn(int $state): string => match (true) {
+                        $state >= 80 => 'success',
+                        $state >= 50 => 'warning',
+                        default => 'danger',
+                    })
+                    ->suffix('%')
+                    ->sortable()
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->sortable()
@@ -374,6 +386,22 @@ class UserResource extends Resource
                     ->trueLabel('Verified profiles')
                     ->falseLabel('Unverified profiles')
                     ->native(false),
+
+                Tables\Filters\Filter::make('profile_completion')
+                    ->schema([
+                        Forms\Components\Select::make('completion_status')
+                            ->options([
+                                'high' => 'High (> 80%)',
+                                'medium' => 'Medium (50-80%)',
+                                'low' => 'Low (< 50%)',
+                            ]),
+                    ])
+                    ->query(function ($query, array $data) {
+                        return $query
+                            ->when($data['completion_status'] === 'high', fn($query) => $query->where('profile_completion', '>=', 80))
+                            ->when($data['completion_status'] === 'medium', fn($query) => $query->whereBetween('profile_completion', [50, 79]))
+                            ->when($data['completion_status'] === 'low', fn($query) => $query->where('profile_completion', '<', 50));
+                    }),
 
                 Tables\Filters\SelectFilter::make('gender')
                     ->relationship('basicInfo', 'gender')

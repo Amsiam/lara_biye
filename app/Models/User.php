@@ -45,6 +45,7 @@ class User extends Authenticatable implements \Illuminate\Contracts\Auth\MustVer
         'hide_from_search',
         'referral_code',
         'referrer_id',
+        'profile_completion',
     ];
 
     /**
@@ -408,6 +409,26 @@ class User extends Authenticatable implements \Illuminate\Contracts\Auth\MustVer
             }
         }
 
-        return round($completedPercentage, 2);
+        $percentage = round($completedPercentage, 2);
+
+        // Update database if changed (and we are not just calculating for display only)
+        // Note: We might want a separate method for 'updateAndGet' to avoid side effects in getters
+        // But for now, let's keep it simple or use a separate method. 
+        // Let's rely on the Backfill/Update command for mass updates, and maybe call this 
+        // when saving associated models.
+
+        return $percentage;
+    }
+
+    public function updateProfileCompletion(): float
+    {
+        $percentage = $this->profileCompletionPercentage();
+
+        if ($this->profile_completion != $percentage) {
+            $this->profile_completion = $percentage;
+            $this->saveQuietly(); // Avoid triggering events if possible
+        }
+
+        return $percentage;
     }
 }

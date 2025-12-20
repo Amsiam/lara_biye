@@ -72,123 +72,138 @@ $purchases = computed(function () {
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
                                     <div class="text-gray-900 font-medium">{{ $purchase->connections_purchased }}</div>
                                     @if($purchase->connections_applied)
-                                        <span class="text-xs text-green-600">✓ Applied</span>
-                                    @else
-                                        <span class="text-xs text-gray-400">Not applied</span>
-                                    @endif
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-semibold text-gray-900">
-                                        ৳{{ number_format($purchase->amount, 2) }}
-                                    </div>
-                                    <div class="text-xs text-gray-500">{{ $purchase->invoice_number ?? 'N/A' }}</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    @php
-                                        $stageColors = [
-                                            'initiated' => 'bg-gray-100 text-gray-800',
-                                            'pending' => 'bg-yellow-100 text-yellow-800',
-                                            'completed' => 'bg-green-100 text-green-800',
-                                            'failed' => 'bg-red-100 text-red-800',
-                                            'refunded' => 'bg-purple-100 text-purple-800',
-                                            'cancelled' => 'bg-gray-100 text-gray-800',
-                                        ];
-                                        $color = $stageColors[$purchase->payment_stage] ?? 'bg-gray-100 text-gray-800';
-                                    @endphp
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $color }}">
-                                        {{ ucfirst($purchase->payment_stage) }}
-                                    </span>
-                                    @if($purchase->error_message)
-                                        <div class="text-xs text-red-600 mt-1" title="{{ $purchase->error_message }}">
-                                            Error occurred
-                                        </div>
-                                    @endif
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
-                                    {{ $purchase->transaction_id ?? 'Pending' }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span
-                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                        {{ $purchase->status === 'completed' ? 'bg-green-100 text-green-800' : ($purchase->status === 'failed' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
-                                        {{ ucfirst($purchase->status) }}
-                                    </span>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Mobile View -->
-            <div class="md:hidden space-y-4">
-                @foreach ($this->purchases as $purchase)
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="flex-1">
-                                <h3 class="text-lg font-semibold text-gray-900">{{ $purchase->package->name }}</h3>
-                                <p class="text-sm text-gray-500">{{ $purchase->package->description }}</p>
-                                <div class="flex gap-2 mt-2">
-                                    @php
-                                        $stageColors = [
-                                            'initiated' => 'bg-gray-100 text-gray-800',
-                                            'pending' => 'bg-yellow-100 text-yellow-800',
-                                            'completed' => 'bg-green-100 text-green-800',
-                                            'failed' => 'bg-red-100 text-red-800',
-                                            'refunded' => 'bg-purple-100 text-purple-800',
-                                            'cancelled' => 'bg-gray-100 text-gray-800',
-                                        ];
-                                        $color = $stageColors[$purchase->payment_stage] ?? 'bg-gray-100 text-gray-800';
-                                    @endphp
-                                    <span class="px-2 py-0.5 text-xs font-semibold rounded-full {{ $color }}">
-                                        {{ ucfirst($purchase->payment_stage) }}
-                                    </span>
-                                    @if($purchase->is_refunded)
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">
-                                            Refunded
+                                        <span class="text-xs text-green-600 flex items-center gap-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3">
+                                                <path fill-rule="evenodd"
+                                                    d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                            Applied
                                         </span>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="space-y-2 text-sm">
-                            <div class="flex justify-between">
-                                <span class="text-gray-500">Date:</span>
-                                <span class="text-gray-900">{{ $purchase->created_at->format('M d, Y h:i A') }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-500">Connections:</span>
-                                <div class="text-right">
-                                    <span class="text-gray-900 font-semibold">{{ $purchase->connections_purchased }}</span>
-                                    @if($purchase->connections_applied)
-                                        <span class="text-xs text-green-600 block">✓ Applied</span>
                                     @else
-                                        <span class="text-xs text-gray-400 block">Not applied</span>
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-500">Amount:</span>
-                                <span class="text-gray-900 font-bold">৳{{ number_format($purchase->amount, 2) }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-500">Invoice #:</span>
-                                <span class="text-gray-900">{{ $purchase->invoice_number ?? 'N/A' }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-500">Transaction ID:</span>
-                                <span
-                                    class="text-gray-900 font-mono text-xs">{{ $purchase->transaction_id ?? 'Pending' }}</span>
-                            </div>
-                            @if($purchase->error_message)
-                                <div class="pt-2 border-t border-gray-200">
-                                    <span class="text-xs text-red-600">Error: {{ $purchase->error_message }}</span>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-                @endforeach
+                                            <span class="text-xs text-gray-400">Not applied</span>
+                                        @endif
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-semibold text-gray-900">
+                                                ৳{{ number_format($purchase->amount, 2) }}
+                                            </div>
+                                            <div class="text-xs text-gray-500">{{ $purchase->invoice_number ?? 'N/A' }}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            @php
+                                                $stageColors = [
+                                                    'initiated' => 'bg-gray-100 text-gray-800',
+                                                    'pending' => 'bg-yellow-100 text-yellow-800',
+                                                    'completed' => 'bg-green-100 text-green-800',
+                                                    'failed' => 'bg-red-100 text-red-800',
+                                                    'refunded' => 'bg-purple-100 text-purple-800',
+                                                    'cancelled' => 'bg-gray-100 text-gray-800',
+                                                ];
+                                                $color = $stageColors[$purchase->payment_stage] ?? 'bg-gray-100 text-gray-800';
+                                            @endphp
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $color }}">
+                                                {{ ucfirst($purchase->payment_stage) }}
+                                            </span>
+                                            @if($purchase->error_message)
+                                                <div class="text-xs text-red-600 mt-1" title="{{ $purchase->error_message }}">
+                                                    Error occurred
+                                                </div>
+                                            @endif
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
+                                            {{ $purchase->transaction_id ?? 'Pending' }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span
+                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                                                                {{ $purchase->status === 'completed' ? 'bg-green-100 text-green-800' : ($purchase->status === 'failed' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
+                                                {{ ucfirst($purchase->status) }}
+                                            </span>
+                                        </td>
+                                        </tr>
+                        @endforeach
+                                        </tbody>
+                                        </table>
+                                        </div>
+
+                                        <!-- Mobile View -->
+                                        <div class="md:hidden space-y-4">
+                                            @foreach ($this->purchases as $purchase)
+                                                                        <div class="bg-white rounded-lg shadow p-6">
+                                                                            <div class="flex justify-between items-start mb-4">
+                                                                                <div class="flex-1">
+                                                                                    <h3 class="text-lg font-semibold text-gray-900">{{ $purchase->package->name }}</h3>
+                                                                                    <p class="text-sm text-gray-500">{{ $purchase->package->description }}</p>
+                                                                                    <div class="flex gap-2 mt-2">
+                                                                                        @php
+                                                                                            $stageColors = [
+                                                                                                'initiated' => 'bg-gray-100 text-gray-800',
+                                                                                                'pending' => 'bg-yellow-100 text-yellow-800',
+                                                                                                'completed' => 'bg-green-100 text-green-800',
+                                                                                                'failed' => 'bg-red-100 text-red-800',
+                                                                                                'refunded' => 'bg-purple-100 text-purple-800',
+                                                                                                'cancelled' => 'bg-gray-100 text-gray-800',
+                                                                                            ];
+                                                                                            $color = $stageColors[$purchase->payment_stage] ?? 'bg-gray-100 text-gray-800';
+                                                                                        @endphp
+                                                                                        <span class="px-2 py-0.5 text-xs font-semibold rounded-full {{ $color }}">
+                                                                                            {{ ucfirst($purchase->payment_stage) }}
+                                                                                        </span>
+                                                                                        @if($purchase->is_refunded)
+                                                                                            <span
+                                                                                                class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">
+                                                                                                Refunded
+                                                                                            </span>
+                                                                                        @endif
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="space-y-2 text-sm">
+                                                                                <div class="flex justify-between">
+                                                                                    <span class="text-gray-500">Date:</span>
+                                                                                    <span class="text-gray-900">{{ $purchase->created_at->format('M d, Y h:i A') }}</span>
+                                                                                </div>
+                                                                                <div class="flex justify-between">
+                                                                                    <span class="text-gray-500">Connections:</span>
+                                                                                    <div class="text-right">
+                                                                                        <span class="text-gray-900 font-semibold">{{ $purchase->connections_purchased }}</span>
+                                                                                        @if($purchase->connections_applied)
+                                                                                            <span class="text-xs text-green-600 flex items-center justify-end gap-1">
+                                                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3">
+                                                                                                    <path fill-rule="evenodd"
+                                                                                                        d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                                                                                                        clip-rule="evenodd" />
+                                                                                                </svg>
+                                                                                                Applied
+                                                                                            </span>
+                                                                                        @else
+                                                                    <span class="text-xs text-gray-400 block">Not applied</span>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                        <div class="flex justify-between">
+                                                            <span class="text-gray-500">Amount:</span>
+                                                            <span class="text-gray-900 font-bold">৳{{ number_format($purchase->amount, 2) }}</span>
+                                                        </div>
+                                                        <div class="flex justify-between">
+                                                            <span class="text-gray-500">Invoice #:</span>
+                                                            <span class="text-gray-900">{{ $purchase->invoice_number ?? 'N/A' }}</span>
+                                                        </div>
+                                                        <div class="flex justify-between">
+                                                            <span class="text-gray-500">Transaction ID:</span>
+                                                            <span
+                                                                class="text-gray-900 font-mono text-xs">{{ $purchase->transaction_id ?? 'Pending' }}</span>
+                                                        </div>
+                                                        @if($purchase->error_message)
+                                                            <div class="pt-2 border-t border-gray-200">
+                                                                <span class="text-xs text-red-600">Error: {{ $purchase->error_message }}</span>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            @endforeach
             </div>
 
             <!-- Summary Card -->
