@@ -8,6 +8,7 @@ use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class User extends Authenticatable implements \Illuminate\Contracts\Auth\MustVerifyEmail, FilamentUser
@@ -221,9 +222,25 @@ class User extends Authenticatable implements \Illuminate\Contracts\Auth\MustVer
 
             $this->connectedUsers()->attach($user->id, ['status' => 'ACCEPTED']);
             $user->connectedUsers()->updateExistingPivot($this->id, ['status' => 'ACCEPTED']);
+
+            // Send connection accepted email to the original requester ($user)
+            try {
+                Mail::to($user->email)->send(new \App\Mail\ConnectionAcceptedMail($this, $user));
+            } catch (\Exception $e) {
+                // Log error but don't fail the request
+                \Illuminate\Support\Facades\Log::error('Failed to send connection accepted email: ' . $e->getMessage());
+            }
+
             return true;
         }
         $this->connectedUsers()->attach($user->id, ['status' => 'PENDING']);
+
+        // Send connection request email to the target user ($user)
+        try {
+            Mail::to($user->email)->send(new \App\Mail\ConnectionRequestMail($this, $user));
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Failed to send connection request email: ' . $e->getMessage());
+        }
 
         return true;
     }
