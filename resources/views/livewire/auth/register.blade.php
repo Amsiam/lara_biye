@@ -338,9 +338,8 @@ new #[Layout('components.layouts.auth')] class extends Component {
                 <div class="space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">Email
-                                Address</label>
-                            <input wire:model="email" type="email" id="email" placeholder="example@email.com"
+                            <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">Student / University Email</label>
+                            <input wire:model="email" type="email" id="email" placeholder="student_id@university.edu"
                                 class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-custom-pink focus:ring-2 focus:ring-custom-pink/20 transition-all duration-300" />
                             @error('email')
                                 <span class="text-sm text-red-500 mt-1 block">{{ $message }}</span>

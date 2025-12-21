@@ -32,7 +32,7 @@ class ReceivedRequestsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn(Builder $query) => $query->wherePivot('status', 'PENDING'))
+            ->modifyQueryUsing(fn(Builder $query) => $query->where('connected.status', 'PENDING'))
             ->recordTitleAttribute('name')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
