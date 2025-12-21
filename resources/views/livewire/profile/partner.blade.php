@@ -38,7 +38,7 @@ $enableEditing = fn() => ($this->isEditing = !$this->isEditing);
 
 $save = function () {
     $this->validate();
-    foreach (['height_from', 'height_to', 'weight_from', 'weight_to', 'age'] as $field) {
+    foreach (['height_from','manglik' ,'height_to', 'weight_from', 'weight_to', 'age'] as $field) {
         if ($this->partner->{$field} === '') {
             $this->partner->{$field} = null;
         }
