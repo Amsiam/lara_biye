@@ -1,32 +1,57 @@
-@props([
-    'profile' => null,
-])
+@props(['profile' => null])
 
-<div
-    class="bg-white p-5 rounded-lg shadow-lg text-black hover:shadow-2xl  hover:bg-gray-100 transform transition-all duration-300 hover:scale-105 flex flex-col items-center text-center">
-    <img src="{{ route('profile.image', $profile->id) }}" class="w-full h-60 object-cover rounded-lg"
-        alt="Profile Picture" onerror="this.src='{{ asset('default.png') }}'" />
-    <div class="mt-3 flex items-center justify-center gap-2">
-        @if (auth()->check() && auth()->user()->isConnected($profile->id))
-            <h3 class="text-lg font-bold text-center">{{ $profile->name }}</h3>
-        @else
-            <h3 class="text-lg font-bold text-center h-8"></h3>
-        @endif
+@php
+    $isConnected = auth()->check() && auth()->user()->isConnected($profile->id);
+    $age = $profile->basicInfo?->dob ? now()->diffInYears($profile->basicInfo->dob) : null;
+    $gender = $profile->basicInfo?->gender;
+    $genderColor = $gender === 'FEMALE' ? 'text-pink-500 bg-pink-50' : 'text-blue-500 bg-blue-50';
+    $religion = $profile->basicInfo?->religion;
+@endphp
+
+<div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col overflow-hidden group">
+    <!-- Image -->
+    <div class="relative overflow-hidden">
+        <img src="{{ route('profile.image', $profile->id) }}"
+             class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500"
+             alt="Profile Picture"
+             onerror="this.src='{{ asset('default.png') }}'" />
 
         @if ($profile->isProfileVerified())
-            <span class="inline-flex items-center" title="Profile Verified by Admin">
-                <svg class="w-5 h-5 text-pink-400" fill="currentColor" viewBox="0 0 24 24">
-                    <path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
-                </svg>
+            <span class="absolute top-2 right-2 bg-white/90 backdrop-blur-sm rounded-full px-2 py-1 flex items-center gap-1 text-xs font-semibold text-pink-500 shadow-sm">
+                <i class="ph-fill ph-seal-check text-base"></i>
+                Verified
+            </span>
+        @endif
+
+        @if ($gender)
+            <span class="absolute top-2 left-2 rounded-full w-7 h-7 flex items-center justify-center shadow-sm {{ $genderColor }}">
+                <i class="ph-bold {{ $gender === 'FEMALE' ? 'ph-gender-female' : 'ph-gender-male' }} text-base"></i>
             </span>
         @endif
     </div>
-    <p class="text-gray-700 flex items-center gap-1">
-        👤 Age: {{ floor(-1 * now()->diffInYears($profile->basicInfo?->dob)) }} | 🕌 Religion:
-        {{ $profile?->basicInfo?->religion }}
-    </p>
-    <a href="{{ route('profile', $profile->id) }}"
-        class="mt-3 p-2 w-full bg-custom-pink text-white font-bold rounded hover:bg-opacity-90">
-        View Profile
-    </a>
+
+    <!-- Info -->
+    <div class="p-4 flex flex-col flex-1">
+        <div class="mb-3">
+            @if ($isConnected)
+                <h3 class="text-base font-bold text-gray-900 truncate">{{ $profile->name }}</h3>
+            @else
+                <h3 class="text-base font-bold text-gray-400 italic">Profile Hidden</h3>
+            @endif
+        </div>
+
+        <div class="flex flex-wrap gap-2 text-xs text-gray-600 mb-4">
+            @if ($age)
+                <span class="bg-gray-100 px-2 py-1 rounded-full">{{ $age }} yrs</span>
+            @endif
+            @if ($religion)
+                <span class="bg-gray-100 px-2 py-1 rounded-full">{{ ucfirst(strtolower($religion)) }}</span>
+            @endif
+        </div>
+
+        <a href="{{ route('profile', $profile->id) }}"
+           class="mt-auto w-full text-center py-2 bg-custom-pink text-white text-sm font-semibold rounded-lg hover:bg-custom-red transition-colors duration-200">
+            View Profile
+        </a>
+    </div>
 </div>

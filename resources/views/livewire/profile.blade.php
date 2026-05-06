@@ -88,12 +88,7 @@ $sendConnection = function () {
 
                 @if ($this->user->isProfileVerified())
                     <span class="inline-flex items-center group" title="Profile Verified by Admin">
-                        <svg class="w-6 h-6 text-pink-400 group-hover:text-pink-500 transition-colors drop-shadow-lg"
-                            fill="currentColor" viewBox="0 0 24 24">
-                            <path fill-rule="evenodd"
-                                d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
-                                clip-rule="evenodd" />
-                        </svg>
+                        <i class="ph-fill ph-seal-check text-2xl text-pink-400 group-hover:text-pink-500 transition-colors drop-shadow-lg"></i>
                     </span>
                 @endif
             </div>
@@ -128,36 +123,36 @@ $sendConnection = function () {
         <div class="mt-4 p-4 bg-white rounded-xl shadow-lg flex flex-col space-y-3">
             <button wire:click="buyConnection" wire:confirm="Are you sure you want to buy a connection?"
                 class="w-full bg-custom-pink hover:bg-pink-600 py-3 rounded-lg shadow-md hover:shadow-xl text-white font-semibold transition-all duration-300 transform hover:scale-105">
-                🎟️ Buy Connection ({{ auth()->user()?->connection()?->first()?->connection ?? 0 }})
+                <i class="ph-bold ph-ticket mr-1"></i> Buy Connection ({{ auth()->user()?->connection()?->first()?->connection ?? 0 }})
             </button>
             @if (auth()->user()?->id == $this->user->id)
 
                 <button wire:click="deleteAccount" wire:confirm="Are you sure you want to delete your account?"
                     class="w-full bg-red-500 hover:bg-red-600 py-3 rounded-lg shadow-md hover:shadow-xl text-white font-semibold transition-all duration-300 transform hover:scale-105">
-                    ❌ Close Account
+                    <i class="ph-bold ph-x-circle mr-1"></i> Close Account
                 </button>
             @else
                 @if (auth()->user()->isConnected($this->user->id))
                     <button
                         class="w-full bg-gray-200 text-gray-700 py-3 rounded-lg shadow-md cursor-not-allowed border-2 border-gray-300 font-semibold">
-                        ✅ You are already connected
+                        <i class="ph-bold ph-check-circle mr-1"></i> You are already connected
                     </button>
                 @elseif (auth()->user()->hasSentConnectionRequest($this->user))
                     <button wire:click="sendConnection"
                         wire:confirm="This action cost you a connection. Will you proceed?"
                         class="w-full bg-green-500 hover:bg-green-600 py-3 rounded-lg shadow-md hover:shadow-xl text-white font-semibold transition-all duration-300 transform hover:scale-105">
-                        ✓ Accept Request
+                        <i class="ph-bold ph-check mr-1"></i> Accept Request
                     </button>
                 @elseif (auth()->user()->isConnectionPending($this->user->id))
                     <button
                         class="w-full bg-gray-200 text-gray-700 py-3 rounded-lg shadow-md cursor-not-allowed border-2 border-gray-300 font-semibold">
-                        ⏳ Pending connection request
+                        <i class="ph-bold ph-hourglass-medium mr-1"></i> Pending connection request
                     </button>
                 @else
                     <button wire:click="sendConnection"
                         wire:confirm="This action cost you a connection. Will you proceed?"
                         class="w-full bg-custom-pink hover:bg-pink-600 py-3 rounded-lg shadow-md hover:shadow-xl text-white font-semibold transition-all duration-300 transform hover:scale-105">
-                        🎟️ Send Connection Request
+                        <i class="ph-bold ph-ticket mr-1"></i> Send Connection Request
                     </button>
                 @endif
 
