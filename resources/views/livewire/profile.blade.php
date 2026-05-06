@@ -68,130 +68,131 @@ $sendConnection = function () {
 
 ?>
 
-<div class="max-w-6xl mx-auto flex flex-col md:flex-row mt-20 px-4 gap-6">
+<div class="max-w-6xl mx-auto flex flex-col md:flex-row mt-4 md:mt-20 px-3 sm:px-4 gap-4 md:gap-6 pb-10">
     <!-- Sidebar -->
-    <div class="w-full md:w-1/4 bg-custom-red text-white p-6 rounded-2xl shadow-xl border border-gray-200">
-        <div class="text-center">
-            <!-- Profile Image -->
-            {{-- <div
-                class="w-32 h-32 mx-auto border border-gray-300 rounded-full overflow-hidden flex items-center justify-center">
-                <img class="w-full h-full object-cover" src="./assets/UserProfile.png" alt="Profile Image">
-            </div> --}}
+    <div class="w-full md:w-1/4 md:sticky md:top-24 md:self-start bg-custom-red text-white rounded-2xl shadow-xl overflow-hidden">
+        <div class="p-4 md:p-6">
 
-            <livewire:profile.upload-profile :user="$this->user" :previewUrl="$this->user->basicInfo?->image" />
+            <!-- Profile Header: horizontal on mobile, centered column on desktop -->
+            <div class="flex items-center gap-4 md:flex-col md:items-center md:text-center">
 
-            <!-- User Name & Followers -->
-            <div class="mt-4 flex items-center justify-center gap-2">
+                <!-- Profile Image -->
+                <div class="flex-shrink-0">
+                    <livewire:profile.upload-profile :user="$this->user" :previewUrl="$this->user->basicInfo?->image" />
+                </div>
+
+                <!-- Name + verified: visible on mobile only -->
+                <div class="flex-1 min-w-0 md:hidden">
+                    @if (auth()->user()->isConnected($this->user->id) || auth()->user()?->id == $this->user->id)
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            <h2 class="text-sm font-bold uppercase text-white leading-tight truncate">{{ $this->user->name }}</h2>
+                            @if ($this->user->isProfileVerified())
+                                <i class="ph-fill ph-seal-check text-base text-pink-300" title="Verified"></i>
+                            @endif
+                        </div>
+                    @endif
+                    <p class="text-white/60 text-xs mt-0.5">ID #{{ $this->user->id }}</p>
+
+                    @if (auth()->user()?->id == $this->user->id)
+                        @php
+                            $completion = $this->user->profileCompletionPercentage();
+                            $color = $completion < 50 ? 'bg-red-400' : ($completion < 80 ? 'bg-yellow-400' : 'bg-green-400');
+                        @endphp
+                        <div class="mt-2">
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-white/80">Completion</span>
+                                <span class="font-bold text-white">{{ $completion }}%</span>
+                            </div>
+                            <div class="w-full bg-white/20 rounded-full h-1.5">
+                                <div class="{{ $color }} h-1.5 rounded-full transition-all duration-500" style="width: {{ $completion }}%"></div>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Name + verified: desktop only -->
+            <div class="hidden md:flex mt-4 items-center justify-center gap-2">
                 @if (auth()->user()->isConnected($this->user->id) || auth()->user()?->id == $this->user->id)
                     <h2 class="text-xl font-bold uppercase text-white">{{ $this->user->name }}</h2>
                 @endif
-
                 @if ($this->user->isProfileVerified())
                     <span class="inline-flex items-center group" title="Profile Verified by Admin">
                         <i class="ph-fill ph-seal-check text-2xl text-pink-400 group-hover:text-pink-500 transition-colors drop-shadow-lg"></i>
                     </span>
                 @endif
             </div>
-            {{-- <p class="text-gray-100 text-sm mt-1">0 Followers</p> --}}
-            <hr class="my-4 border-white/30">
-        </div>
 
-        @if (auth()->user()?->id == $this->user->id)
-            @php
-    $completion = $this->user->profileCompletionPercentage();
-    $color = $completion < 50 ? 'bg-red-500' : ($completion < 80 ? 'bg-yellow-500' : 'bg-green-500');
-            @endphp
-            <div class="mt-4 p-4 bg-white rounded-xl shadow-lg border border-gray-100">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-sm font-semibold text-gray-700">Profile Completion</span>
-                    <span class="text-sm font-bold text-custom-pink">{{ $completion }}%</span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-2.5">
-                    <div class="{{ $color }} h-2.5 rounded-full transition-all duration-500" style="width: {{ $completion }}%">
+            <hr class="my-3 md:my-4 border-white/30">
+
+            <!-- Profile Completion: desktop only -->
+            @if (auth()->user()?->id == $this->user->id)
+                @php
+                    $completion = $this->user->profileCompletionPercentage();
+                    $color = $completion < 50 ? 'bg-red-500' : ($completion < 80 ? 'bg-yellow-500' : 'bg-green-500');
+                @endphp
+                <div class="hidden md:block p-4 bg-white rounded-xl shadow-lg border border-gray-100">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm font-semibold text-gray-700">Profile Completion</span>
+                        <span class="text-sm font-bold text-custom-pink">{{ $completion }}%</span>
                     </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="{{ $color }} h-2.5 rounded-full transition-all duration-500" style="width: {{ $completion }}%"></div>
+                    </div>
+                    @if($completion < 100)
+                        <p class="text-xs text-gray-500 mt-2 text-center">Complete your profile to get more matches!</p>
+                    @else
+                        <p class="text-xs text-green-600 mt-2 text-center font-semibold">Great job! Your profile is complete.</p>
+                    @endif
                 </div>
-                @if($completion < 100)
-                    <p class="text-xs text-gray-500 mt-2 text-center">Complete your profile to get more matches!</p>
+            @endif
+
+            <!-- Action Buttons -->
+            <div class="mt-3 md:mt-4 bg-white rounded-xl shadow-lg p-3 md:p-4 flex flex-col gap-2">
+                <button wire:click="buyConnection" wire:confirm="Are you sure you want to buy a connection?"
+                    class="w-full bg-custom-pink hover:bg-pink-600 py-2 md:py-3 rounded-lg shadow-md hover:shadow-xl text-white font-semibold text-sm transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-1.5">
+                    <i class="ph-bold ph-ticket"></i>
+                    <span>Buy Connection</span>
+                    <span class="bg-white/20 px-1.5 py-0.5 rounded text-xs font-bold">{{ auth()->user()?->connection()?->first()?->connection ?? 0 }}</span>
+                </button>
+
+                @if (auth()->user()?->id == $this->user->id)
+                    <button wire:click="deleteAccount" wire:confirm="Are you sure you want to delete your account?"
+                        class="w-full bg-red-500 hover:bg-red-600 py-2 md:py-3 rounded-lg shadow-md text-white font-semibold text-sm transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-1.5">
+                        <i class="ph-bold ph-x-circle"></i> Close Account
+                    </button>
                 @else
-                    <p class="text-xs text-green-600 mt-2 text-center font-semibold">Great job! Your profile is complete.</p>
+                    @if (auth()->user()->isConnected($this->user->id))
+                        <button class="w-full bg-gray-100 text-gray-600 py-2 md:py-3 rounded-lg cursor-not-allowed border border-gray-200 font-semibold text-sm flex items-center justify-center gap-1.5">
+                            <i class="ph-bold ph-check-circle text-green-500"></i> Already Connected
+                        </button>
+                    @elseif (auth()->user()->hasSentConnectionRequest($this->user))
+                        <button wire:click="sendConnection" wire:confirm="This action cost you a connection. Will you proceed?"
+                            class="w-full bg-green-500 hover:bg-green-600 py-2 md:py-3 rounded-lg shadow-md text-white font-semibold text-sm transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-1.5">
+                            <i class="ph-bold ph-check"></i> Accept Request
+                        </button>
+                    @elseif (auth()->user()->isConnectionPending($this->user->id))
+                        <button class="w-full bg-gray-100 text-gray-600 py-2 md:py-3 rounded-lg cursor-not-allowed border border-gray-200 font-semibold text-sm flex items-center justify-center gap-1.5">
+                            <i class="ph-bold ph-hourglass-medium text-yellow-500"></i> Request Pending
+                        </button>
+                    @else
+                        <button wire:click="sendConnection" wire:confirm="This action cost you a connection. Will you proceed?"
+                            class="w-full bg-custom-pink hover:bg-pink-600 py-2 md:py-3 rounded-lg shadow-md text-white font-semibold text-sm transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-1.5">
+                            <i class="ph-bold ph-ticket"></i> Send Connection Request
+                        </button>
+                    @endif
                 @endif
             </div>
-        @endif
 
-        <!-- Package Information -->
-
-        <div class="mt-4 p-4 bg-white rounded-xl shadow-lg flex flex-col space-y-3">
-            <button wire:click="buyConnection" wire:confirm="Are you sure you want to buy a connection?"
-                class="w-full bg-custom-pink hover:bg-pink-600 py-3 rounded-lg shadow-md hover:shadow-xl text-white font-semibold transition-all duration-300 transform hover:scale-105">
-                <i class="ph-bold ph-ticket mr-1"></i> Buy Connection ({{ auth()->user()?->connection()?->first()?->connection ?? 0 }})
-            </button>
-            @if (auth()->user()?->id == $this->user->id)
-
-                <button wire:click="deleteAccount" wire:confirm="Are you sure you want to delete your account?"
-                    class="w-full bg-red-500 hover:bg-red-600 py-3 rounded-lg shadow-md hover:shadow-xl text-white font-semibold transition-all duration-300 transform hover:scale-105">
-                    <i class="ph-bold ph-x-circle mr-1"></i> Close Account
-                </button>
-            @else
-                @if (auth()->user()->isConnected($this->user->id))
-                    <button
-                        class="w-full bg-gray-200 text-gray-700 py-3 rounded-lg shadow-md cursor-not-allowed border-2 border-gray-300 font-semibold">
-                        <i class="ph-bold ph-check-circle mr-1"></i> You are already connected
-                    </button>
-                @elseif (auth()->user()->hasSentConnectionRequest($this->user))
-                    <button wire:click="sendConnection"
-                        wire:confirm="This action cost you a connection. Will you proceed?"
-                        class="w-full bg-green-500 hover:bg-green-600 py-3 rounded-lg shadow-md hover:shadow-xl text-white font-semibold transition-all duration-300 transform hover:scale-105">
-                        <i class="ph-bold ph-check mr-1"></i> Accept Request
-                    </button>
-                @elseif (auth()->user()->isConnectionPending($this->user->id))
-                    <button
-                        class="w-full bg-gray-200 text-gray-700 py-3 rounded-lg shadow-md cursor-not-allowed border-2 border-gray-300 font-semibold">
-                        <i class="ph-bold ph-hourglass-medium mr-1"></i> Pending connection request
-                    </button>
-                @else
-                    <button wire:click="sendConnection"
-                        wire:confirm="This action cost you a connection. Will you proceed?"
-                        class="w-full bg-custom-pink hover:bg-pink-600 py-3 rounded-lg shadow-md hover:shadow-xl text-white font-semibold transition-all duration-300 transform hover:scale-105">
-                        <i class="ph-bold ph-ticket mr-1"></i> Send Connection Request
-                    </button>
-                @endif
-
-            @endif
         </div>
-
-        <!-- Sidebar Buttons -->
-        {{-- <div class="mt-6 space-y-2">
-
-            <button
-                class="w-full bg-white text-custom-pink py-2 rounded-md shadow hover:bg-custom-pink hover:text-white transition">
-                🎟️ My Package
-            </button>
-            <button
-                class="w-full bg-white text-custom-pink py-2 rounded-md shadow hover:bg-custom-pink hover:text-white transition">
-                💳 Payment Information
-            </button>
-            <button
-                class="w-full bg-white text-custom-pink py-2 rounded-md shadow hover:bg-custom-pink hover:text-white transition">
-                🔒 Picture Privacy
-            </button>
-            <button
-                class="w-full bg-white text-custom-pink py-2 rounded-md shadow hover:bg-custom-pink hover:text-white transition">
-                🔑 Change Password
-            </button>
-            <button
-                class="w-full bg-white text-custom-pink py-2 rounded-md shadow hover:bg-custom-pink hover:text-white transition">
-                ❌ Close Account
-            </button>
-        </div> --}}
     </div>
 
-
     <!-- Main Profile Section -->
-    <div class="w-full md:w-3/4 bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
-        <div class="flex justify-between items-center mb-2">
-            <h2 class="text-3xl font-bold text-gray-900">Profile Information</h2>
+    <div class="w-full md:w-3/4 bg-white p-4 sm:p-6 md:p-8 rounded-2xl shadow-xl border border-gray-100">
+        <div class="flex justify-between items-center mb-1">
+            <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">Profile Information</h2>
         </div>
-        <p class="text-custom-pink font-semibold mb-6">Member ID - {{ $this->user->id }}</p>
+        <p class="text-custom-pink font-semibold text-sm mb-4 md:mb-6">Member ID - {{ $this->user->id }}</p>
 
         <!-- Introduction -->
         <livewire:profile.introduction :bio="$this->user?->basicInfo" />

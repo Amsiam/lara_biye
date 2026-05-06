@@ -29,31 +29,31 @@ $toggle = function () {
 ?>
 
 <div class="mt-6 border border-gray-200 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
-    <div class="flex justify-between items-center bg-custom-red p-4 border-b">
-        <h3 class="font-bold text-white text-lg">Residency Information</h3>
+    <div class="flex justify-between items-center bg-custom-red p-3 sm:p-4 border-b">
+        <h3 class="font-bold text-white text-sm sm:text-base md:text-lg truncate mr-2">Residency Information</h3>
         <div class="flex gap-2">
             @if (auth()->user()?->id == ${$view}?->user_id)
                 <button wire:click="toggle"
-                    class="text-white bg-custom-pink hover:bg-pink-600 px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 flex items-center gap-2">
+                    class="text-white bg-custom-pink hover:bg-pink-600 px-2 sm:px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 flex items-center gap-1 sm:gap-2">
                     @if (${$view}->is_shown)
                         <i class="ph-bold ph-eye-slash"></i>
-                        <span>Hide</span>
+                        <span class="hidden sm:inline">Hide</span>
                     @else
                         <i class="ph-bold ph-eye"></i>
-                        <span>Show</span>
+                        <span class="hidden sm:inline">Show</span>
                     @endif
                 </button>
                 @if (!$isEditing)
                     <button wire:click="enableEditing"
-                        class="text-white bg-custom-pink hover:bg-pink-600 px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 flex items-center gap-2">
+                        class="text-white bg-custom-pink hover:bg-pink-600 px-2 sm:px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 flex items-center gap-1 sm:gap-2">
                         <i class="ph-bold ph-pencil-simple"></i>
-                        <span>Edit</span>
+                        <span class="hidden sm:inline">Edit</span>
                     </button>
                 @else
                     <button wire:click="save"
-                        class="text-white bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 flex items-center gap-2">
+                        class="text-white bg-green-500 hover:bg-green-600 px-2 sm:px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 flex items-center gap-1 sm:gap-2">
                         <i class="ph-bold ph-floppy-disk"></i>
-                        <span>Save</span>
+                        <span class="hidden sm:inline">Save</span>
                     </button>
                 @endif
             @endif
