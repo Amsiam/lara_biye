@@ -89,7 +89,7 @@ class User extends Authenticatable implements \Illuminate\Contracts\Auth\MustVer
      */
     public function isProfileVerified(): bool
     {
-        return !is_null($this->profile_verified_at);
+        return $this->profile_verified_at !== null;
     }
 
     /**
@@ -170,11 +170,6 @@ class User extends Authenticatable implements \Illuminate\Contracts\Auth\MustVer
         return $this->hasMany(SiblingsInfo::class);
     }
 
-    // public function astronomicInfo()
-    // {
-    //     return $this->hasOne(Astr::class);
-    // }
-
     public function connection()
     {
         return $this->hasOne(Connection::class);
@@ -199,14 +194,14 @@ class User extends Authenticatable implements \Illuminate\Contracts\Auth\MustVer
         return $this->visitedProfiles()->where('visited_user_id', $id)->exists();
     }
 
-    public function isConnected($connectionId)
+    public function isConnected(int $connectionId): bool
     {
         return $this->connectedUsers()->where('connected_user_id', $connectionId)
             ->where('status', 'ACCEPTED')
             ->exists();
     }
 
-    public function isConnectionPending($connectionId)
+    public function isConnectionPending(int $connectionId): bool
     {
         return $this->connectedUsers()->where('connected_user_id', $connectionId)
             ->where('status', 'PENDING')
@@ -259,64 +254,49 @@ class User extends Authenticatable implements \Illuminate\Contracts\Auth\MustVer
             throw new \Exception('Insufficient connections balance.');
         }
 
-        return DB::transaction(function () use ($user) {
-            // Check if ANY request is pending between these two (regardless of direction)
-            // But specifically, we check if the OTHER user sent ME a request first (Acceptance Scenario)
-            if ($user->connectedUsers()->where('connected_user_id', $this->id)->where('status', 'PENDING')->exists()) {
+        $mailCallback = null;
 
-                // Acceptance Logic
+        $result = DB::transaction(function () use ($user, &$mailCallback) {
+            if ($user->connectedUsers()->where('connected_user_id', $this->id)->where('status', 'PENDING')->exists()) {
                 $this->connectedUsers()->attach($user->id, ['status' => 'ACCEPTED']);
                 $user->connectedUsers()->updateExistingPivot($this->id, ['status' => 'ACCEPTED']);
-
-                // Deduct connection from Accepter (Current User)
                 $this->connection()->decrement('connection', 1);
-
-                // Log history
                 $this->connectionHistory()->create([
                     'amount' => -1,
                     'type' => 'connection_request_accepted',
                     'description' => 'Accepted connection request from ' . $user->name,
                 ]);
-
-                // Send email
-                try {
-                    Mail::to($user->email)->send(new \App\Mail\ConnectionAcceptedMail($this, $user));
-                } catch (\Exception $e) {
-                    \Illuminate\Support\Facades\Log::error('Failed to send connection accepted email: ' . $e->getMessage());
-                }
-
+                $mailCallback = fn() => Mail::to($user->email)->send(new \App\Mail\ConnectionAcceptedMail($this, $user));
                 return true;
             }
 
-            // Sending Logic (New Request)
             if ($this->hasSentConnectionRequest($user)) {
-                return true; // Already sent
+                return true;
             }
 
             $this->connectedUsers()->attach($user->id, ['status' => 'PENDING']);
-
-            // Deduct connection from Sender (Current User)
             $this->connection()->decrement('connection', 1);
-
-            // Log history
             $this->connectionHistory()->create([
                 'amount' => -1,
                 'type' => 'connection_request_sent',
                 'description' => 'Sent connection request to ' . $user->name,
             ]);
-
-            // Send email
-            try {
-                Mail::to($user->email)->send(new \App\Mail\ConnectionRequestMail($this, $user));
-            } catch (\Exception $e) {
-                \Illuminate\Support\Facades\Log::error('Failed to send connection request email: ' . $e->getMessage());
-            }
-
+            $mailCallback = fn() => Mail::to($user->email)->send(new \App\Mail\ConnectionRequestMail($this, $user));
             return true;
         });
+
+        if ($mailCallback) {
+            try {
+                $mailCallback();
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Failed to send connection email: ' . $e->getMessage());
+            }
+        }
+
+        return $result;
     }
 
-    public function hasSentConnectionRequest(User $user)
+    public function hasSentConnectionRequest(User $user): bool
     {
         return $user->connectedUsers()->where('connected_user_id', $this->id)
             ->where('status', 'PENDING')->exists();
@@ -344,15 +324,13 @@ class User extends Authenticatable implements \Illuminate\Contracts\Auth\MustVer
         // Get all attributes
         $attributes = $model->getAttributes();
 
-        // Fields to exclude from calculation
-        $excludedFields = ['id', 'user_id', 'created_at', 'updated_at', 'is_shown', 'image_privacy', 'is_nid_verified', 'is_student_verified'];
+        $excludedFields = array_flip(['id', 'user_id', 'created_at', 'updated_at', 'is_shown', 'image_privacy', 'is_nid_verified', 'is_student_verified']);
 
         $totalFields = 0;
         $filledFields = 0;
 
         foreach ($attributes as $key => $value) {
-            // Skip excluded fields
-            if (in_array($key, $excludedFields)) {
+            if (isset($excludedFields[$key])) {
                 continue;
             }
 
@@ -411,15 +389,7 @@ class User extends Authenticatable implements \Illuminate\Contracts\Auth\MustVer
             }
         }
 
-        $percentage = round($completedPercentage, 2);
-
-        // Update database if changed (and we are not just calculating for display only)
-        // Note: We might want a separate method for 'updateAndGet' to avoid side effects in getters
-        // But for now, let's keep it simple or use a separate method. 
-        // Let's rely on the Backfill/Update command for mass updates, and maybe call this 
-        // when saving associated models.
-
-        return $percentage;
+        return round($completedPercentage, 2);
     }
 
     public function updateProfileCompletion(): float
