@@ -1,8 +1,10 @@
 <?php
 
-use function Livewire\Volt\{state, computed};
+use function Livewire\Volt\{state, computed, on};
 
 state(['profileId']);
+
+on(['profile-section-saved' => '$refresh']);
 
 $user = computed(function () {
     return \App\Models\User::with('basicInfo', 'location', 'education', 'physical_attr', 'hobby', 'language', 'personal', 'spiritualSocial', 'lifestyle', 'partnerExpectation', 'family', 'parmanent', 'siblingInfo')->where('id', $this->profileId)->where('is_admin', false)->findOrFail($this->profileId);

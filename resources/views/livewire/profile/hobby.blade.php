@@ -23,6 +23,7 @@ $save = function () {
     $this->validate();
 
     $this->hobby->save();
+    $this->dispatch('profile-section-saved');
 
     $this->isEditing = false;
 };

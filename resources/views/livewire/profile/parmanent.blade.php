@@ -17,6 +17,7 @@ $enableEditing = fn() => ($this->isEditing = !$this->isEditing);
 $save = function () {
     $this->validate();
     $this->{$this->view}->save();
+    $this->dispatch('profile-section-saved');
     $this->isEditing = false;
 };
 

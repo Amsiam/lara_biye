@@ -21,6 +21,7 @@ $save = function () {
     $this->validate();
 
     $this->spiritualSocial->save();
+    $this->dispatch('profile-section-saved');
 
     $this->isEditing = false;
 };

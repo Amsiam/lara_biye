@@ -17,6 +17,7 @@ $save = function () {
     $this->validate();
 
     $this->lang->save();
+    $this->dispatch('profile-section-saved');
 
     $this->isEditing = false;
 };

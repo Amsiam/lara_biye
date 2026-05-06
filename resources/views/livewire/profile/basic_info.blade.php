@@ -46,6 +46,7 @@ $save = function () {
 
     $this->user->save();
     $this->bio->save();
+    $this->dispatch('profile-section-saved');
 
     $this->isEditing = false;
 };

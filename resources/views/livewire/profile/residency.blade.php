@@ -18,6 +18,7 @@ $save = function () {
     $this->validate();
 
     $this->residencyInfo->save();
+    $this->dispatch('profile-section-saved');
 
     $this->isEditing = false;
 };

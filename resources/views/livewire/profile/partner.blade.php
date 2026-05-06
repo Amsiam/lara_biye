@@ -44,6 +44,7 @@ $save = function () {
         }
     }
     $this->partner->save();
+    $this->dispatch('profile-section-saved');
 
     $this->isEditing = false;
 };

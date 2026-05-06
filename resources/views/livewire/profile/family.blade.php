@@ -43,6 +43,7 @@ $save = function () {
     }
 
     $this->user->load('siblingInfo');
+    $this->dispatch('profile-section-saved');
 
     $this->isEditing = false;
 };

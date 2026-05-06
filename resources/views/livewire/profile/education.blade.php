@@ -24,6 +24,7 @@ $save = function () {
 
     $this->education->save();
     $this->user->basicInfo->update(['university' => $this->university]);
+    $this->dispatch('profile-section-saved');
 
     $this->isEditing = false;
 };

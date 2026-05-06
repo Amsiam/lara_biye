@@ -13,6 +13,7 @@ $enableEditing = fn() => ($this->isEditing = !$this->isEditing);
 $save = function () {
     $this->validate();
     $this->bio->save();
+    $this->dispatch('profile-section-saved');
 
     $this->isEditing = false;
 };

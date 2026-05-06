@@ -19,6 +19,7 @@ $save = function () {
     $this->validate();
 
     $this->physical->save();
+    $this->dispatch('profile-section-saved');
 
     $this->isEditing = false;
 };
