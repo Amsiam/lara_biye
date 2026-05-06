@@ -24,7 +24,7 @@ class AdminPanelProvider extends PanelProvider
     public function boot(): void
     {
         // Configure all tables globally to reduce vertical scrolling
-        Table::configureUsing(fn (Table $table): Table => $table
+        Table::configureUsing(fn(Table $table): Table => $table
             ->paginationPageOptions([10, 25, 50, 100]) // More options for users
             ->defaultPaginationPageOption(25) // Show 25 records by default instead of 10
             ->striped()); // Add striped rows for better readability
@@ -38,6 +38,11 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->profile()
+            ->plugin(\Boquizo\FilamentLogViewer\FilamentLogViewerPlugin::make()
+                ->navigationGroup('System')
+                ->navigationSort(99)
+            )
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->colors([
                 'primary' => Color::Pink,
             ])

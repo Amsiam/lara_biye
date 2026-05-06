@@ -1,0 +1,3 @@
+@import '/vendor/filamentphp/filament/resources/css/theme.css';
+
+@source '../../../../vendor/gboquizosanchez/filament-log-viewer/resources/views/**/*.blade.php';
