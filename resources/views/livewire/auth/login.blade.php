@@ -121,9 +121,9 @@ new #[Layout('components.layouts.auth')] class extends Component {
 
 <div
     class="w-full max-w-5xl bg-white rounded-xl shadow-2xl flex flex-col lg:flex-row overflow-hidden border border-gray-100">
-    <!-- Left Section with Image -->
+    <!-- Left Section with Image — hidden on mobile -->
     <div
-        class="w-full lg:w-2/5 relative bg-gradient-to-br from-custom-pink/10 to-custom-red/10 p-8 flex items-center justify-center">
+        class="hidden lg:flex lg:w-2/5 relative bg-gradient-to-br from-custom-pink/10 to-custom-red/10 p-8 items-center justify-center">
         <div class="text-center space-y-4">
             <img src="{{ asset('img/image 70.png') }}" alt="Login Image"
                 class="w-full max-w-sm mx-auto rounded-xl shadow-lg">
@@ -133,10 +133,18 @@ new #[Layout('components.layouts.auth')] class extends Component {
     </div>
 
     <!-- Right Section -->
-    <div class="w-full lg:w-3/5 p-10 lg:p-12 flex flex-col justify-center">
-        <div class="mb-8">
-            <h2 class="text-3xl lg:text-4xl font-bold text-custom-red mb-2">Login to your account</h2>
-            <p class="text-gray-600">Enter your credentials to access your profile</p>
+    <div class="w-full lg:w-3/5 p-6 sm:p-8 lg:p-12 flex flex-col justify-center">
+        <!-- Mobile brand header -->
+        <div class="flex items-center justify-center mb-4 lg:hidden">
+            <div class="text-center">
+                <h3 class="text-xl font-bold text-custom-red">Engineer's Matrimony</h3>
+                <p class="text-sm text-gray-500">Welcome back!</p>
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-custom-red mb-1">Login to your account</h2>
+            <p class="text-gray-600 text-sm sm:text-base">Enter your credentials to access your profile</p>
         </div>
 
         <form wire:submit.prevent="login" class="space-y-6">
@@ -234,8 +242,8 @@ new #[Layout('components.layouts.auth')] class extends Component {
             </p>
 
         </div>
-        <div class="mt-6 text-center">
-            <a href="/" class="bg-custom-pink px-5 py-2 mt-5 text-white rounded">
+        <div class="mt-4 text-center">
+            <a href="/" class="inline-block bg-custom-pink px-6 py-2.5 text-white rounded-lg text-sm font-medium hover:bg-custom-red transition-colors duration-200">
                 Go Back Home
             </a>
         </div>
