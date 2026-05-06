@@ -236,28 +236,33 @@ class User extends Authenticatable implements \Illuminate\Contracts\Auth\MustVer
         return $this->hasMany(User::class, 'referrer_id');
     }
 
-    public function sendConnectionRequest(User $user)
+    public function sendConnectionRequest(User $user): bool
     {
-        if ($this->isConnected($user->id)) {
-            return false; // Already connected
-        }
         if ($this->id === $user->id) {
-            return false; // Cannot send a connection request to oneself
+            return false;
         }
 
-        // Check balance
-        $currentConnection = $this->connection()->first();
-        // Use getAttribute because 'connection' column conflicts with Model::$connection property
-        $balance = $currentConnection ? (int) $currentConnection->getAttribute('connection') : 0;
-
-        if ($balance < 1) {
-            throw new \Exception('Insufficient connections balance.');
+        if ($this->isConnected($user->id)) {
+            return false;
         }
 
         $mailCallback = null;
 
         $result = DB::transaction(function () use ($user, &$mailCallback) {
-            if ($user->connectedUsers()->where('connected_user_id', $this->id)->where('status', 'PENDING')->exists()) {
+            // Lock the connection row to prevent race conditions on balance
+            $connectionRow = $this->connection()->lockForUpdate()->first();
+            $balance = $connectionRow ? (int) $connectionRow->getAttribute('connection') : 0;
+
+            if ($balance < 1) {
+                throw new \Exception('Insufficient connections balance.');
+            }
+
+            $pivotStatus = $user->connectedUsers()
+                ->where('connected_user_id', $this->id)
+                ->value('status');
+
+            if ($pivotStatus === 'PENDING') {
+                // Other user already sent a request — auto-accept both sides
                 $this->connectedUsers()->attach($user->id, ['status' => 'ACCEPTED']);
                 $user->connectedUsers()->updateExistingPivot($this->id, ['status' => 'ACCEPTED']);
                 $this->connection()->decrement('connection', 1);
@@ -270,7 +275,7 @@ class User extends Authenticatable implements \Illuminate\Contracts\Auth\MustVer
                 return true;
             }
 
-            if ($this->hasSentConnectionRequest($user)) {
+            if ($pivotStatus === 'ACCEPTED' || $this->hasSentConnectionRequest($user)) {
                 return true;
             }
 
