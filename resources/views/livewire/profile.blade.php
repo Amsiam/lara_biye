@@ -25,35 +25,45 @@ $buyConnection = function () {
 };
 
 $sendConnection = function () {
-    if ($this->user->id == auth()->user()?->id) {
-        session()->flash('error', 'You cannot send a connection request to yourself.');
-        return redirect()->route('profile', ['profileId' => $this->user->id]);
-    }
-    if (auth()->user()?->connection()?->first()?->connection <= 0) {
-        session()->flash('error', 'You do not have enough connections to send a request.');
-        return redirect()->route('profile', ['profileId' => $this->user->id]);
-    }
-    if (auth()->user()?->sendConnectionRequest($this->user)) {
-        auth()->user()->connection()->decrement('connection', 1);
+    $authUser = auth()->user();
+    $profileId = $this->user->id;
 
-        if (auth()->user()->isConnected($this->user->id)) {
+    if ($this->user->id == $authUser?->id) {
+        session()->flash('error', 'You cannot send a connection request to yourself.');
+        return redirect()->route('profile', ['profileId' => $profileId]);
+    }
+
+    $balance = (int) ($authUser?->connection()?->first()?->getAttribute('connection') ?? 0);
+    if ($balance <= 0) {
+        session()->flash('error', 'You do not have enough connections to send a request.');
+        return redirect()->route('profile', ['profileId' => $profileId]);
+    }
+
+    try {
+        $sent = $authUser->sendConnectionRequest($this->user);
+    } catch (\Exception $e) {
+        session()->flash('error', $e->getMessage());
+        return redirect()->route('profile', ['profileId' => $profileId]);
+    }
+
+    if ($sent) {
+        if ($authUser->isConnected($this->user->id)) {
             $this->user->notifications()->create([
-                'sender_id' => auth()->user()->id,
-                'message' => auth()->user()->name . ' accepted your connection request.',
+                'sender_id' => $authUser->id,
+                'message' => $authUser->name . ' accepted your connection request.',
             ]);
         } else {
             $this->user->notifications()->create([
-                'sender_id' => auth()->user()->id,
-                'message' => auth()->user()->name . ' sent you a connection request.',
+                'sender_id' => $authUser->id,
+                'message' => $authUser->name . ' sent you a connection request.',
             ]);
         }
-
         session()->flash('message', 'Connection request sent successfully.');
     } else {
         session()->flash('error', 'Connection request failed.');
     }
 
-    return redirect()->route('profile', ['profileId' => $this->user->id]);
+    return redirect()->route('profile', ['profileId' => $profileId]);
 };
 
 ?>
