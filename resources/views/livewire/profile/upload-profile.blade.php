@@ -162,13 +162,7 @@ $removePhoto = function () {
             @if ($uploading)
                 <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                     <div class="text-white text-center">
-                        <svg class="animate-spin h-6 w-6 mx-auto mb-1" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor"
-                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                            </path>
-                        </svg>
+                        <i class="ph-bold ph-circle-notch animate-spin text-2xl block mx-auto mb-1"></i>
                         <p class="text-xs font-semibold">Uploading...</p>
                     </div>
                 </div>
@@ -180,12 +174,7 @@ $removePhoto = function () {
                 <!-- Camera Icon Overlay -->
                 <div class="absolute bottom-0 right-1/2 transform translate-x-16 bg-custom-pink text-white rounded-full p-2 shadow-lg cursor-pointer hover:bg-opacity-90 transition-all duration-200 hover:scale-110"
                     wire:click="$dispatch('open-file-input')" title="Change Photo">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
+                    <i class="ph-bold ph-camera text-sm"></i>
                 </div>
             @endif
         @endauth
@@ -205,22 +194,11 @@ $removePhoto = function () {
                         class="w-full px-4 py-2 bg-custom-pink text-white rounded-md hover:bg-pink-600 font-semibold text-sm cursor-pointer"
                         style="pointer-events: auto;" wire:loading.attr="disabled" wire:target="photo">
                         <span wire:loading.remove wire:target="uploadPhoto" class="flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
-                                <path fill-rule="evenodd"
-                                    d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-                                    clip-rule="evenodd" />
-                            </svg>
+                            <i class="ph-bold ph-floppy-disk"></i>
                             Save Photo
                         </span>
                         <span wire:loading wire:target="uploadPhoto" class="inline-flex items-center">
-                            <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg"
-                                fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                    stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor"
-                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                                </path>
-                            </svg>
+                            <i class="ph-bold ph-circle-notch animate-spin -ml-1 mr-2"></i>
                             Saving...
                         </span>
                     </button>
@@ -243,7 +221,7 @@ $removePhoto = function () {
                     <button wire:click="removePhoto" type="button"
                         wire:confirm="Are you sure you want to remove your profile photo?"
                         class="w-full px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 font-medium text-sm transition-all duration-200">
-                        🗑️ Remove Photo
+                        <i class="ph-bold ph-trash mr-1"></i> Remove Photo
                     </button>
                 </div>
             @endif
@@ -251,11 +229,7 @@ $removePhoto = function () {
             <!-- Success Message -->
             @if ($success)
                 <div class="bg-green-100 border border-green-400 text-green-700 px-3 py-2 rounded-md text-sm flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
-                        <path fill-rule="evenodd"
-                            d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-                            clip-rule="evenodd" />
-                    </svg>
+                    <i class="ph-bold ph-check"></i>
                     Photo uploaded successfully!
                 </div>
             @endif
