@@ -36,13 +36,13 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->login()
             ->profile()
             ->plugin(\Boquizo\FilamentLogViewer\FilamentLogViewerPlugin::make()
                 ->navigationGroup('System')
                 ->navigationSort(99)
             )
-            ->viteTheme('resources/css/filament/admin/theme.css')
             ->colors([
                 'primary' => Color::Pink,
             ])

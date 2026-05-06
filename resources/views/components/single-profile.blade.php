@@ -2,7 +2,7 @@
 
 @php
     $isConnected = auth()->check() && auth()->user()->isConnected($profile->id);
-    $age = $profile->basicInfo?->dob ? now()->diffInYears($profile->basicInfo->dob) : null;
+    $age = $profile->basicInfo?->dob ? \Carbon\Carbon::parse($profile->basicInfo->dob)->age : null;
     $gender = $profile->basicInfo?->gender;
     $genderColor = $gender === 'FEMALE' ? 'text-pink-500 bg-pink-50' : 'text-blue-500 bg-blue-50';
     $religion = $profile->basicInfo?->religion;
