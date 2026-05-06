@@ -46,6 +46,7 @@ class User extends Authenticatable implements \Illuminate\Contracts\Auth\MustVer
         'referral_code',
         'referrer_id',
         'profile_completion',
+        'last_reminded_at',
     ];
 
     /**
@@ -71,6 +72,7 @@ class User extends Authenticatable implements \Illuminate\Contracts\Auth\MustVer
             'is_admin' => 'boolean',
             'profile_verified_at' => 'datetime',
             'hide_from_search' => 'boolean',
+            'last_reminded_at' => 'datetime',
         ];
     }
 

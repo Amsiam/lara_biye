@@ -15,7 +15,7 @@ class SendProfileCompletionReminders extends Command
      *
      * @var string
      */
-    protected $signature = 'profile:send-completion-reminders {--threshold=70 : Profile completion threshold percentage}';
+    protected $signature = 'profile:send-completion-reminders {--threshold=70 : Profile completion threshold percentage} {--delay=2 : Seconds to wait between emails} {--limit=100 : Maximum emails to send per run}';
 
     /**
      * The console command description.
@@ -30,76 +30,67 @@ class SendProfileCompletionReminders extends Command
     public function handle()
     {
         $threshold = (float) $this->option('threshold');
+        $delay = (int) $this->option('delay');
+        $limit = (int) $this->option('limit');
 
-        $this->info("Searching for users with profile completion below {$threshold}%...");
-        Log::info("Profile Completion Reminders: Starting to search for users below {$threshold}%");
+        $this->info("Sending up to {$limit} profile completion reminders (below {$threshold}%, {$delay}s delay)...");
+        Log::info("Profile Completion Reminders: Starting", compact('threshold', 'limit', 'delay'));
 
-        // Get all non-admin users with verified email
-        $users = User::where('is_admin', false)
+        $query = User::where('is_admin', false)
             ->whereNotNull('email_verified_at')
-            ->with([
-                'basicInfo',
-                'education',
-                'physical_attr',
-                'location',
-                'family',
-                'partnerExpectation',
-                'personal',
-                'lifestyle',
-                'hobby',
-                'language',
-                'spiritualSocial',
-                'parmanent',
-                'siblingInfo'
-            ])
-            ->get();
+            ->where(function ($q) use ($threshold) {
+                $q->whereNull('profile_completion')
+                  ->orWhere('profile_completion', '<', $threshold);
+            })
+            ->orderByRaw('last_reminded_at IS NOT NULL, last_reminded_at ASC')
+            ->select(['id', 'name', 'email', 'profile_completion', 'last_reminded_at']);
 
+        $total = min($query->count(), $limit);
         $sentCount = 0;
-        $skippedCount = 0;
 
-        $progressBar = $this->output->createProgressBar($users->count());
+        $progressBar = $this->output->createProgressBar($total);
         $progressBar->start();
 
-        foreach ($users as $user) {
-            $completionPercentage = $user->profileCompletionPercentage();
+        $query->chunk(50, function ($users) use (&$sentCount, $progressBar, $delay, $limit) {
+                foreach ($users as $user) {
+                    if ($sentCount >= $limit) {
+                        return false;
+                    }
 
-            if ($completionPercentage < $threshold) {
-                try {
-                    Mail::to($user->email)->send(new ProfileCompletionReminder($user, $completionPercentage));
-                    $sentCount++;
-                    $this->newLine();
-                    $this->line("✓ Email sent to {$user->name} ({$user->email}) - {$completionPercentage}% complete");
-                    Log::info("Profile Reminder: Email sent to {$user->name} ({$user->email}) - {$completionPercentage}% complete");
-                } catch (\Exception $e) {
-                    $this->newLine();
-                    $this->error("✗ Failed to send email to {$user->email}: {$e->getMessage()}");
-                    Log::error("Profile Reminder: Failed to send email to {$user->email}: {$e->getMessage()}");
+                    $completion = $user->profile_completion ?? 0;
+                    try {
+                        Mail::to($user->email)->send(new ProfileCompletionReminder($user, $completion));
+                        $user->updateQuietly(['last_reminded_at' => now()]);
+                        $sentCount++;
+                        Log::info("Profile Reminder: Sent to {$user->email} - {$completion}%");
+                    } catch (\Exception $e) {
+                        $this->newLine();
+                        $this->error("✗ Failed to send to {$user->email}: {$e->getMessage()}");
+                        Log::error("Profile Reminder: Failed for {$user->email}: {$e->getMessage()}");
+                    }
+
+                    $progressBar->advance();
+
+                    if ($delay > 0 && $sentCount < $limit) {
+                        sleep($delay);
+                    }
                 }
-            } else {
-                $skippedCount++;
-            }
-
-            $progressBar->advance();
-        }
+            });
 
         $progressBar->finish();
         $this->newLine(2);
 
-        // Summary
         $this->info("═══════════════════════════════════════");
         $this->info("Profile Completion Reminder Summary");
         $this->info("═══════════════════════════════════════");
-        $this->line("Total users checked: {$users->count()}");
-        $this->line("Emails sent: {$sentCount}");
-        $this->line("Users skipped (>{$threshold}%): {$skippedCount}");
+        $this->line("Emails sent: {$sentCount} / {$limit} (daily limit)");
+        $this->line("Delay between emails: {$delay}s");
         $this->info("═══════════════════════════════════════");
 
-        // Log summary
         Log::info("Profile Completion Reminders Summary", [
-            'total_users_checked' => $users->count(),
             'emails_sent' => $sentCount,
-            'users_skipped' => $skippedCount,
-            'threshold' => $threshold
+            'daily_limit' => $limit,
+            'threshold' => $threshold,
         ]);
 
         return Command::SUCCESS;
