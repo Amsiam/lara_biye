@@ -2,34 +2,16 @@
     $notifications = auth()->user()->notifications()->where('read', false)->latest()->get();
 @endphp
 
-<div class="relative" x-data="{
-        open: false,
-        rect: {},
-        toggle() {
-            this.rect = this.$refs.btn.getBoundingClientRect();
-            this.open = !this.open;
-        }
-    }" x-cloak>
-    <button x-ref="btn" @click="toggle()"
-        class="relative p-2 text-gray-500 hover:text-custom-pink hover:bg-pink-50 rounded-lg transition-colors focus:outline-none"
-        type="button">
+<flux:dropdown position="bottom" align="end">
+    <button class="relative p-2 text-gray-500 hover:text-custom-pink hover:bg-pink-50 rounded-lg transition-colors focus:outline-none" type="button">
         <i class="ph-bold ph-bell text-xl"></i>
         @if ($notifications->count() > 0)
             <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 border-2 border-white rounded-full"></span>
         @endif
     </button>
 
-    <div x-show="open"
-        @click.outside="open = false"
-        x-transition:enter="transition ease-out duration-150"
-        x-transition:enter-start="opacity-0 scale-95"
-        x-transition:enter-end="opacity-100 scale-100"
-        x-transition:leave="transition ease-in duration-100"
-        x-transition:leave-start="opacity-100 scale-100"
-        x-transition:leave-end="opacity-0 scale-95"
-        :style="`position:fixed; top:${rect.bottom + 8}px; right:${window.innerWidth - rect.right}px; width:min(20rem, calc(100vw - 1rem));`"
-        class="bg-white rounded-xl shadow-xl border border-gray-100 z-[9999] origin-top-right">
-
+    <flux:menu class="w-80 p-0 overflow-hidden">
+        <!-- Header -->
         <div class="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
             <span class="font-semibold text-gray-800 text-sm">Notifications</span>
             @if ($notifications->count() > 0)
@@ -39,6 +21,7 @@
             @endif
         </div>
 
+        <!-- List -->
         <div class="max-h-72 overflow-y-auto divide-y divide-gray-50">
             @forelse ($notifications as $notification)
                 <a href="{{ route('notifications.show', $notification->id) }}"
@@ -59,14 +42,15 @@
             @endforelse
         </div>
 
+        <!-- Footer -->
         @if ($notifications->count() > 0)
             <div class="border-t border-gray-100">
                 <a href="{{ route('notifications.markAllAsRead') }}"
-                    class="flex items-center justify-center gap-1.5 py-3 text-sm font-semibold text-custom-pink hover:bg-pink-50 rounded-b-xl transition-colors">
+                    class="flex items-center justify-center gap-1.5 py-3 text-sm font-semibold text-custom-pink hover:bg-pink-50 transition-colors">
                     <i class="ph-bold ph-checks"></i>
                     Mark all as read
                 </a>
             </div>
         @endif
-    </div>
-</div>
+    </flux:menu>
+</flux:dropdown>
