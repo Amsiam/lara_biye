@@ -40,6 +40,13 @@
                     </span>
                 </a>
 
+                <!-- Mobile notification bell -->
+                @if (auth()->check())
+                    <div class="md:hidden">
+                        <x-notification />
+                    </div>
+                @endif
+
                 <!-- Mobile menu button -->
                 <button id="hamburger"
                     class="md:hidden focus:outline-none p-2 rounded-lg hover:bg-gray-100 transition-colors">

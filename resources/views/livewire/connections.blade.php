@@ -183,6 +183,10 @@ $cancelRequest = function ($userId) {
                         <!-- Actions -->
                         <div class="flex flex-col gap-2 shrink-0">
                             @if ($tab === 'received')
+                                <a href="{{ route('profile', $profile->id) }}"
+                                    class="flex items-center gap-1 px-3 py-1.5 bg-custom-pink text-white text-xs font-semibold rounded-lg hover:bg-pink-600 transition-colors">
+                                    <i class="ph-bold ph-user"></i> View
+                                </a>
                                 <button wire:click="acceptRequest({{ $profile->id }})"
                                     wire:confirm="Accept connection request from {{ $profile->name }}?"
                                     class="flex items-center gap-1 px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white text-xs font-semibold rounded-lg transition-colors">
