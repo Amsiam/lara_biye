@@ -12,6 +12,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        $middleware->encryptCookies(except: ['user_timezone']);
         $middleware->web(append: [
             \App\Http\Middleware\SetUserTimezone::class,
         ]);
