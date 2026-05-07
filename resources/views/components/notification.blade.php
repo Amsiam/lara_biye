@@ -2,8 +2,15 @@
     $notifications = auth()->user()->notifications()->where('read', false)->latest()->get();
 @endphp
 
-<div class="relative" x-data="{ open: false }" x-cloak>
-    <button @click="open = !open" @click.outside="open = false"
+<div class="relative" x-data="{
+        open: false,
+        rect: {},
+        toggle() {
+            this.rect = this.$refs.btn.getBoundingClientRect();
+            this.open = !this.open;
+        }
+    }" x-cloak>
+    <button x-ref="btn" @click="toggle()"
         class="relative p-2 text-gray-500 hover:text-custom-pink hover:bg-pink-50 rounded-lg transition-colors focus:outline-none"
         type="button">
         <i class="ph-bold ph-bell text-xl"></i>
@@ -13,14 +20,15 @@
     </button>
 
     <div x-show="open"
+        @click.outside="open = false"
         x-transition:enter="transition ease-out duration-150"
         x-transition:enter-start="opacity-0 scale-95"
         x-transition:enter-end="opacity-100 scale-100"
         x-transition:leave="transition ease-in duration-100"
         x-transition:leave-start="opacity-100 scale-100"
         x-transition:leave-end="opacity-0 scale-95"
-        class="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-100 z-[200] origin-top-right"
-        @click.outside="open = false">
+        :style="`position:fixed; top:${rect.bottom + 8}px; right:${window.innerWidth - rect.right}px; width:min(20rem, calc(100vw - 1rem));`"
+        class="bg-white rounded-xl shadow-xl border border-gray-100 z-[9999] origin-top-right">
 
         <div class="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
             <span class="font-semibold text-gray-800 text-sm">Notifications</span>
