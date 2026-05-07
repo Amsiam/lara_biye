@@ -64,8 +64,8 @@ new #[Layout('components.layouts.app')] class extends Component {
                             @endphp
                             <tr class="hover:bg-gray-50/50 transition-colors">
                                 <td class="px-6 py-4 text-gray-600 whitespace-nowrap">
-                                    {{ $history->created_at->format('M d, Y') }}
-                                    <span class="text-xs text-gray-400 block">{{ $history->created_at->format('h:i A') }}</span>
+                                    {{ $history->created_at->local()->format('M d, Y') }}
+                                    <span class="text-xs text-gray-400 block">{{ $history->created_at->local()->format('h:i A') }}</span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold {{ $meta['bg'] }} {{ $meta['color'] }}">
