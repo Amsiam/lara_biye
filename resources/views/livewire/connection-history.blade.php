@@ -42,8 +42,8 @@ new #[Layout('components.layouts.app')] class extends Component {
 
         <!-- History Table -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
+            <div class="overflow-x-auto min-w-full">
+                <table class="min-w-[640px] w-full text-left">
                     <thead class="bg-gray-50 text-gray-500 text-sm uppercase tracking-wider">
                         <tr>
                             <th class="px-6 py-4 font-semibold">Date</th>

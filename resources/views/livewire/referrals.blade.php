@@ -30,52 +30,46 @@ new #[Layout('components.layouts.app')] class extends Component {
             <p class="text-gray-500 text-sm mt-1">Invite friends and earn free connections!</p>
         </div>
 
-        <!-- Referral Code Hero -->
-        <div class="bg-gradient-to-br from-custom-pink to-custom-red rounded-2xl p-6 text-white shadow-xl relative overflow-hidden"
-            x-data="{ copied: false }">
-            <div class="absolute right-0 top-0 w-40 h-40 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl pointer-events-none"></div>
-            <div class="absolute left-0 bottom-0 w-28 h-28 bg-black/10 rounded-full -ml-10 -mb-10 blur-xl pointer-events-none"></div>
-
-            <div class="relative z-10">
-                <p class="text-white/80 text-sm font-semibold uppercase tracking-widest mb-3 flex items-center gap-1.5">
-                    <i class="ph-bold ph-ticket text-base"></i>
-                    Your Referral Code
-                </p>
-                <div class="flex items-center gap-3 bg-white/15 backdrop-blur-sm border border-white/25 rounded-xl p-2">
-                    <code class="text-2xl sm:text-3xl font-mono font-bold tracking-widest flex-1 text-center py-1">{{ $referralCode }}</code>
-                    <button
-                        @click="navigator.clipboard.writeText('{{ $referralCode }}'); copied = true; setTimeout(() => copied = false, 2000)"
-                        class="p-2.5 bg-white/20 hover:bg-white/30 rounded-lg transition-all focus:outline-none shrink-0"
-                        :title="copied ? 'Copied!' : 'Copy Code'">
-                        <i x-show="!copied" class="ph-bold ph-copy text-lg"></i>
-                        <i x-show="copied" class="ph-bold ph-check text-lg" style="display:none"></i>
-                    </button>
-                </div>
-                <p x-show="copied" class="text-white/90 text-xs mt-2 font-medium" style="display:none">
-                    <i class="ph-bold ph-check-circle"></i> Copied to clipboard!
-                </p>
-                <p x-show="!copied" class="text-white/70 text-xs mt-2">Share this code — your friend gets a bonus and so do you.</p>
+        <!-- Referral Code Card -->
+        <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6" x-data="{ copied: false }">
+            <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-1.5">
+                <i class="ph-bold ph-ticket text-custom-pink text-base"></i>
+                Your Referral Code
+            </p>
+            <div class="flex items-center gap-3 bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl px-4 py-3">
+                <code class="text-2xl sm:text-3xl font-mono font-bold tracking-widest flex-1 text-center text-custom-red">{{ $referralCode }}</code>
+                <button
+                    @click="navigator.clipboard.writeText('{{ $referralCode }}'); copied = true; setTimeout(() => copied = false, 2000)"
+                    class="p-2.5 bg-custom-pink hover:bg-pink-600 text-white rounded-lg transition-all focus:outline-none shrink-0"
+                    :title="copied ? 'Copied!' : 'Copy Code'">
+                    <i x-show="!copied" class="ph-bold ph-copy text-lg"></i>
+                    <i x-show="copied" class="ph-bold ph-check text-lg" style="display:none"></i>
+                </button>
             </div>
+            <p x-show="copied" class="text-green-600 text-xs mt-2 font-medium flex items-center gap-1" style="display:none">
+                <i class="ph-bold ph-check-circle"></i> Copied to clipboard!
+            </p>
+            <p x-show="!copied" class="text-gray-400 text-xs mt-2">Share this code — your friend gets a bonus and so do you.</p>
         </div>
 
         <!-- Stats -->
         <div class="grid grid-cols-2 gap-4">
-            <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5 flex items-center gap-4">
-                <div class="w-12 h-12 rounded-full bg-pink-50 flex items-center justify-center shrink-0">
-                    <i class="ph-bold ph-users text-2xl text-custom-pink"></i>
+            <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-pink-50 flex items-center justify-center shrink-0">
+                    <i class="ph-bold ph-users text-xl text-custom-pink"></i>
                 </div>
-                <div>
-                    <p class="text-3xl font-extrabold text-gray-900">{{ $totalReferrals }}</p>
-                    <p class="text-sm text-gray-500 font-medium">Successful Referrals</p>
+                <div class="min-w-0">
+                    <p class="text-2xl font-extrabold text-gray-900">{{ $totalReferrals }}</p>
+                    <p class="text-xs text-gray-500 font-medium leading-tight">Successful Referrals</p>
                 </div>
             </div>
-            <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5 flex items-center gap-4">
-                <div class="w-12 h-12 rounded-full bg-pink-50 flex items-center justify-center shrink-0">
-                    <i class="ph-bold ph-handshake text-2xl text-custom-pink"></i>
+            <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-pink-50 flex items-center justify-center shrink-0">
+                    <i class="ph-bold ph-handshake text-xl text-custom-pink"></i>
                 </div>
-                <div>
-                    <p class="text-3xl font-extrabold text-gray-900">{{ $earnedConnections }}</p>
-                    <p class="text-sm text-gray-500 font-medium">Connections Earned</p>
+                <div class="min-w-0">
+                    <p class="text-2xl font-extrabold text-gray-900">{{ $earnedConnections }}</p>
+                    <p class="text-xs text-gray-500 font-medium leading-tight">Connections Earned</p>
                 </div>
             </div>
         </div>
@@ -88,7 +82,7 @@ new #[Layout('components.layouts.app')] class extends Component {
             </div>
 
             <div class="overflow-x-auto">
-                <table class="w-full text-left">
+                <table class="min-w-[480px] w-full text-left">
                     <thead class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
                         <tr>
                             <th class="px-6 py-3 font-semibold">User</th>

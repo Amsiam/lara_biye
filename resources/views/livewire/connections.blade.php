@@ -155,25 +155,22 @@ $cancelRequest = function ($userId) {
                         $gender = $profile->basicInfo?->gender;
                         $genderColor = $gender === 'FEMALE' ? 'text-pink-500' : 'text-blue-500';
                     @endphp
-                    <div class="bg-white rounded-xl shadow-md border border-gray-100 flex items-center gap-4 p-4">
+                    <div class="bg-white rounded-xl border border-gray-100 shadow-sm flex items-center gap-3 p-4">
                         <!-- Avatar -->
-                        <div class="relative w-16 h-16 shrink-0">
-                            <img src="{{ route('profile.image', $profile->id) }}"
-                                 class="w-16 h-16 rounded-full object-cover border-2 border-gray-100"
-                                 onerror="this.src='{{ asset('default.png') }}'">
-                            @if ($gender)
-                                <span class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-white flex items-center justify-center shadow-sm border border-gray-100">
-                                    <i class="ph-bold {{ $gender === 'FEMALE' ? 'ph-gender-female' : 'ph-gender-male' }} text-xs {{ $genderColor }}"></i>
-                                </span>
-                            @endif
-                        </div>
+                        <img src="{{ route('profile.image', $profile->id) }}"
+                             class="w-14 h-14 rounded-full object-cover border-2 border-gray-100 shrink-0"
+                             onerror="this.src='{{ asset('default.png') }}'">
 
                         <!-- Info -->
                         <div class="flex-1 min-w-0">
-                            <p class="font-bold text-gray-800 truncate text-sm">{{ $profile->name }}</p>
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <p class="font-bold text-gray-800 truncate text-sm">{{ $profile->name }}</p>
+                                @if ($gender)
+                                    <i class="ph-bold {{ $gender === 'FEMALE' ? 'ph-gender-female' : 'ph-gender-male' }} text-sm {{ $genderColor }} shrink-0"></i>
+                                @endif
+                            </div>
                             <p class="text-xs text-gray-500 mt-0.5">
-                                ID #{{ $profile->id }}
-                                @if ($age) · {{ $age }} yrs @endif
+                                ID #{{ $profile->id }}@if ($age) · {{ $age }} yrs @endif
                             </p>
                             @if ($profile->basicInfo?->religion)
                                 <p class="text-xs text-gray-400 mt-0.5">{{ ucfirst(strtolower($profile->basicInfo->religion)) }}</p>
