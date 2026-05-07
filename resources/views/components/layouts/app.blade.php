@@ -293,6 +293,14 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script>
+        (function () {
+            try {
+                const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                if (tz) document.cookie = 'user_timezone=' + tz + '; path=/; max-age=31536000; SameSite=Lax';
+            } catch (e) {}
+        })();
+    </script>
 
 </body>
 

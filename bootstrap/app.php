@@ -12,7 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->web(append: [
+            \App\Http\Middleware\SetUserTimezone::class,
+        ]);
     })
     ->withSchedule(function (Schedule $schedule) {
         // Send profile completion reminders to users based on registration date (Day 2, 3, 60, 120, 180)
