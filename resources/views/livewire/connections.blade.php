@@ -157,7 +157,7 @@ $cancelRequest = function ($userId) {
                     @endphp
                     <div class="bg-white rounded-xl shadow-md border border-gray-100 flex items-center gap-4 p-4">
                         <!-- Avatar -->
-                        <div class="relative shrink-0">
+                        <div class="relative w-16 h-16 shrink-0">
                             <img src="{{ route('profile.image', $profile->id) }}"
                                  class="w-16 h-16 rounded-full object-cover border-2 border-gray-100"
                                  onerror="this.src='{{ asset('default.png') }}'">
