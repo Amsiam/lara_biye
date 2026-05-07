@@ -30,11 +30,8 @@ new #[Layout('components.layouts.app')] class extends Component {
                 <div class="absolute right-0 top-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
                 <div class="absolute left-0 bottom-0 w-24 h-24 bg-black/10 rounded-full -ml-10 -mb-10 blur-xl"></div>
                 
-                <div
-                    class="relative flex justify-center items-center h-12 w-12 text-custom-pink bg-white rounded-full shadow-md shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
+                <div class="relative flex justify-center items-center h-12 w-12 text-custom-pink bg-white rounded-full shadow-md shrink-0">
+                    <i class="ph-bold ph-ticket text-xl"></i>
                 </div>
                 <div class="relative">
                     <p class="text-xs text-white/80 font-medium uppercase tracking-wider">Current Balance</p>
@@ -62,8 +59,18 @@ new #[Layout('components.layouts.app')] class extends Component {
                                     <span class="text-xs text-gray-400 block">{{ $history->created_at->format('h:i A') }}</span>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <span class="font-medium text-gray-800 block">{{ $history->type }}</span>
-                                    <span class="text-sm text-gray-500">{{ $history->description }}</span>
+                                    @php
+                                        $typeMap = [
+                                            'connection_request_sent'     => ['label' => 'Request Sent',     'icon' => 'ph-paper-plane-tilt', 'color' => 'text-blue-500'],
+                                            'connection_request_accepted'  => ['label' => 'Request Accepted', 'icon' => 'ph-handshake',         'color' => 'text-green-500'],
+                                        ];
+                                        $meta = $typeMap[$history->type] ?? ['label' => ucwords(str_replace('_', ' ', $history->type)), 'icon' => 'ph-clock-clockwise', 'color' => 'text-gray-400'];
+                                    @endphp
+                                    <span class="flex items-center gap-1.5 font-medium text-gray-800">
+                                        <i class="ph-bold {{ $meta['icon'] }} {{ $meta['color'] }}"></i>
+                                        {{ $meta['label'] }}
+                                    </span>
+                                    <span class="text-sm text-gray-500 mt-0.5 block">{{ $history->description }}</span>
                                 </td>
                                 <td class="px-6 py-4 text-right">
                                     <span
@@ -76,11 +83,7 @@ new #[Layout('components.layouts.app')] class extends Component {
                             <tr>
                                 <td colspan="3" class="px-6 py-12 text-center text-gray-500">
                                     <div class="flex flex-col items-center gap-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-300" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
+                                        <i class="ph-bold ph-clock-clockwise text-4xl text-gray-300"></i>
                                         <p>No history records found.</p>
                                     </div>
                                 </td>
