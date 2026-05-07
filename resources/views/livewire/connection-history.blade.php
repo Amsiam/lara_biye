@@ -47,41 +47,44 @@ new #[Layout('components.layouts.app')] class extends Component {
                     <thead class="bg-gray-50 text-gray-500 text-sm uppercase tracking-wider">
                         <tr>
                             <th class="px-6 py-4 font-semibold">Date</th>
+                            <th class="px-6 py-4 font-semibold">Type</th>
                             <th class="px-6 py-4 font-semibold">Description</th>
                             <th class="px-6 py-4 font-semibold text-right">Amount</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
                         @forelse($histories as $history)
+                            @php
+                                $typeMap = [
+                                    'connection_request_sent'     => ['label' => 'Request Sent',     'icon' => 'ph-paper-plane-tilt', 'bg' => 'bg-blue-50',   'color' => 'text-blue-600'],
+                                    'connection_request_accepted'  => ['label' => 'Request Accepted', 'icon' => 'ph-handshake',         'bg' => 'bg-green-50',  'color' => 'text-green-600'],
+                                    'purchase'                     => ['label' => 'Purchase',          'icon' => 'ph-shopping-cart',     'bg' => 'bg-purple-50', 'color' => 'text-purple-600'],
+                                ];
+                                $meta = $typeMap[$history->type] ?? ['label' => ucwords(str_replace('_', ' ', $history->type)), 'icon' => 'ph-clock-clockwise', 'bg' => 'bg-gray-50', 'color' => 'text-gray-500'];
+                            @endphp
                             <tr class="hover:bg-gray-50/50 transition-colors">
                                 <td class="px-6 py-4 text-gray-600 whitespace-nowrap">
                                     {{ $history->created_at->format('M d, Y') }}
                                     <span class="text-xs text-gray-400 block">{{ $history->created_at->format('h:i A') }}</span>
                                 </td>
-                                <td class="px-6 py-4">
-                                    @php
-                                        $typeMap = [
-                                            'connection_request_sent'     => ['label' => 'Request Sent',     'icon' => 'ph-paper-plane-tilt', 'color' => 'text-blue-500'],
-                                            'connection_request_accepted'  => ['label' => 'Request Accepted', 'icon' => 'ph-handshake',         'color' => 'text-green-500'],
-                                        ];
-                                        $meta = $typeMap[$history->type] ?? ['label' => ucwords(str_replace('_', ' ', $history->type)), 'icon' => 'ph-clock-clockwise', 'color' => 'text-gray-400'];
-                                    @endphp
-                                    <span class="flex items-center gap-1.5 font-medium text-gray-800">
-                                        <i class="ph-bold {{ $meta['icon'] }} {{ $meta['color'] }}"></i>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold {{ $meta['bg'] }} {{ $meta['color'] }}">
+                                        <i class="ph-bold {{ $meta['icon'] }}"></i>
                                         {{ $meta['label'] }}
                                     </span>
-                                    <span class="text-sm text-gray-500 mt-0.5 block">{{ $history->description }}</span>
                                 </td>
-                                <td class="px-6 py-4 text-right">
-                                    <span
-                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $history->amount > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                <td class="px-6 py-4 text-sm text-gray-600">
+                                    {{ $history->description }}
+                                </td>
+                                <td class="px-6 py-4 text-right whitespace-nowrap">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $history->amount > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                                         {{ $history->amount > 0 ? '+' : '' }}{{ $history->amount }}
                                     </span>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="3" class="px-6 py-12 text-center text-gray-500">
+                                <td colspan="4" class="px-6 py-12 text-center text-gray-500">
                                     <div class="flex flex-col items-center gap-2">
                                         <i class="ph-bold ph-clock-clockwise text-4xl text-gray-300"></i>
                                         <p>No history records found.</p>
