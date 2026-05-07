@@ -1,14 +1,20 @@
 <x-mail::message>
-    # New Connection Request
+# 💌 Someone is Interested in You!
 
-    Good news! **{{ $sender->name }}** has sent you a connection request.
+Hi **{{ $receiver->name }}**,
 
-    Someone is interested in your profile. Log in now to view their details and decide if you'd like to connect.
+Great news — **{{ $sender->name }}** has sent you a connection request on **Engineer's Matrimony**.
 
-    <x-mail::button :url="$url">
-        View Profile
-    </x-mail::button>
+They liked your profile and would love to connect with you. Review their profile and decide if you'd like to accept.
 
-    Best regards,<br>
-    {{ config('app.name') }}
+<x-mail::button :url="$url" color="primary">
+View Their Profile
+</x-mail::button>
+
+> This request will cost you **1 connection** to accept. Make sure you have enough balance.
+
+If you're not interested, you can simply ignore this request.
+
+Warm regards,
+**Engineer's Matrimony Team**
 </x-mail::message>

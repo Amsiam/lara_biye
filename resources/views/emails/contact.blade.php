@@ -1,16 +1,18 @@
 <x-mail::message>
-# New Contact Message
+# 📬 New Contact Form Message
 
-You have received a new message from your website contact form.
+You have received a new message via the website contact form.
 
-**From:** {{ $name }}
-**Email:** {{ $email }}
+<x-mail::table>
+| Field | Details |
+|:------|:--------|
+| **Name** | {{ $name }} |
+| **Email** | {{ $email }} |
 @if($phone)
-**Phone:** {{ $phone }}
+| **Phone** | {{ $phone }} |
 @endif
-**Subject:** {{ $emailSubject }}
-
----
+| **Subject** | {{ $emailSubject }} |
+</x-mail::table>
 
 **Message:**
 
@@ -20,6 +22,5 @@ You have received a new message from your website contact form.
 
 You can reply directly to this email to respond to {{ $name }}.
 
-Thanks,<br>
-{{ config('app.name') }}
+**Engineer's Matrimony Team**
 </x-mail::message>

@@ -1,14 +1,18 @@
 <x-mail::message>
-    # Connection Request Accepted!
+# 🎉 Your Connection Request Was Accepted!
 
-    Congratulations! **{{ $accepter->name }}** has accepted your connection request.
+Hi **{{ $sender->name }}**,
 
-    You are now connected. You can view their full profile and start communicating.
+Wonderful news — **{{ $accepter->name }}** has accepted your connection request!
 
-    <x-mail::button :url="$url">
-        View {{ $accepter->name }}'s Profile
-    </x-mail::button>
+You are now connected and can view each other's full profile details. Take the next step and start a conversation.
 
-    Best regards,<br>
-    {{ config('app.name') }}
+<x-mail::button :url="$url" color="primary">
+View {{ $accepter->name }}'s Profile
+</x-mail::button>
+
+We wish you both the very best on this journey. 💕
+
+Warm regards,
+**Engineer's Matrimony Team**
 </x-mail::message>
