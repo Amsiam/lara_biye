@@ -1,56 +1,64 @@
 @php
-    $notifications = auth()->user()->notifications()->where('read', false)->get();
+    $notifications = auth()->user()->notifications()->where('read', false)->latest()->get();
 @endphp
 
-<button id="dropdownNotificationButton" data-dropdown-toggle="dropdownNotification"
-    class="relative inline-flex items-center text-sm font-medium text-center text-gray-500 hover:text-gray-900 focus:outline-none"
-    type="button">
+<div class="relative" x-data="{ open: false }" x-cloak>
+    <button @click="open = !open" @click.outside="open = false"
+        class="relative p-2 text-gray-500 hover:text-custom-pink hover:bg-pink-50 rounded-lg transition-colors focus:outline-none"
+        type="button">
+        <i class="ph-bold ph-bell text-xl"></i>
+        @if ($notifications->count() > 0)
+            <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 border-2 border-white rounded-full"></span>
+        @endif
+    </button>
 
+    <div x-show="open"
+        x-transition:enter="transition ease-out duration-150"
+        x-transition:enter-start="opacity-0 scale-95"
+        x-transition:enter-end="opacity-100 scale-100"
+        x-transition:leave="transition ease-in duration-100"
+        x-transition:leave-start="opacity-100 scale-100"
+        x-transition:leave-end="opacity-0 scale-95"
+        class="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-100 z-[200] origin-top-right"
+        @click.outside="open = false">
 
-    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 14 20">
-        <path
-            d="M12.133 10.632v-1.8A5.406 5.406 0 0 0 7.979 3.57.946.946 0 0 0 8 3.464V1.1a1 1 0 0 0-2 0v2.364a.946.946 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C1.867 13.018 0 13.614 0 14.807 0 15.4 0 16 .538 16h12.924C14 16 14 15.4 14 14.807c0-1.193-1.867-1.789-1.867-4.175ZM3.823 17a3.453 3.453 0 0 0 6.354 0H3.823Z" />
-    </svg>
-
-
-    @if ($notifications->count() > 0)
-        <div
-            class="absolute block w-3 h-3 bg-red-500 border-2 border-white rounded-full -top-0.5 start-2.5">
+        <div class="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+            <span class="font-semibold text-gray-800 text-sm">Notifications</span>
+            @if ($notifications->count() > 0)
+                <span class="text-xs bg-pink-100 text-custom-pink font-bold px-2 py-0.5 rounded-full">
+                    {{ $notifications->count() }}
+                </span>
+            @endif
         </div>
-    @endif
-</button>
-<div id="dropdownNotification"
-    class="z-20 hidden w-full max-w-sm bg-white divide-y divide-gray-100 rounded-lg shadow-sm"
-    aria-labelledby="dropdownNotificationButton">
-    <div
-        class="block px-4 py-2 font-medium text-center text-gray-700 rounded-t-lg bg-gray-50">
-        Notifications
-    </div>
-    <div class="divide-y divide-gray-100">
-        @foreach ($notifications as $notification)
-            <a href="{{ route('notifications.show', $notification->id) }}"
-                class="flex px-4 py-3 hover:bg-gray-100">
 
-                <div class="w-full ps-3">
-                    <div class="text-gray-500 text-sm mb-1.5">
-                        {{ $notification->message }}
+        <div class="max-h-72 overflow-y-auto divide-y divide-gray-50">
+            @forelse ($notifications as $notification)
+                <a href="{{ route('notifications.show', $notification->id) }}"
+                    class="flex items-start gap-3 px-4 py-3 hover:bg-pink-50/50 transition-colors">
+                    <div class="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center shrink-0 mt-0.5">
+                        <i class="ph-fill ph-bell text-sm text-custom-pink"></i>
                     </div>
-                    <div class="text-xs text-blue-600">
-                        {{ $notification->created_at->diffForHumans() }}
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm text-gray-700 leading-snug">{{ $notification->message }}</p>
+                        <p class="text-xs text-gray-400 mt-1">{{ $notification->created_at->diffForHumans() }}</p>
                     </div>
+                </a>
+            @empty
+                <div class="py-8 text-center">
+                    <i class="ph-bold ph-bell-slash text-3xl text-gray-300 block mb-2"></i>
+                    <p class="text-sm text-gray-400">No new notifications</p>
                 </div>
-            </a>
-        @endforeach
-    </div>
-    <a href="{{ route('notifications.markAllAsRead') }}"
-        class="block py-2 text-sm font-medium text-center text-gray-900 rounded-b-lg bg-gray-50 hover:bg-gray-100">
-        <div class="inline-flex items-center ">
-            <svg class="w-4 h-4 me-2 text-gray-500" aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 14">
-                <path
-                    d="M10 0C4.612 0 0 5.336 0 7c0 1.742 3.546 7 10 7 6.454 0 10-5.258 10-7 0-1.664-4.612-7-10-7Zm0 10a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z" />
-            </svg>
-            Mark All As Read
+            @endforelse
         </div>
-    </a>
+
+        @if ($notifications->count() > 0)
+            <div class="border-t border-gray-100">
+                <a href="{{ route('notifications.markAllAsRead') }}"
+                    class="flex items-center justify-center gap-1.5 py-3 text-sm font-semibold text-custom-pink hover:bg-pink-50 rounded-b-xl transition-colors">
+                    <i class="ph-bold ph-checks"></i>
+                    Mark all as read
+                </a>
+            </div>
+        @endif
+    </div>
 </div>
